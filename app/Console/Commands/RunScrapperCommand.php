@@ -50,11 +50,10 @@ class RunScrapperCommand extends Command
 
             $lastJobTime = Carbon::parse($lastJob->end_at);
             $currentTime = Carbon::parse(now());
-            $duration = $lastJobTime->diff($currentTime)->format('%I');
+            $duration = $lastJobTime->diffInMinutes($currentTime);
 
             if((int)$duration >= 20)
             {
-
                 if($lastJob !== null) {
                     if(in_array($lastJob->url ,$searchQueries))
                     {
@@ -75,12 +74,13 @@ class RunScrapperCommand extends Command
                 $ip = request()->server('SERVER_ADDR');
                 $job = ScrapperJob::create([
                     'ip' => $ip,
+                    'url' => $url,
+                    'platform' => 'Google Business'
                 ]);
 
                 $jobId = $job->id;
                 exec("node microservices/google-business-scrapper/google-maps-scrapper.js --url="."'{$url}'"." ".$limit. " " .$jobId);
                 $job->status = 1;
-                $job->url = $url;
                 $job->end_at = now();
                 $job->save();
             }else{
@@ -94,12 +94,13 @@ class RunScrapperCommand extends Command
             $ip = request()->server('SERVER_ADDR');
             $job = ScrapperJob::create([
                 'ip' => $ip,
+                'url' => $url,
+                'platform' => 'Google Business'
             ]);
 
             $jobId = $job->id;
             exec("node microservices/google-business-scrapper/google-maps-scrapper.js --url="."'{$url}'"." ".$limit. " " .$jobId);
             $job->status = 1;
-            $job->url = $url;
             $job->end_at = now();
             $job->save();
         }

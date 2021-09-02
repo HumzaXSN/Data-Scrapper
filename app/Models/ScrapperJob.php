@@ -11,6 +11,8 @@ class ScrapperJob extends Model
     protected $table = 'scrapper_jobs';
     protected $fillable = [
         'ip',
+        'url',
+        'platform',
         'status',
     ];
 

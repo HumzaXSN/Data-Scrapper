@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer-extra')
 var mysql = require('mysql');
-const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha')
+require('dotenv').config({ path: '../../.env' });
+const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 
 puppeteer.use(
   RecaptchaPlugin({
@@ -15,11 +16,11 @@ var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
 
 var con = mysql.createConnection({
-    host: "127.0.0.1",
-    port: 3308,
-    user: "root",
-    password: "",
-    database: "laravel_spider",
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
     connectionLimit: 10
 });
 
@@ -31,7 +32,7 @@ con.connect(function(err) {
 
 async function getBusinessis() {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: null
     });
 
@@ -49,6 +50,10 @@ async function getBusinessis() {
         var allItems = [];
         while(allItems.length <= limit)
         {
+            if (await page.$('.V79n2d-di8rgd-aVTXAb-title')) {
+                break;
+            }
+
             for (let j = 1; j <= 5; j++) {
                 await page.waitForTimeout(5000);
                 await page.evaluate(() => {

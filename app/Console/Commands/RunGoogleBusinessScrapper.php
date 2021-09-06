@@ -6,21 +6,21 @@ use Carbon\Carbon;
 use App\Models\ScrapperJob;
 use Illuminate\Console\Command;
 
-class RunScrapperCommand extends Command
+class RunGoogleBusinessScrapper extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'scrapper:maps {limit} {city}';
+    protected $signature = 'runscrapper:googlebusiness {limit} {city}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Google Maps Scrapper';
+    protected $description = 'Google Businesses Scrapper';
 
     /**
      * Create a new command instance.

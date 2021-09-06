@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\RunScrapperCommand;
+use App\Console\Commands\RunGoogleBusinessScrapper;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\RunScrapperCommand::class
+        Commands\RunGoogleBusinessScrapper::class
     ];
 
     /**
@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command(RunScrapperCommand::class, [
+        $schedule->command(RunGoogleBusinessScrapper::class, [
             1000, "Lahore"
         ])->everyMinute();
     }

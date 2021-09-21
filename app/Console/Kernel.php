@@ -25,9 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $city = config('app.city');
         $schedule->command(RunGoogleBusinessScrapper::class, [
-            1000, "Lahore"
+            1000, $city
         ])->everyMinute();
     }
 

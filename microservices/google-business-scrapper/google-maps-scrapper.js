@@ -32,7 +32,7 @@ con.connect(function(err) {
 
 async function getBusinessis() {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null
     });
 

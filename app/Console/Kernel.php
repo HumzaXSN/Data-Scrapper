@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\RunGoogleBusinessScrapper;
+use App\Console\Commands\RunGoogleBusinessScraper;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\RunGoogleBusinessScrapper::class
+        Commands\RunGoogleBusinessScraper::class
     ];
 
     /**
@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $city = config('app.city');
-        $schedule->command(RunGoogleBusinessScrapper::class, [
+        $schedule->command(RunGoogleBusinessScraper::class, [
             1000, $city
         ])->everyMinute();
     }

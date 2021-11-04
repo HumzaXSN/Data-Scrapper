@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ScrapperJob extends Model
+class ScraperJob extends Model
 {
     use HasFactory;
-    protected $table = 'scrapper_jobs';
+    protected $table = 'scraper_jobs';
     protected $fillable = [
         'ip',
         'url',

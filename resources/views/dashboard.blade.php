@@ -9,7 +9,7 @@
         <div class="container-fluid">
 
             <div class="mt-4 mb-4 card-group no-shadow">
-                <h1>Ashlar Data Scrapper</h1>
+                <h1>Ashlar Data Scraper</h1>
             </div>
 
         </div>

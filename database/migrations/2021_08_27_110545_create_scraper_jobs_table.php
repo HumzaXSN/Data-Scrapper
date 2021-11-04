@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScrapperJobsTable extends Migration
+class CreateScraperJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateScrapperJobsTable extends Migration
      */
     public function up()
     {
-        Schema::create('scrapper_jobs', function (Blueprint $table) {
+        Schema::create('scraper_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('ip')->nullable();
             $table->string('url')->nullable();
+            $table->string('platform')->nullable();
             $table->tinyInteger('status')->default('0')->comment('0==processing, 1==complete');
             $table->timestamps();
             $table->dateTime('end_at')->nullable();
@@ -30,6 +31,6 @@ class CreateScrapperJobsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scrapper_jobs');
+        Schema::dropIfExists('scraper_jobs');
     }
 }

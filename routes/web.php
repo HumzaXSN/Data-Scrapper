@@ -22,7 +22,8 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/import', [ContactController::class, 'index'])->name('import');
-    Route::post('/import', [ContactController::class, 'import'])->name('import');
+    Route::resource('contacts', ContactController::class);
+    // Route::get('/import', [ContactController::class, 'index'])->name('import');
+    // Route::post('/import', [ContactController::class, 'import'])->name('import');
 });
 require __DIR__.'/auth.php';

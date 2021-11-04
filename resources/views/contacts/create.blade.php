@@ -26,13 +26,8 @@
                                 Import CSV
                             </div>
                         </div>
-                        @if(session()->has('success'))
-                            <div class="alert alert-success">
-                                {{ session()->get('success') }}
-                            </div>
-                        @endif
                         <div class="card-body">
-                            <form class="picker-form" method="POST" action="{{ route('import') }}" enctype="multipart/form-data">
+                            <form class="picker-form" method="POST" action="{{ route('contacts.store') }}" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <div class="form-group row">
                                     <label class="col-sm-4 col-form-label col-form-label-sm">Select CSV File</label>

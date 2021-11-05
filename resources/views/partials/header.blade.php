@@ -25,12 +25,12 @@
 
             <li class="nav-item dropdown dropdown-slide">
                 <a class="nav-link nav-pill user-avatar" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <img src="assets/img/user.png" alt="John Doe">
+                    <img src="{{ asset('assets/img/user.png') }}" alt="John Doe">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-accout">
                     <div class="pb-3 dropdown-header">
                         <div class="media d-user">
-                            <img class="mr-3 align-self-center" src="assets/img/user.png" alt="John Doe">
+                            <img class="mr-3 align-self-center" src="{{ asset('assets/img/user.png') }}" alt="John Doe">
                             <div class="media-body">
                                 <h5 class="mt-0 mb-0">{{ Auth::user()->name}}</h5>
                                 <span>{{ Auth::user()->email}}</span>

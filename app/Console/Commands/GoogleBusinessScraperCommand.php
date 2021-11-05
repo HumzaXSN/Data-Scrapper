@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\ScraperJob;
 use Illuminate\Console\Command;
 
-class RunGoogleBusinessScraper extends Command
+class GoogleBusinessScraperCommand extends Command
 {
     /**
      * The name and signature of the console command.

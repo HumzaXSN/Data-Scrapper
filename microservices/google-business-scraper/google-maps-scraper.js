@@ -115,7 +115,7 @@ async function getBusinessis() {
            console.log('phone', phone);
         }
 
-        var sql = "INSERT INTO scraper_data (scraper_job_id, company, phone, address, website, created_at, updated_at) VALUES ?";
+        var sql = "INSERT INTO google_businesses (scraper_job_id, company, phone, address, website, created_at, updated_at) VALUES ?";
         var values = [[jobId, title, phone, address, website, new Date(), new Date()]];
         con.query(sql, [values], function (err, result) {
             if (err) {

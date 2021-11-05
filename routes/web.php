@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ScraperJobController;
+use App\Http\Controllers\GoogleBusinessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,11 +21,21 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth','verified'])->group(function () {
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
     Route::resource('contacts', ContactController::class);
+
+    Route::resource('google-businesses', GoogleBusinessController::class)->only([
+        'index', 'show', 'destroy'
+    ]);
+
+    Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
+
     // Route::get('/import', [ContactController::class, 'index'])->name('import');
     // Route::post('/import', [ContactController::class, 'import'])->name('import');
+
 });
 require __DIR__.'/auth.php';

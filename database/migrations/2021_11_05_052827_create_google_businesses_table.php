@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScraperDataTable extends Migration
+class CreateGoogleBusinessesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateScraperDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('scraper_data', function (Blueprint $table) {
+        Schema::create('google_businesses', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('scraper_job_id');
             $table->string('company');
@@ -43,6 +43,6 @@ class CreateScraperDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('scraper_data');
+        Schema::dropIfExists('google_businesses');
     }
 }

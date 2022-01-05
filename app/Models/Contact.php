@@ -18,6 +18,18 @@ class Contact extends Model
         'phone',
         'email',
         'source',
-        'status'
+        'status',
+        'city',
+        'state',
+        'linkedin_profile',
+        'times_reached',
+        'reached_platform',
+        'lead_status',
+        'industry_id'
     ];
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class);
+    }
 }

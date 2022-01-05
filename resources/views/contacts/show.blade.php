@@ -78,6 +78,71 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>City:</strong>
+                                            {{ $contact->city }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>State:</strong>
+                                            {{ $contact->state }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>Phone No:</strong>
+                                            {{ $contact->phone }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>LinkedIn Profile:</strong>
+                                            {{ $contact->linkedin_profile }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>Profile Reached:</strong>
+                                            {{ $contact->times_reached }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>Reached from Platform:</strong>
+                                            {{ $contact->reached_platform }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>Status of the Lead:</strong>
+                                            {{ $contact->lead_status }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>Industry:</strong>
+                                            {{ $contact->industry_id }}
+                                            {{-- {{ $contact->name }} --}}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

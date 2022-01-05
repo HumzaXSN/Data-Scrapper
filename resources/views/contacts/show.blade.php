@@ -138,8 +138,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>Industry:</strong>
-                                            {{ $contact->industry_id }}
-                                            {{-- {{ $contact->name }} --}}
+                                            {{ $contact->industry->name }}
                                         </div>
                                     </div>
                                 </div>

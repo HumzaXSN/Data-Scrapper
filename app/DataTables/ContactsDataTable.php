@@ -75,6 +75,9 @@ class ContactsDataTable extends DataTable
             'title',
             'company',
             'email',
+            'lead_status',
+            'city',
+            'state',
             'action' => [
                 'searchable' => false,
                 'orderable' => false

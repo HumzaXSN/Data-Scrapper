@@ -4559,3 +4559,22 @@ custom chart style
     width: 35px;
     height: 22px !important;
 }
+
+#edit_phone::-webkit-outer-spin-button,
+#edit_phone::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#edit_phone[type=number] {
+    -moz-appearance: textfield;
+}
+
+.edit_form_status {
+display: block;
+}
+
+.edit_form_status_data {
+    display: inline-block;
+    margin-right: 1rem;
+}

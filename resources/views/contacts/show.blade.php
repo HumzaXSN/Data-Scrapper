@@ -138,7 +138,9 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>Industry:</strong>
+                                            @if(@isset($contact->industry))
                                             {{ $contact->industry->name }}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

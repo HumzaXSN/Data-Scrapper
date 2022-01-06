@@ -40,13 +40,13 @@
                                     <div class="col-sm-4">
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" id="internal" name="source" value="1">
+                                                <input class="form-check-input" type="radio" id="internal" name="source" value="1" required>
                                                 Internal
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" id="external" name="source" value="0">
+                                                <input class="form-check-input" type="radio" id="external" name="source" value="0" required>
                                                 External
                                             </label>
                                         </div>

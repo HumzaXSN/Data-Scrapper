@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class GoogleBusiness extends Model
 {
     use HasFactory;
+
+    public function Notes()
+    {
+        return $this->belongsToMany(Note::class);
+    }
 }

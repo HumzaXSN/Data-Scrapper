@@ -32,4 +32,9 @@ class Contact extends Model
     {
         return $this->belongsTo(Industry::class);
     }
+
+    public function Notes()
+    {
+        return $this->belongsToMany(Note::class);
+    }
 }

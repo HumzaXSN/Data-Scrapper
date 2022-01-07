@@ -22,7 +22,7 @@ class Contact extends Model
         'city',
         'state',
         'linkedin_profile',
-        'times_reached',
+        'reached_count',
         'reached_platform',
         'lead_status',
         'industry_id'

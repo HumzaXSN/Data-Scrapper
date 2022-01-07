@@ -75,6 +75,7 @@ class ContactsDataTable extends DataTable
             'title',
             'company',
             'email',
+            'phone',
             'lead_status',
             'city',
             'state',

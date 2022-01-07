@@ -119,8 +119,8 @@
                                         <div class="form-group">
                                             <strong>Profile Reached:</strong>
                                             <input type="number"
-                                                class="form-control  @error('times_reached') is-invalid @enderror"
-                                                name="times_reached" value="{{ $contact->times_reached }}"
+                                                class="form-control  @error('reached_count') is-invalid @enderror"
+                                                name="reached_count" value="{{ $contact->reached_count }}"
                                                 placeholder="How many times the clinet is reached">
                                         </div>
                                     </div>

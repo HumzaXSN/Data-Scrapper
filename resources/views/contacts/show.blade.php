@@ -114,7 +114,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>Profile Reached:</strong>
-                                            {{ $contact->times_reached }}
+                                            {{ $contact->reached_count }}
                                         </div>
                                     </div>
                                 </div>

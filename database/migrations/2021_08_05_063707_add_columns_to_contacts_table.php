@@ -18,7 +18,7 @@ class AddColumnsToContactsTable extends Migration
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('linkedIn_profile')->nullable();
-            $table->integer('times_reached')->default('0')->nullable();
+            $table->integer('reached_count')->default('0')->nullable();
             $table->string('reached_platform')->nullable();
             $table->string('lead_status')->nullable();
         });
@@ -36,7 +36,7 @@ class AddColumnsToContactsTable extends Migration
             $table->dropColumn('city');
             $table->dropColumn('state');
             $table->dropColumn('linkedIn_profile');
-            $table->dropColumn('times_reached');
+            $table->dropColumn('reached_count');
             $table->dropColumn('reached_platform');
             $table->dropColumn('lead_status');
         });

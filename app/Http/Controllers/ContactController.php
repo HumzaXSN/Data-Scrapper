@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\DataTables\ContactsDataTable;
 use App\Models\Contact;
+use App\Models\Industry;
 use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
@@ -68,7 +69,8 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
-        return view('contacts.edit',compact('contact'));
+        $industries = Industry::all();
+        return view('contacts.edit',compact('contact','industries'));
     }
 
     /**

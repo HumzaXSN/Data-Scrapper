@@ -34,6 +34,8 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
             'company' => $row['company'],
             'phone' => $row['phone'] ?? NULL,
             'email' => $row['email'],
+            'city' => $row['city'] ?? NULL,
+            'state' => $row['state'] ?? NULL,
             'source' => $this->source,
         ]);
     }

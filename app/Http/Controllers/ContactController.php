@@ -22,9 +22,22 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ContactsDataTable $dataTable)
+    public function index(ContactsDataTable $dataTable, Contact $contact)
     {
-        return $dataTable->render('contacts.index');
+        $contact = Contact::where('lead_status','!=',null)->select('lead_status')->get();
+        return $dataTable->render('contacts.index', compact('contact'));
+    }
+
+    public function filterdata(Request $request)
+    {
+        $result = Contact::whereBetween('id', [$request->from, $request->to])
+                    ->get();
+                    foreach($result as $results){
+                        $result1 = Contact::find($results->id);
+                        $result1->reached_count = $request->reached_count;
+                        $result1->save();
+                    }
+                    return back();
     }
 
     /**

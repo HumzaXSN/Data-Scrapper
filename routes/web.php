@@ -39,3 +39,6 @@ Route::middleware(['auth','verified'])->group(function () {
 
 });
 require __DIR__.'/auth.php';
+
+Route::post('/reached-count-filter', [ContactController::class, 'filterdata'])
+                ->name('reached-count');

@@ -44,10 +44,10 @@
                             </div>
                             <div class="col-sm-4">
                                 <select class="form-control filter-select" data-column="8">
-                                    <option value="">Lead Status</option>
+                                    {{-- <option value="">Lead Status</option>
                                     @foreach ($contact as $contacts )
                                     <option value="{{ $contacts->lead_status }}">{{ $contacts->lead_status }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                         </div>

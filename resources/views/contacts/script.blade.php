@@ -45,8 +45,8 @@
                     name: 'reached_platform'
                 },
                 {
-                    data: 'lead_status',
-                    name: 'lead_status'
+                    data: 'lead_status_id',
+                    name: 'lead_status_id'
                 },
                 {
                     data: 'action',

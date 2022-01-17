@@ -130,7 +130,9 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>Status of the Lead:</strong>
-                                            {{ $contact->lead_status }}
+                                            @if(@isset($contact->lead_status_id))
+                                            {{ $contact->lead_status->status }}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

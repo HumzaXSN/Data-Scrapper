@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\DataTables\ContactsDataTable;
 use App\Models\Contact;
 use App\Models\Industry;
+use App\Models\LeadStatus;
 use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
@@ -24,7 +25,6 @@ class ContactController extends Controller
      */
     public function index(ContactsDataTable $dataTable, Contact $contact)
     {
-        $contact = Contact::where('lead_status','!=',null)->select('lead_status')->get();
         return $dataTable->render('contacts.index', compact('contact'));
     }
 
@@ -82,8 +82,9 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
+        $leadstatuses = LeadStatus::all();
         $industries = Industry::all();
-        return view('contacts.edit',compact('contact','industries'));
+        return view('contacts.edit',compact('contact','industries','leadstatuses'));
     }
 
     /**

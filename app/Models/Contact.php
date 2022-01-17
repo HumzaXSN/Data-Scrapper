@@ -25,13 +25,18 @@ class Contact extends Model
         'linkedin_profile',
         'reached_count',
         'reached_platform',
-        'lead_status',
-        'industry_id'
+        'lead_status_id',
+        'industry_id',  
     ];
 
     public function industry()
     {
         return $this->belongsTo(Industry::class);
+    }
+
+    public function lead_status()
+    {
+        return $this->belongsTo(LeadStatus::class);
     }
 
     public function Notes()

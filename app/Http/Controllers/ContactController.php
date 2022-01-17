@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\DataTables\ContactsDataTable;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
+use Illuminate\Http\Request;
+use App\DataTables\ContactsDataTable;
 use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
@@ -25,7 +25,8 @@ class ContactController extends Controller
      */
     public function index(ContactsDataTable $dataTable, Contact $contact)
     {
-        return $dataTable->render('contacts.index', compact('contact'));
+        $leadstatuses = LeadStatus::all();
+        return $dataTable->render('contacts.index', compact('leadstatuses'));
     }
 
     public function filterdata(Request $request)

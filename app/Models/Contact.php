@@ -19,6 +19,7 @@ class Contact extends Model
         'email',
         'source',
         'status',
+        'country',
         'city',
         'state',
         'linkedin_profile',

@@ -15,6 +15,7 @@ class AddColumnsToContactsTable extends Migration
     {
         Schema::table('contacts', function (Blueprint $table) {
             $table->foreignId('industry_id')->nullable()->constrained('industries');
+            $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('linkedIn_profile')->nullable();
@@ -33,6 +34,7 @@ class AddColumnsToContactsTable extends Migration
     {
         Schema::table('contacts', function (Blueprint $table) {
             $table->dropForeign(['industry_id']);
+            $table->dropColumn('country');
             $table->dropColumn('city');
             $table->dropColumn('state');
             $table->dropColumn('linkedIn_profile');

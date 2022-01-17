@@ -35,15 +35,15 @@
                         </div>
                         <div class="row ml-1 mr-1">
                             <div class="col-sm-4">
-                                <input type="text" class="form-control filter-input" placeholder="Search Firstname"
-                                    data-column="0" />
+                                <input type="text" id="fn" class="form-control filter-input" placeholder="Search Firstname"
+                                     />
                             </div>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control filter-input" placeholder="Search City"
-                                    data-column="5" />
+                                    data-column="6" />
                             </div>
                             <div class="col-sm-4">
-                                <select class="form-control filter-select" data-column="7">
+                                <select class="form-control filter-select" data-column="8">
                                     <option value="">Lead Status</option>
                                     @foreach ($contact as $contacts )
                                     <option value="{{ $contacts->lead_status }}">{{ $contacts->lead_status }}</option>
@@ -80,17 +80,19 @@
 
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered data-table" style="width:100%">
+                                <table class="table table-bordered data-table" style="width:100%" >
                                     <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th>id</th>
                                             <th>First Name</th>
                                             <th>Last Name</th>
                                             <th>Title</th>
                                             <th>Company</th>
                                             <th>Email</th>
+                                            <th>Country</th>
                                             <th>City</th>
                                             <th>Phone</th>
+                                            <th>Reached Platform</th>
                                             <th>Lead Status</th>
                                             <th>Action</th>
                                         </tr>

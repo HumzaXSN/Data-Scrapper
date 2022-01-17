@@ -29,12 +29,20 @@
                     name: 'email'
                 },
                 {
+                    data: 'country',
+                    name: 'country'
+                },
+                {
                     data: 'city',
                     name: 'city'
                 },
                 {
                     data: 'phone',
                     name: 'phone'
+                },
+                {
+                    data: 'reached_platform',
+                    name: 'reached_platform'
                 },
                 {
                     data: 'lead_status',
@@ -64,3 +72,23 @@
     })
 
 </script>
+{{-- <script>
+    $(document).ready(function () {
+                $('#fn').on('keyup',function() {
+                    // alert('good');
+            var query = $(this).val();
+                    // var from = $('#from').val();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('contacts.index') }}",
+                        data: {
+                            'to': query
+                        },
+                        success: function (data) {
+                            // $('#country_list').html(data);
+                        }
+                    })
+                });
+            });
+
+</script> --}}

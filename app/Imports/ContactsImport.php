@@ -19,7 +19,6 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
         $this->source= $source;
     }
 
-
     /**
     * @param array $row
     *
@@ -28,6 +27,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
     public function model(array $row)
     {
         return new Contact([
+            'id' => $row['id'],
             'first_name' => $row['firstname'],
             'last_name' => $row['lastname'],
             'title' => $row['title'],
@@ -36,6 +36,8 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
             'email' => $row['email'],
             'city' => $row['city'] ?? NULL,
             'state' => $row['state'] ?? NULL,
+            'reached_platform' => $row['reachedplatform'] ?? NULL,
+            'lead_status_id' => $row['leadstatusid'] ?? NULL,
             'source' => $this->source,
         ]);
     }

@@ -135,28 +135,12 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <strong class="edit_form_status">Status:</strong>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Hot Lead"
-                                                        name="lead_status" value="Hot-Lead">
-                                                    Hot Lead
-                                                </label>
-                                            </div>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Cold Lead"
-                                                        name="lead_status" value="Cold-Lead">
-                                                    Cold Lead
-                                                </label>
-                                            </div>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Follow Lead"
-                                                        name="lead_status" value="Follow-Lead">
-                                                    Follow Lead
-                                                </label>
-                                            </div>
+                                            <strong>Lead Status:</strong>
+                                            <select class="form-control" name="lead_status_id">
+                                                @foreach($leadstatuses as $leadstatus)
+                                                <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     @if (count($industries) > 0)

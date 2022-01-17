@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\DataTables\ContactsDataTable;
 use App\Models\Contact;
 use App\Models\Industry;
+use App\Models\LeadStatus;
 use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
@@ -22,9 +23,21 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ContactsDataTable $dataTable)
+    public function index(ContactsDataTable $dataTable, Contact $contact)
     {
-        return $dataTable->render('contacts.index');
+        return $dataTable->render('contacts.index', compact('contact'));
+    }
+
+    public function filterdata(Request $request)
+    {
+        $result = Contact::whereBetween('id', [$request->from, $request->to])
+                    ->get();
+                    foreach($result as $results){
+                        $result1 = Contact::find($results->id);
+                        $result1->reached_count = $request->reached_count;
+                        $result1->save();
+                    }
+                    return back();
     }
 
     /**
@@ -69,8 +82,9 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
+        $leadstatuses = LeadStatus::all();
         $industries = Industry::all();
-        return view('contacts.edit',compact('contact','industries'));
+        return view('contacts.edit',compact('contact','industries','leadstatuses'));
     }
 
     /**

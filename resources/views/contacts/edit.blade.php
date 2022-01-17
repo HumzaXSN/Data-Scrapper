@@ -137,6 +137,7 @@
                                         <div class="form-group">
                                             <strong>Lead Status:</strong>
                                             <select class="form-control" name="lead_status_id">
+                                                <option selected disabled>@if($contact->lead_status!=null){{ $contact->lead_status->status }}@endif</option>
                                                 @foreach($leadstatuses as $leadstatus)
                                                 <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
                                                 @endforeach
@@ -148,6 +149,7 @@
                                         <div class="form-group">
                                             <strong>Industry:</strong>
                                             <select class="form-control" name="industry_id">
+                                                <option selected disabled>@if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
                                                 @foreach($industries as $industry)
                                                 <option value="{{$industry->id}}">{{$industry->name}}</option>
                                                 @endforeach

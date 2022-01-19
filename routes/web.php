@@ -40,5 +40,8 @@ Route::middleware(['auth','verified'])->group(function () {
 });
 require __DIR__.'/auth.php';
 
-Route::post('/reached-count-filter', [ContactController::class, 'filterdata'])
-                ->name('reached-count');
+Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
+                ->name('bulk-update');
+
+Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
+                ->name('delete.selected.contacts');

@@ -2,12 +2,8 @@
 
 namespace App\DataTables;
 
-use datatables;
 use App\Models\Contact;
 use Yajra\DataTables\Html\Button;
-use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ContactsDataTable extends DataTable
@@ -24,7 +20,11 @@ class ContactsDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
-            });
+            })
+            ->addColumn('checkbox', function($query){
+                return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
+            })
+            ->rawColumns(['action','checkbox']);
     }
 
     /**

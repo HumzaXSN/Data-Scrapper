@@ -1,10 +1,28 @@
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script https="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+
+    toastr.options.preventDuplicates = true
+
+    $.ajaxSetup({
+             headers:{
+                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+             }
+         });
+
     $(function () {
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('contacts.index') }}",
-            columns: [{
+            columns: [
+                {
+                    data: 'checkbox',
+                    name: 'checkbox',
+                    orderable: false,
+                    searchable: false
+                },
+                {
                     data: 'id',
                     name: 'id'
                 },
@@ -33,6 +51,10 @@
                     name: 'country'
                 },
                 {
+                    data: 'state',
+                    name: 'state'
+                },
+                {
                     data: 'city',
                     name: 'city'
                 },
@@ -45,8 +67,16 @@
                     name: 'reached_platform'
                 },
                 {
+                    data: 'reached_count',
+                    name: 'reached_count'
+                },
+                {
                     data: 'lead_status_id',
                     name: 'lead_status_id'
+                },
+                {
+                    data: 'industry_id',
+                    name: 'industry_id'
                 },
                 {
                     data: 'action',
@@ -55,7 +85,11 @@
                     searchable: false
                 },
             ]
-        });
+        }).on('draw', function(){
+                    $('input[name="contact_checkbox"]').each(function(){this.checked = false;});
+                    $('input[name="main_checkbox"]').prop('checked', false);
+                    $('button#deleteAllBtn').addClass('d-none');
+                });
 
         $('.filter-input').keyup(function () {
             table.column($(this).data('column'))
@@ -69,26 +103,69 @@
                 .draw();
         });
 
-    })
+        $(document).on('click','input[name="main_checkbox"]', function(){
+            if(this.checked){
+                $('input[name="contact_checkbox"]').each(function(){
+                    this.checked = true;
+                });
+            }else{
+                $('input[name="contact_checkbox"]').each(function(){
+                    this.checked = false;
+                });
+            }
+            toggledeleteAllBtn();
+        });
+
+        $(document).on('change','input[name="contact_checkbox"]', function(){
+               if( $('input[name="contact_checkbox"]').length == $('input[name="contact_checkbox"]:checked').length ){
+                   $('input[name="main_checkbox"]').prop('checked', true);
+               }else{
+                   $('input[name="main_checkbox"]').prop('checked', false);
+               }
+               toggledeleteAllBtn();
+           });
+
+        function toggledeleteAllBtn(){
+               if( $('input[name="contact_checkbox"]:checked').length > 0 ){
+                   $('button#deleteAllBtn').text('Delete ('+$('input[name="contact_checkbox"]:checked').length+')').removeClass('d-none');
+               }else{
+                   $('button#deleteAllBtn').addClass('d-none');
+               }
+           }
+
+        $(document).on('click','button#deleteAllBtn', function(){
+               var checkedContacts = [];
+               $('input[name="contact_checkbox"]:checked').each(function(){
+                   checkedContacts.push($(this).data('id'));
+               });
+
+
+
+               var url = '{{ route("delete.selected.contacts") }}';
+               if(checkedContacts.length > 0){
+                   swal.fire({
+                       title:'Are you sure?',
+                       html:'You want to delete <b>('+checkedContacts.length+')</b> contacts',
+                       showCancelButton:true,
+                       showCloseButton:true,
+                       confirmButtonText:'Yes, Delete',
+                       cancelButtonText:'Cancel',
+                       confirmButtonColor:'#556ee6',
+                       cancelButtonColor:'#d33',
+                       width:300,
+                       allowOutsideClick:false
+                   }).then(function(result){
+                       if(result.value){
+                           $.post(url,{contacts_ids:checkedContacts},function(data){
+                              if(data.code == 1){
+                                  $('#contact-table').DataTable().ajax.reload(null, true);
+                                  toastr.success(data.msg);
+                              }
+                           },'json');
+                       }
+                   })
+               }
+           });
+    });
 
 </script>
-{{-- <script>
-    $(document).ready(function () {
-                $('#fn').on('keyup',function() {
-                    // alert('good');
-            var query = $(this).val();
-                    // var from = $('#from').val();
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('contacts.index') }}",
-                        data: {
-                            'to': query
-                        },
-                        success: function (data) {
-                            // $('#country_list').html(data);
-                        }
-                    })
-                });
-            });
-
-</script> --}}

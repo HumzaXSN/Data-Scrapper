@@ -2,6 +2,17 @@
 <script https="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
 
+    $("#bulk_update_column").change(function () {
+        var selected_option = $('#bulk_update_column').val();
+        if (selected_option == 'delete') {
+                $("#reached_count").hide();
+            }
+        if (selected_option != 'delete') {
+                $("#reached_count").show();
+            }
+    });
+
+
     toastr.options.preventDuplicates = true
 
     $.ajaxSetup({

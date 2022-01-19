@@ -99,7 +99,7 @@
                             @csrf
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4">
-                                    <select class="form-control" name="bulk_update_column">
+                                    <select class="form-control" id="bulk_update_column" name="bulk_update_column">
                                         <option selected> Select Option </option>
                                         <option value="country"> Country </option>
                                         <option value="state"> State </option>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
@@ -43,9 +44,17 @@ class ContactController extends Controller
                 $del->delete();
             }
         }else{
-            $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
+            try {
+                $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
+                return back()->with('success','Values Updated');
+            }
+            catch(\Exception $e){
+                report($e);
+                return back()->with('error','Values not Updated');
+            }
+
         }
-        return back()->with('success','Values Updated');
+
     }
 
     /**

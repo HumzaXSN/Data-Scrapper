@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="col-sm-12 text-center mt-3">
                                 <button type="submit" class="btn bg-success text-white border-0 waves-effect"
-                                    aria-label="Close">Change Record
+                                    aria-label="Close">Update Record
                                 </button>
                                 </div>
                             </div>

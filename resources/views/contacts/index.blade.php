@@ -54,19 +54,23 @@
 
                         <hr style=" border-color: #919191; border-width: 3px; ">
 
-                        <form method="POST" action="{{ route('reached-count') }}">
+                        <form method="POST" action="{{ route('bulk-update') }}">
                             @csrf
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4">
-                                <input type="number" id="from" class="form-control @error('from')  is-invalid @enderror"
-                                    name="from" placeholder="Enter Start of Record">
+                                    <select class="form-control" name="bulk_update_column">
+                                        <option selected> Select Option </option>
+                                        <option value="reached_count"> Reach Count </option>
+                                        <option value="country"> Country </option>
+                                        <option value="delete"> Delete Record </option>
+                                    </select>
+                                    </div>
+                                <div class="col-sm-4">
+                                <input type="text" class="form-control @error('record_range')  is-invalid @enderror"
+                                    name="record_range" placeholder="XX-XX">
                                 </div>
                                 <div class="col-sm-4">
-                                <input type="number" id="to" class="form-control @error('to')  is-invalid @enderror"
-                                    name="to" placeholder="Enter End of Record">
-                                </div>
-                                <div class="col-sm-4">
-                                <input type="number" id="reached_count"
+                                <input type="text" id="reached_count"
                                     class="form-control @error('reached_count')  is-invalid @enderror" name="reached_count"
                                     placeholder="Ente amount to change">
                                 </div>
@@ -83,6 +87,7 @@
                                 <table class="table table-bordered data-table" style="width:100%" >
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>id</th>
                                             <th>First Name</th>
                                             <th>Last Name</th>

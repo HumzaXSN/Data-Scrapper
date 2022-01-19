@@ -29,16 +29,22 @@ class ContactController extends Controller
         return $dataTable->render('contacts.index', compact('leadstatuses'));
     }
 
-    public function filterdata(Request $request)
+    public function bulkupdate(Request $request)
     {
-        $result = Contact::whereBetween('id', [$request->from, $request->to])
-                    ->get();
-                    foreach($result as $results){
-                        $result1 = Contact::find($results->id);
-                        $result1->reached_count = $request->reached_count;
-                        $result1->save();
-                    }
-                    return back();
+        $bulk_range = $request->get('record_range');
+        $bulk_range_record = explode('-',$bulk_range);
+        $from = $bulk_range_record[0];
+        $to = $bulk_range_record[1];
+        $get_bulk_column = $request->get('bulk_update_column');
+        if( $get_bulk_column == 'delete' ){
+            $result = Contact::whereBetween('id', [$from, $to])->get();
+            foreach($result as $del){
+                $del->delete();
+            }
+        }else{
+            $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
+        }
+        return back()->with('success','Values Updated');
     }
 
     /**

@@ -4757,6 +4757,7 @@ custom chart style
     margin-right: 1rem;
 }
 
-#DataTables_Table_0_wrapper>div:nth-child(2) {
-    overflow-x: scroll;
+#contact-table_wrapper>div:nth-child(2)
+{
+    overflow-x: auto;
 }

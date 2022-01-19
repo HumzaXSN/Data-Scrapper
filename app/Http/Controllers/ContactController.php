@@ -25,8 +25,9 @@ class ContactController extends Controller
      */
     public function index(ContactsDataTable $dataTable, Contact $contact)
     {
+        $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
-        return $dataTable->render('contacts.index', compact('leadstatuses'));
+        return $dataTable->render('contacts.index', compact('leadstatuses','industries'));
     }
 
     public function bulkupdate(Request $request)
@@ -118,5 +119,12 @@ class ContactController extends Controller
     {
         $contact->delete();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
+    }
+
+    public function deleteSelectedContacts(Request $request)
+    {
+        $contact_ids = $request->contacts_ids;
+        Contact::whereIn('id', $contact_ids)->delete();
+        return response()->json(['code'=>1, 'msg'=>'Selected Contacts deleted Successfully']);
     }
 }

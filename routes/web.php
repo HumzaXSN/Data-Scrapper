@@ -42,3 +42,6 @@ require __DIR__.'/auth.php';
 
 Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
                 ->name('bulk-update');
+
+Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
+                ->name('delete.selected.contacts');

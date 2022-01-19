@@ -30,23 +30,59 @@
                     <div class="mb-4 card card-shadow">
                         <div class="card-header mb-3">
                             <div class="card-title">
-                                Contacts
+                                Filters
                             </div>
                         </div>
                         <div class="row ml-1 mr-1">
-                            <div class="col-sm-4">
-                                <input type="text" id="fn" class="form-control filter-input" placeholder="Search Firstname"
-                                     />
+                            <div class="col-sm-3">
+                                <input type="text" id="fn" class="form-control filter-input" placeholder="Firstname"
+                                     data-column="2" />
                             </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control filter-input" placeholder="Search City"
-                                    data-column="6" />
+                            <div class="col-sm-3">
+                                <input type="text" id="fn" class="form-control filter-input" placeholder="Lastname"
+                                     data-column="3" />
                             </div>
-                            <div class="col-sm-4">
-                                <select class="form-control filter-select" data-column="10">
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control filter-input" placeholder="Title"
+                                    data-column="4" />
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control filter-input" placeholder="Company"
+                                    data-column="5" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="Country"
+                                    data-column="7" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="State"
+                                    data-column="8" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="City"
+                                    data-column="9" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="Platform Reached"
+                                    data-column="11" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="Reach Count"
+                                    data-column="12" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <select class="form-control filter-select" data-column="13">
                                     <option value="">Lead Status</option>
                                     @foreach ($leadstatuses as $contact )
                                     <option value="{{ $contact->id }}">{{ $contact->status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <select class="form-control filter-select" data-column="14">
+                                    <option value="">Industries</option>
+                                    @foreach ($industries as $industry )
+                                    <option value="{{ $industry->id }}">{{ $industry->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -84,10 +120,10 @@
 
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered data-table" style="width:100%" >
+                                <table class="table table-bordered data-table" id="contact-table" style="width:100%" >
                                     <thead>
                                         <tr>
-                                            <th></th>
+                                            <th><input type="checkbox" name="main_checkbox"><label></label></th>
                                             <th>id</th>
                                             <th>First Name</th>
                                             <th>Last Name</th>
@@ -95,11 +131,14 @@
                                             <th>Company</th>
                                             <th>Email</th>
                                             <th>Country</th>
+                                            <th>State</th>
                                             <th>City</th>
                                             <th>Phone</th>
                                             <th>Reached Platform</th>
+                                            <th>Times Reached</th>
                                             <th>Lead Status</th>
-                                            <th>Action</th>
+                                            <th>Industry</th>
+                                            <th>Action <button class="btn btn-sm btn-danger d-none" id="deleteAllBtn">Delete Selected</button></th>
                                         </tr>
                                     </thead>
                                     <tbody>

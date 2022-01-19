@@ -93,9 +93,9 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <strong>City:</strong>
-                                            <input type="text" class="form-control  @error('city') is-invalid @enderror"
-                                                name="city" value="{{ $contact->city }}" placeholder="Enter City">
+                                            <strong>Country:</strong>
+                                            <input type="text" class="form-control  @error('country') is-invalid @enderror"
+                                                name="country" value="{{ $contact->country }}" placeholder="Enter Country">
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
@@ -104,6 +104,13 @@
                                             <input type="text"
                                                 class="form-control  @error('state') is-invalid @enderror" name="state"
                                                 value="{{ $contact->state }}" placeholder="Enter State">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <strong>City:</strong>
+                                            <input type="text" class="form-control  @error('city') is-invalid @enderror"
+                                                name="city" value="{{ $contact->city }}" placeholder="Enter City">
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">

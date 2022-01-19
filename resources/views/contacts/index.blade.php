@@ -67,7 +67,7 @@
                                     data-column="11" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <input type="text" class="form-control filter-input" placeholder="Reach Count"
+                                <input type="number" class="form-control filter-input" placeholder="Reach Count"
                                     data-column="12" />
                             </div>
                             <div class="col-sm-3 mt-2">
@@ -88,16 +88,26 @@
                             </div>
                         </div>
 
-                        <hr style=" border-color: #919191; border-width: 3px; ">
+                        <hr style=" border-color: #eceaea; border-width: 1px; ">
 
+                        <div class="card-header mb-3 pt-0">
+                            <div class="card-title">
+                                Bulk Update
+                            </div>
+                        </div>
                         <form method="POST" action="{{ route('bulk-update') }}">
                             @csrf
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4">
                                     <select class="form-control" name="bulk_update_column">
                                         <option selected> Select Option </option>
-                                        <option value="reached_count"> Reach Count </option>
                                         <option value="country"> Country </option>
+                                        <option value="state"> State </option>
+                                        <option value="city"> City </option>
+                                        <option value="reached_platform"> Reached Platform </option>
+                                        <option value="reached_count"> Times Reached </option>
+                                        <option value="lead_status_id"> Lead status </option>
+                                        <option value="industry_id"> Industry </option>
                                         <option value="delete"> Delete Record </option>
                                     </select>
                                     </div>
@@ -108,7 +118,7 @@
                                 <div class="col-sm-4">
                                 <input type="text" id="reached_count"
                                     class="form-control @error('reached_count')  is-invalid @enderror" name="reached_count"
-                                    placeholder="Ente amount to change">
+                                    placeholder="Enter your desired value">
                                 </div>
                                 <div class="col-sm-12 text-center mt-3">
                                 <button type="submit" class="btn bg-success text-white border-0 waves-effect"
@@ -117,6 +127,8 @@
                                 </div>
                             </div>
                         </form>
+
+                        <hr style=" border-color: #eceaea; border-width: 1px; ">
 
                         <div class="card-body">
                             <div class="table-responsive">

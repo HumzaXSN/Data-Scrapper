@@ -35,7 +35,7 @@ class ContactsDataTable extends DataTable
      */
     public function query(Contact $model)
     {
-        return $model->newQuery();
+        return $model->with('industry:id,name')->newQuery();
     }
 
     /**
@@ -47,7 +47,7 @@ class ContactsDataTable extends DataTable
     {
         return $this->builder()
                     ->setTableId('contacts-table')
-                    ->columns($this->getColumns())
+                    // ->columns($this->getColumns())
                     ->parameters([
                         'order' => [[0, 'desc']]
                     ])
@@ -67,24 +67,24 @@ class ContactsDataTable extends DataTable
      *
      * @return array
      */
-    protected function getColumns()
-    {
-        return [
-            'first_name',
-            'last_name',
-            'title',
-            'company',
-            'email',
-            'phone',
-            'lead_status',
-            'city',
-            'state',
-            'action' => [
-                'searchable' => false,
-                'orderable' => false
-            ]
-        ];
-    }
+    // protected function getColumns()
+    // {
+    //     return [
+    //         'first_name',
+    //         'last_name',
+    //         'title',
+    //         'company',
+    //         'email',
+    //         'phone',
+    //         'lead_status',
+    //         'city',
+    //         'state',
+    //         'action' => [
+    //             'searchable' => false,
+    //             'orderable' => false
+    //         ]
+    //     ];
+    // }
 
     /**
      * Get filename for export.

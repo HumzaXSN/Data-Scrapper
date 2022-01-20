@@ -5,7 +5,7 @@
 
 <div class="app-body">
     @include('partials.left_sidebar')
-    <main class="main-content" style="width: 100%;overflow:hidden;">
+    <main class="main-content main_content_styling">
         <!--page title start-->
         <div class="page-title">
             <div class="p-0 container-fluid">
@@ -88,7 +88,7 @@
                             </div>
                         </div>
 
-                        <hr style=" border-color: #eceaea; border-width: 1px; ">
+                        <hr class="border-bulk">
 
                         <div class="card-header mb-3 pt-0">
                             <div class="card-title">
@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                 <input type="text" id="reached_count"
-                                    class="form-control @error('reached_count')  is-invalid @enderror" name="reached_count"
+                                    class="form-control" name="reached_count"
                                     placeholder="Enter your desired value">
                                 </div>
                                 <div class="col-sm-12 text-center mt-3">
@@ -128,7 +128,7 @@
                             </div>
                         </form>
 
-                        <hr style=" border-color: #eceaea; border-width: 1px; ">
+                        <hr class="border-bulk">
 
                         <div class="card-body">
                             <div class="table-responsive">

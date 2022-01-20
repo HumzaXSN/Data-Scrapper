@@ -32,6 +32,12 @@ Route::middleware(['auth','verified'])->group(function () {
         'index', 'show', 'destroy'
     ]);
 
+    Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
+                ->name('bulk-update');
+
+    Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
+                ->name('delete.selected.contacts');
+
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
     // Route::get('/import', [ContactController::class, 'index'])->name('import');
@@ -39,9 +45,3 @@ Route::middleware(['auth','verified'])->group(function () {
 
 });
 require __DIR__.'/auth.php';
-
-Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
-                ->name('bulk-update');
-
-Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
-                ->name('delete.selected.contacts');

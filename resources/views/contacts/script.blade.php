@@ -12,7 +12,6 @@
             }
     });
 
-
     toastr.options.preventDuplicates = true
 
     $.ajaxSetup({
@@ -83,7 +82,20 @@
                 },
                 {
                     data: 'lead_status_id',
-                    name: 'lead_status_id'
+                    name: 'lead_status_id',
+                    render: function(data) {
+                        if (data=='1'){
+                            return 'Hot Lead';
+                        }else if(data=='2'){
+                            return 'Cold Lead';
+                        }
+                        else if(data=='3'){
+                            return 'Follow Lead';
+                        }
+                        else{
+                            return 'N/A';
+                        }
+                     }
                 },
                 {
                     data: 'industry_id',
@@ -149,8 +161,6 @@
                $('input[name="contact_checkbox"]:checked').each(function(){
                    checkedContacts.push($(this).data('id'));
                });
-
-
 
                var url = '{{ route("delete.selected.contacts") }}';
                if(checkedContacts.length > 0){

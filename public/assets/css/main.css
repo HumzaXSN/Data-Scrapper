@@ -4761,3 +4761,15 @@ custom chart style
 {
     overflow-x: auto;
 }
+
+.main-content.main_content_styling
+{
+    width: 100%;
+    overflow: hidden;
+}
+
+.border-bulk
+{
+    border-color: #eceaea;
+    border-width: 1px;
+}

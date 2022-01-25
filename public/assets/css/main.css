@@ -4773,3 +4773,8 @@ custom chart style
     border-color: #eceaea;
     border-width: 1px;
 }
+
+.header-logo
+{
+    width: 170px;
+}

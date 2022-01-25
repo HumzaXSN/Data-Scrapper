@@ -81,8 +81,8 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <strong>City:</strong>
-                                            {{ $contact->city }}
+                                            <strong>Country:</strong>
+                                            {{ $contact->country }}
                                         </div>
                                     </div>
                                 </div>
@@ -91,6 +91,14 @@
                                         <div class="form-group">
                                             <strong>State:</strong>
                                             {{ $contact->state }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <strong>City:</strong>
+                                            {{ $contact->city }}
                                         </div>
                                     </div>
                                 </div>
@@ -130,7 +138,9 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>Status of the Lead:</strong>
-                                            {{ $contact->lead_status }}
+                                            @if(@isset($contact->lead_status_id))
+                                            {{ $contact->lead_status->status }}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

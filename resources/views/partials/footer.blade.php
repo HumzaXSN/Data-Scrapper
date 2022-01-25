@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-8">
-                    {{now()->year}} &copy; Diverse Admin by MHS
+                    {{now()->year}} &copy; Data Scrapper by Ashlar Global
                 </div>
                 <div class="col-4">
                     <a href="#" class="float-right back-top">

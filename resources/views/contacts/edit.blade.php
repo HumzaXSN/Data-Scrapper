@@ -93,9 +93,9 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <strong>City:</strong>
-                                            <input type="text" class="form-control  @error('city') is-invalid @enderror"
-                                                name="city" value="{{ $contact->city }}" placeholder="Enter City">
+                                            <strong>Country:</strong>
+                                            <input type="text" class="form-control  @error('country') is-invalid @enderror"
+                                                name="country" value="{{ $contact->country }}" placeholder="Enter Country">
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
@@ -104,6 +104,13 @@
                                             <input type="text"
                                                 class="form-control  @error('state') is-invalid @enderror" name="state"
                                                 value="{{ $contact->state }}" placeholder="Enter State">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <strong>City:</strong>
+                                            <input type="text" class="form-control  @error('city') is-invalid @enderror"
+                                                name="city" value="{{ $contact->city }}" placeholder="Enter City">
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
@@ -135,28 +142,13 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <strong class="edit_form_status">Status:</strong>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Hot Lead"
-                                                        name="lead_status" value="Hot-Lead">
-                                                    Hot Lead
-                                                </label>
-                                            </div>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Cold Lead"
-                                                        name="lead_status" value="Cold-Lead">
-                                                    Cold Lead
-                                                </label>
-                                            </div>
-                                            <div class="form-check edit_form_status_data">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" id="Follow Lead"
-                                                        name="lead_status" value="Follow-Lead">
-                                                    Follow Lead
-                                                </label>
-                                            </div>
+                                            <strong>Lead Status:</strong>
+                                            <select class="form-control" name="lead_status_id">
+                                                <option selected disabled>@if($contact->lead_status!=null){{ $contact->lead_status->status }}@endif</option>
+                                                @foreach($leadstatuses as $leadstatus)
+                                                <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     @if (count($industries) > 0)
@@ -164,6 +156,7 @@
                                         <div class="form-group">
                                             <strong>Industry:</strong>
                                             <select class="form-control" name="industry_id">
+                                                <option selected disabled>@if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
                                                 @foreach($industries as $industry)
                                                 <option value="{{$industry->id}}">{{$industry->name}}</option>
                                                 @endforeach

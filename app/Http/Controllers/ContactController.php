@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\DataTables\ContactsDataTable;
+use Exception;
 use App\Models\Contact;
 use App\Models\Industry;
+use App\Models\LeadStatus;
+use Illuminate\Http\Request;
+use App\DataTables\ContactsDataTable;
 use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
@@ -22,9 +24,37 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ContactsDataTable $dataTable)
+    public function index(ContactsDataTable $dataTable, Contact $contact)
     {
-        return $dataTable->render('contacts.index');
+        $industries = Industry::all();
+        $leadstatuses = LeadStatus::all();
+        return $dataTable->render('contacts.index', compact('leadstatuses','industries'));
+    }
+
+    public function bulkupdate(Request $request)
+    {
+        $bulk_range = $request->get('record_range');
+        $bulk_range_record = explode('-',$bulk_range);
+        $from = $bulk_range_record[0];
+        $to = $bulk_range_record[1];
+        $get_bulk_column = $request->get('bulk_update_column');
+        if( $get_bulk_column == 'delete' ){
+            $result = Contact::whereBetween('id', [$from, $to])->get();
+            foreach($result as $del){
+                $del->delete();
+            }
+        }else{
+            try {
+                $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
+                return back()->with('success','Values Updated');
+            }
+            catch(\Exception $e){
+                report($e);
+                return back()->with('error','Values not Updated');
+            }
+
+        }
+
     }
 
     /**
@@ -69,8 +99,9 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
+        $leadstatuses = LeadStatus::all();
         $industries = Industry::all();
-        return view('contacts.edit',compact('contact','industries'));
+        return view('contacts.edit',compact('contact','industries','leadstatuses'));
     }
 
     /**
@@ -97,5 +128,12 @@ class ContactController extends Controller
     {
         $contact->delete();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
+    }
+
+    public function deleteSelectedContacts(Request $request)
+    {
+        $contact_ids = $request->contacts_ids;
+        Contact::whereIn('id', $contact_ids)->delete();
+        return response()->json(['code'=>1, 'msg'=>'Selected Contacts deleted Successfully']);
     }
 }

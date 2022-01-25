@@ -2,12 +2,8 @@
 
 namespace App\DataTables;
 
-use datatables;
 use App\Models\Contact;
 use Yajra\DataTables\Html\Button;
-use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ContactsDataTable extends DataTable
@@ -24,7 +20,11 @@ class ContactsDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
-            });
+            })
+            ->addColumn('checkbox', function($query){
+                return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
+            })
+            ->rawColumns(['action','checkbox']);
     }
 
     /**
@@ -35,7 +35,7 @@ class ContactsDataTable extends DataTable
      */
     public function query(Contact $model)
     {
-        return $model->newQuery();
+        return $model->with('industry:id,name')->newQuery();
     }
 
     /**
@@ -47,7 +47,7 @@ class ContactsDataTable extends DataTable
     {
         return $this->builder()
                     ->setTableId('contacts-table')
-                    ->columns($this->getColumns())
+                    // ->columns($this->getColumns())
                     ->parameters([
                         'order' => [[0, 'desc']]
                     ])
@@ -67,24 +67,24 @@ class ContactsDataTable extends DataTable
      *
      * @return array
      */
-    protected function getColumns()
-    {
-        return [
-            'first_name',
-            'last_name',
-            'title',
-            'company',
-            'email',
-            'phone',
-            'lead_status',
-            'city',
-            'state',
-            'action' => [
-                'searchable' => false,
-                'orderable' => false
-            ]
-        ];
-    }
+    // protected function getColumns()
+    // {
+    //     return [
+    //         'first_name',
+    //         'last_name',
+    //         'title',
+    //         'company',
+    //         'email',
+    //         'phone',
+    //         'lead_status',
+    //         'city',
+    //         'state',
+    //         'action' => [
+    //             'searchable' => false,
+    //             'orderable' => false
+    //         ]
+    //     ];
+    // }
 
     /**
      * Get filename for export.

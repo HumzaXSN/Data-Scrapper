@@ -4,7 +4,7 @@
         <!--brand start-->
         <div class="navbar-brand">
             <a class="" href="{{ url('/') }}">
-                <img src="assets/img/ashlar.png" srcset="assets/img/ashlar@2x.png 2x" alt="Ashlar Logo" class="header-logo">
+                <img src="{{ asset('assets/img/ashlar.png') }}" alt="Ashlar Logo" class="header-logo">
             </a>
         </div>
         <!--brand end-->

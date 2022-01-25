@@ -38,12 +38,22 @@ class ContactController extends Controller
         $from = $bulk_range_record[0];
         $to = $bulk_range_record[1];
         $get_bulk_column = $request->get('bulk_update_column');
-        if( $get_bulk_column == 'delete' ){
+        if ( $get_bulk_column == 'delete' ) {
             $result = Contact::whereBetween('id', [$from, $to])->get();
             foreach($result as $del){
                 $del->delete();
             }
-        }else{
+            return back()->with('success','Values Updated');
+        }
+        if ( $get_bulk_column == 'lead_status_id') {
+            $lead_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->lead_status_id]);
+            return back()->with('success','Values Updated');
+        }
+        if ( $get_bulk_column == 'industry_id') {
+            $industry_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->industry_id]);
+            return back()->with('success','Values Updated');
+        }
+        else {
             try {
                 $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
                 return back()->with('success','Values Updated');
@@ -52,9 +62,7 @@ class ContactController extends Controller
                 report($e);
                 return back()->with('error','Values not Updated');
             }
-
         }
-
     }
 
     /**

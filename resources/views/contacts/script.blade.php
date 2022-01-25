@@ -4,12 +4,28 @@
 
     $("#bulk_update_column").change(function () {
         var selected_option = $('#bulk_update_column').val();
-        if (selected_option == 'delete') {
+
+        switch (selected_option) {
+            case "lead_status_id":
                 $("#reached_count").hide();
-            }
-        if (selected_option != 'delete') {
+                $("#lead_statuses").removeClass('d-none');
+                $("#industries").addClass('d-none');
+            break;
+            case "industry_id":
+                $("#reached_count").hide();
+                $("#lead_statuses").addClass('d-none');
+                $("#industries").removeClass('d-none');
+            break;
+            case "delete":
+                $("#reached_count").hide();
+                $("#lead_statuses").addClass('d-none');
+                $("#industries").addClass('d-none');
+            break;
+            default:
                 $("#reached_count").show();
-            }
+                $("#lead_statuses").addClass('d-none');
+                $("#industries").addClass('d-none');
+        }
     });
 
     toastr.options.preventDuplicates = true
@@ -95,11 +111,27 @@
                         else{
                             return 'N/A';
                         }
-                     }
+                    }
                 },
                 {
                     data: 'industry_id',
-                    name: 'industry_id'
+                    name: 'industry_id',
+                    render: function(data) {
+                        if (data=='1'){
+                            return 'Healthcare';
+                        }else if(data=='2'){
+                            return 'Technology';
+                        }
+                        else if(data=='3'){
+                            return 'Communication Services';
+                        }
+                        else if(data=='4'){
+                            return 'Financial Services';
+                        }
+                        else{
+                            return 'N/A';
+                        }
+                    }
                 },
                 {
                     data: 'action',

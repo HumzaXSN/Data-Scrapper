@@ -34,15 +34,15 @@
                             </div>
                         </div>
                         <div class="row ml-1 mr-1">
-                            <div class="col-sm-3">
+                            <div class="col-sm-3 mb-2 mb-md-0">
                                 <input type="text" id="fn" class="form-control filter-input" placeholder="Firstname"
                                      data-column="2" />
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-3 mb-2 mb-md-0">
                                 <input type="text" id="fn" class="form-control filter-input" placeholder="Lastname"
                                      data-column="3" />
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-3 mb-2 mb-md-0">
                                 <input type="text" class="form-control filter-input" placeholder="Title"
                                     data-column="4" />
                             </div>
@@ -98,7 +98,7 @@
                         <form method="POST" action="{{ route('bulk-update') }}">
                             @csrf
                             <div class="row ml-1 mr-1">
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 mb-2 mb-md-0">
                                     <select class="form-control" id="bulk_update_column" name="bulk_update_column">
                                         <option selected> Select Option </option>
                                         <option value="country"> Country </option>
@@ -111,16 +111,32 @@
                                         <option value="delete"> Delete Record </option>
                                     </select>
                                     </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 mb-2 mb-md-0">
                                 <input type="text" class="form-control @error('record_range')  is-invalid @enderror"
                                     name="record_range" placeholder="XX-XX">
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-4 mb-2 mb-md-0">
                                 <input type="text" id="reached_count"
                                     class="form-control" name="reached_count"
                                     placeholder="Enter your desired value">
                                 </div>
-                                <div class="col-sm-12 text-center mt-3">
+                                <div class="col-sm-4 mt-2 mb-md-0 d-none" id="lead_statuses">
+                                    <select class="form-control" name="lead_status_id">
+                                        <option selected> Lead Status </option>
+                                            @foreach($leadstatuses as $leadstatus)
+                                                <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
+                                            @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-4 mt-2 mb-md-0 d-none" id="industries">
+                                    <select class="form-control" name="industry_id">
+                                        <option selected> Industry </option>
+                                            @foreach($industries as $industry)
+                                                <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                            @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 text-center mt-2">
                                 <button type="submit" class="btn bg-success text-white border-0 waves-effect"
                                     aria-label="Close">Update Record
                                 </button>

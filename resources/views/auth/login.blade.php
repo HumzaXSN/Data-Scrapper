@@ -6,7 +6,7 @@
         <form class="form-signin" method="POST" action="{{ route('login') }}">
             @csrf
             <a href="{{ url('/') }}" class="text-center brand">
-                <img src="assets/img/logo-dark.png" srcset="assets/img/logo-dark@2x.png 2x" alt=""/>
+                <img src="{{ asset('assets/img/ashlar.png') }}" srcset="{{ asset('assets/img/ashlar.png') }}" alt="Ashlar Logo" class="login-image"/>
             </a>
             @if (session('error'))
                 <div class="alert alert-danger" role="alert">

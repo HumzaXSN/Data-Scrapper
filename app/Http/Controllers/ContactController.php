@@ -114,6 +114,41 @@ class ContactController extends Controller
         return view('contacts.create');
     }
 
+    public function addContact(Request $request)
+    {
+        $this->validate($request, [
+            'fname' => 'required',
+            'lname' => 'required',
+            'email' => 'required',
+            'source' => 'required'
+        ]);
+
+        $findcontact = Contact::where('email',$request->email)->first();
+
+        if($findcontact == NULL) {
+            $contact = new Contact;
+            $contact->first_name = $request->input('fname');
+            $contact->last_name = $request->input('lname');
+            $contact->title = $request->input('title');
+            $contact->company = $request->input('company');
+            $contact->email = $request->input('email');
+            $contact->country = $request->input('country');
+            $contact->state = $request->input('state');
+            $contact->city = $request->input('city');
+            $contact->phone = $request->input('phone');
+            $contact->reached_platform = $request->input('reach_platform');
+            $contact->linkedin_profile = $request->input('linkedin_profile');
+            $contact->industry_id = $request->input('industry_id');
+            $contact->lead_status_id = $request->input('lead_status_id');
+            $contact->source = $request->input('source');
+            $contact->save();
+            return back()->with('success','Contact Added Successfully');
+        }
+        else{
+            return back()->with('error','Contact Email already exists');
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

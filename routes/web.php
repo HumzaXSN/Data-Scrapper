@@ -35,6 +35,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
                 ->name('bulk-update');
 
+    Route::post('/add-contact', [ContactController::class, 'addContact'])
+                ->name('add-contact');
+
     Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
                 ->name('delete.selected.contacts');
 

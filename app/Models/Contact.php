@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Note;
+use App\Models\Industry;
+use App\Models\LeadStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +29,7 @@ class Contact extends Model
         'reached_count',
         'reached_platform',
         'lead_status_id',
-        'industry_id',  
+        'industry_id',
     ];
 
     public function industry()

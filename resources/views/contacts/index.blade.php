@@ -112,7 +112,7 @@
                                     </select>
                                     </div>
                                 <div class="col-sm-4 mb-2 mb-md-0">
-                                <input type="text" class="form-control @error('record_range')  is-invalid @enderror"
+                                <input id="record_range" value="" type="text" class="form-control @error('record_range')  is-invalid @enderror"
                                     name="record_range" placeholder="XX-XX">
                                 </div>
                                 <div class="col-sm-4 mb-2 mb-md-0">

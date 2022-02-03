@@ -34,10 +34,18 @@ class ContactController extends Controller
     public function bulkupdate(Request $request)
     {
         $bulk_range = $request->get('record_range');
+        $get_bulk_column = $request->get('bulk_update_column');
+        $get_lead = $request->lead_status_id;
+        $get_industry = $request->industry_id;
+        $get_reach = $request->reached_count;
+        if( strpos($bulk_range , ',') != false ) {
+            self::bulkcommaupdate($bulk_range, $get_bulk_column, $get_lead, $get_industry, $get_reach);
+            return back()->with('success','Values Updated');
+        }
+        else{
         $bulk_range_record = explode('-',$bulk_range);
         $from = $bulk_range_record[0];
         $to = $bulk_range_record[1];
-        $get_bulk_column = $request->get('bulk_update_column');
         if ( $get_bulk_column == 'delete' ) {
             $result = Contact::whereBetween('id', [$from, $to])->get();
             foreach($result as $del){
@@ -46,17 +54,48 @@ class ContactController extends Controller
             return back()->with('success','Values Updated');
         }
         if ( $get_bulk_column == 'lead_status_id') {
-            $lead_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->lead_status_id]);
+            $lead_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_lead]);
             return back()->with('success','Values Updated');
         }
         if ( $get_bulk_column == 'industry_id') {
-            $industry_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->industry_id]);
+            $industry_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_industry]);
             return back()->with('success','Values Updated');
         }
         else {
             try {
-                $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $request->reached_count]);
+                $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_reach]);
                 return back()->with('success','Values Updated');
+            }
+            catch(\Exception $e){
+                report($e);
+                return back()->with('error','Values not Updated');
+            }
+        }
+        }
+    }
+
+    public static function bulkcommaupdate($bulk_range, $get_bulk_column, $get_lead, $get_industry, $get_reach)
+    {
+        $bulk_comma_record = explode(',', $bulk_range);
+        if ( $get_bulk_column == 'delete' ) {
+            $result = Contact::whereIn('id', $bulk_comma_record)->get();
+            foreach($result as $del){
+                $del->delete();
+            }
+            return;
+        }
+        if ( $get_bulk_column == 'lead_status_id') {
+            $lead_update = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_lead]);
+            return;
+        }
+        if ( $get_bulk_column == 'industry_id') {
+            $industry_update = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_industry]);
+            return;
+        }
+        else {
+            try {
+                $result = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_reach]);
+                return;
             }
             catch(\Exception $e){
                 report($e);

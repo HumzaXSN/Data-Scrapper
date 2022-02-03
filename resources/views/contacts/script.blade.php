@@ -172,6 +172,11 @@
         });
 
         $(document).on('change','input[name="contact_checkbox"]', function(){
+            var checkedContacts = [];
+               $('input[name="contact_checkbox"]:checked').each(function(){
+                   checkedContacts.push($(this).data('id'));
+               });
+               $("#record_range").val(checkedContacts.join(','));
                if( $('input[name="contact_checkbox"]').length == $('input[name="contact_checkbox"]:checked').length ){
                    $('input[name="main_checkbox"]').prop('checked', true);
                }else{

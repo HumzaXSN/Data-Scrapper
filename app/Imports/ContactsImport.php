@@ -26,20 +26,42 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
     */
     public function model(array $row)
     {
-        return new Contact([
-            'id' => $row['id'],
-            'first_name' => $row['firstname'],
-            'last_name' => $row['lastname'],
-            'title' => $row['title'],
-            'company' => $row['company'],
-            'phone' => $row['phone'] ?? NULL,
-            'email' => $row['email'],
-            'city' => $row['city'] ?? NULL,
-            'state' => $row['state'] ?? NULL,
-            'reached_platform' => $row['reachedplatform'] ?? NULL,
-            'lead_status_id' => $row['leadstatusid'] ?? NULL,
-            'source' => $this->source,
-        ]);
+        $json = public_path('json/US_States_and_Cities.json');
+        $contacts = json_decode(file_get_contents($json), true);
+        $states = array();
+        foreach($contacts as $key=>$contact)
+        {
+            try {
+            if($key == $row['state'])
+            {
+                $states = $contact;
+                if(in_array($row['city'], $states))
+                {
+                   return new Contact([
+                        'id' => $row['id'],
+                        'first_name' => $row['firstname'],
+                        'last_name' => $row['lastname'],
+                        'title' => $row['title'],
+                        'company' => $row['company'],
+                        'phone' => $row['phone'] ?? NULL,
+                        'email' => $row['email'],
+                        'city' => $row['city'] ?? NULL,
+                        'state' => $row['state'] ?? NULL,
+                        'reached_platform' => $row['reachedplatform'] ?? NULL,
+                        'lead_status_id' => $row['leadstatusid'] ?? NULL,
+                        'source' => $this->source,
+                    ]);
+                }
+                else {
+                    return back()->with('error', 'Invalid City Entered');
+                }
+            }
+            }
+            catch(Throwable $e) {
+                report($e);
+                return back()->with('error', 'Invalid State Entered');
+            }
+        }
     }
 
     public function batchSize(): int

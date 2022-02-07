@@ -11,7 +11,7 @@
                     <li>
                         <a href="{{ route('google-businesses.index') }}">
                             <i class="fa fa-dot-circle-o text-primary"></i>
-                            <span>Google Businesses</span>
+                            <span>Businesses</span>
                         </a>
                     </li>
                     <li>

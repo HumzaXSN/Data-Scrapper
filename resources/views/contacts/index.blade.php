@@ -33,27 +33,38 @@
                                         <!-- Modal body -->
                                         <div class="modal-body">
                                             <strong>First Name:</strong>
-								  	        <input class="form-control" type="text" name="fname" placeholder="Enter Firstname" required>
+                                            <input class="form-control" type="text" name="fname"
+                                                placeholder="Enter Firstname" required>
                                             <strong class="mt-2">Last Name:</strong>
-                                            <input class="form-control mt-2" type="text" name="lname" placeholder="Enter Lastname" required>
+                                            <input class="form-control mt-2" type="text" name="lname"
+                                                placeholder="Enter Lastname" required>
                                             <strong class="mt-2">Title:</strong>
-                                            <input class="form-control mt-2" type="text" name="title" placeholder="Enter Title">
+                                            <input class="form-control mt-2" type="text" name="title"
+                                                placeholder="Enter Title">
                                             <strong class="mt-2">Company:</strong>
-                                            <input class="form-control mt-2" type="text" name="company" placeholder="Enter Company">
+                                            <input class="form-control mt-2" type="text" name="company"
+                                                placeholder="Enter Company">
                                             <strong class="mt-2">Email:</strong>
-                                            <input class="form-control mt-2" type="email" name="email" placeholder="Enter Email">
+                                            <input class="form-control mt-2" type="email" name="email"
+                                                placeholder="Enter Email">
                                             <strong class="mt-2">Country:</strong>
-                                            <input class="form-control mt-2" type="text" name="country" placeholder="Enter Country">
+                                            <input class="form-control mt-2" type="text" name="country"
+                                                placeholder="Enter Country">
                                             <strong class="mt-2">State:</strong>
-                                            <input class="form-control mt-2" type="text" name="state" placeholder="Enter State">
+                                            <input class="form-control mt-2" type="text" name="state"
+                                                placeholder="Enter State">
                                             <strong class="mt-2">City:</strong>
-                                            <input class="form-control mt-2" type="text" name="city" placeholder="Enter City">
+                                            <input class="form-control mt-2" type="text" name="city"
+                                                placeholder="Enter City">
                                             <strong class="mt-2">Phone:</strong>
-                                            <input class="form-control mt-2" type="number" name="phone" placeholder="Enter Phone">
+                                            <input class="form-control mt-2" type="number" name="phone"
+                                                placeholder="Enter Phone">
                                             <strong class="mt-2">Reached Platform:</strong>
-                                            <input class="form-control mt-2" type="text" name="reach_platform" placeholder="Enter Reached Platform">
+                                            <input class="form-control mt-2" type="text" name="reach_platform"
+                                                placeholder="Enter Reached Platform">
                                             <strong class="mt-2">LinkedIn Profile:</strong>
-                                            <input class="form-control mt-2" type="text" name="linkedin_profile" placeholder="Enter Reached Platform">
+                                            <input class="form-control mt-2" type="text" name="linkedin_profile"
+                                                placeholder="Enter Reached Platform">
                                             <strong class="mt-2">Industry:</strong>
                                             <select class="form-control" name="industry_id">
                                                 <option selected disabled>Select Industry</option>

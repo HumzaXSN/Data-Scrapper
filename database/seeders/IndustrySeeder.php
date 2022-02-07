@@ -19,14 +19,8 @@ class IndustrySeeder extends Seeder
                 'name' => 'Healthcare',
             ],
             [
-                'name' => 'Technology',
-            ],
-            [
-                'name' => 'Communication Services',
-            ],
-            [
-                'name' => 'Financial Services',
-            ],
+                'name' => 'Software House',
+            ]
         ];
 
         foreach($industries as $industry){

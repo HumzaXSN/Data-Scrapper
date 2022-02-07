@@ -46,18 +46,31 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
                         'email' => $row['email'],
                         'phone' => $row['phone'] ?? NULL,
                         'country' => $row['country'] ?? NULL,
-                        'city' => $row['city'],
-                        'state' => $row['state'],
+                        'city' => $row['city'] ?? NULL,
+                        'state' => $row['state'] ?? NULL,
                         'industry' => $row['industry'] ?? NULL,
                         'linkedin_profile' => $row['linkedin_profile'] ?? NULL,
                         'source' => $this->source,
                     ]);
                 }
                 else {
-                    return back()->with('error', 'Invalid City Entered');
+                    self::breakcityloop();
                 }
             }
+            else {
+                self::breakstateloop();
+            }
         }
+    }
+
+    public function breakstateloop()
+    {
+        return back()->with('error', 'Invalid State Entered');
+    }
+
+    public function breakcityloop()
+    {
+        return back()->with('error', 'Invalid City Entered');
     }
 
     public function rules(): array

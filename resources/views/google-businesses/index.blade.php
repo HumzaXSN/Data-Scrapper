@@ -11,7 +11,7 @@
             <div class="p-0 container-fluid">
                 <div class="row">
                     <div class="col-8">
-                        <h4 class="mb-0">Google Businesses</h4>
+                        <h4 class="mb-0">Businesses</h4>
                     </div>
                     {{-- <div class="col-4">
                         <div class="float-right ml-2 btn-group">
@@ -32,7 +32,7 @@
                     <div class="mb-4 card card-shadow">
                         <div class="card-header">
                             <div class="card-title">
-                                Google Businesses
+                                Businesses
                             </div>
                         </div>
                         <div class="card-body">

@@ -120,13 +120,7 @@
                         if (data=='1'){
                             return 'Healthcare';
                         }else if(data=='2'){
-                            return 'Technology';
-                        }
-                        else if(data=='3'){
-                            return 'Communication Services';
-                        }
-                        else if(data=='4'){
-                            return 'Financial Services';
+                            return 'Software House';
                         }
                         else{
                             return 'N/A';

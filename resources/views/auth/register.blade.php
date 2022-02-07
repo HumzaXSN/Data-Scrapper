@@ -6,7 +6,7 @@
    <form class="form-signin" method="POST" action="{{ route('register') }}">
        @csrf
        <a href="{{ url('/') }}" class="text-center brand">
-        <img src="assets/img/logo-dark.png" srcset="assets/img/logo-dark@2x.png 2x" alt=""/>
+        <img src="{{ asset('assets/img/ashlar.png') }}" srcset="{{ asset('assets/img/ashlar.png') }}" alt="Ashlar Logo" class="login-image"/>
        </a>
        <h2 class="form-signin-heading">Please sign up</h2>
        <div class="form-group">

@@ -25,7 +25,7 @@ class Contact extends Model
         'country',
         'city',
         'state',
-        'linkedin_profile',
+        'linkedIn_profile',
         'reached_count',
         'reached_platform',
         'lead_status_id',

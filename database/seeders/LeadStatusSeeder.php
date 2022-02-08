@@ -16,6 +16,9 @@ class LeadStatusSeeder extends Seeder
     {
         $lead_status = [
             [
+                'status' => 'N/A',
+            ],
+            [
                 'status' => 'Hot Lead',
             ],
             [
@@ -23,6 +26,9 @@ class LeadStatusSeeder extends Seeder
             ],
             [
                 'status' => 'Follow Lead',
+            ],
+            [
+                'status' => 'New Lead',
             ],
         ];
 

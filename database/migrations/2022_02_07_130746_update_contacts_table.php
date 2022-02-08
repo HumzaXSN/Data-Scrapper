@@ -18,6 +18,8 @@ class UpdateContactsTable extends Migration
             $table->string('last_name')->nullable()->change();
             $table->string('title')->nullable()->change();
             $table->string('company')->nullable()->change();
+            $table->foreignId('lead_status_id')->default('1')->change();
+            $table->foreignId('industry_id')->default('1')->change();
         });
     }
 
@@ -28,6 +30,13 @@ class UpdateContactsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contacts');
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->dropColumn('first_name');
+            $table->dropColumn('last_name');
+            $table->dropColumn('title');
+            $table->dropColumn('company');
+            $table->dropForeign(['lead_status_id']);
+            $table->dropForeign(['industry_id']);
+        });
     }
 }

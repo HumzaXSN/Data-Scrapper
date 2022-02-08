@@ -118,7 +118,7 @@
                                             <strong>LinkedIn Profile:</strong>
                                             <input type="text"
                                                 class="form-control  @error('linkedin_profile') is-invalid @enderror"
-                                                name="linkedin_profile" value="{{ $contact->linkedin_profile }}"
+                                                name="linkedin_profile" value="{{ $contact->linkedIn_profile }}"
                                                 placeholder="Enter Linkedin Profile">
                                         </div>
                                     </div>

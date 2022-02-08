@@ -35,7 +35,7 @@ class ContactsDataTable extends DataTable
      */
     public function query(Contact $model)
     {
-        return $model->with('industry:id,name')->newQuery();
+        return $model->newQuery()->with('lead_status','industry');
     }
 
     /**

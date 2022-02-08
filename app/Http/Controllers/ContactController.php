@@ -45,7 +45,12 @@ class ContactController extends Controller
         else{
         $bulk_range_record = explode('-',$bulk_range);
         $from = $bulk_range_record[0];
-        $to = $bulk_range_record[1];
+        try{
+            $to = $bulk_range_record[1];
+        }
+        catch(Exception $e){
+            $to = $from;
+        }
         if ( $get_bulk_column == 'delete' ) {
             $result = Contact::whereBetween('id', [$from, $to])->get();
             foreach($result as $del){

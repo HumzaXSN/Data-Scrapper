@@ -152,7 +152,7 @@
                                 <select class="form-control filter-select" data-column="13">
                                     <option value="">Lead Status</option>
                                     @foreach ($leadstatuses as $contact )
-                                    <option value="{{ $contact->id }}">{{ $contact->status }}</option>
+                                    <option value="{{ $contact->status }}">{{ $contact->status }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -160,7 +160,7 @@
                                 <select class="form-control filter-select" data-column="14">
                                     <option value="">Industries</option>
                                     @foreach ($industries as $industry )
-                                    <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+                                    <option value="{{ $industry->name }}">{{ $industry->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -16,6 +16,9 @@ class IndustrySeeder extends Seeder
     {
         $industries = [
             [
+                'name' => 'N/A',
+            ],
+            [
                 'name' => 'Healthcare',
             ],
             [

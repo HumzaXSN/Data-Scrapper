@@ -38,6 +38,12 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
                 $states = $contact;
                 if(in_array($row['city'], $states))
                 {
+                    if ($row['industry'] == 'Healthcare') {
+                        $row['industry'] = '2';
+                    }
+                    else {
+                        $row['industry'] = '3';
+                    }
                     return new Contact([
                         'first_name' => $row['first_name'],
                         'last_name' => $row['last_name'],
@@ -48,7 +54,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, WithBatch
                         'country' => $row['country'] ?? NULL,
                         'city' => $row['city'] ?? NULL,
                         'state' => $row['state'] ?? NULL,
-                        'industry' => $row['industry'] ?? NULL,
+                        'industry_id' => $row['industry'] ?? NULL,
                         'linkedin_profile' => $row['linkedin_profile'] ?? NULL,
                         'source' => $this->source,
                     ]);

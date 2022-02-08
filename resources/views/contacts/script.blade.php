@@ -97,35 +97,12 @@
                     name: 'reached_count'
                 },
                 {
-                    data: 'lead_status_id',
-                    name: 'lead_status_id',
-                    render: function(data) {
-                        if (data=='1'){
-                            return 'Hot Lead';
-                        }else if(data=='2'){
-                            return 'Cold Lead';
-                        }
-                        else if(data=='3'){
-                            return 'Follow Lead';
-                        }
-                        else{
-                            return 'N/A';
-                        }
-                    }
+                    data: 'lead_status.status',
+                    name: 'lead_status.status'
                 },
                 {
-                    data: 'industry_id',
-                    name: 'industry_id',
-                    render: function(data) {
-                        if (data=='1'){
-                            return 'Healthcare';
-                        }else if(data=='2'){
-                            return 'Software House';
-                        }
-                        else{
-                            return 'N/A';
-                        }
-                    }
+                    data: 'industry.name',
+                    name: 'industry.name'
                 },
                 {
                     data: 'action',

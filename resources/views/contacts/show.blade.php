@@ -114,7 +114,7 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <strong>LinkedIn Profile:</strong>
-                                            {{ $contact->linkedin_profile }}
+                                            {{ $contact->linkedIn_profile }}
                                         </div>
                                     </div>
                                 </div>

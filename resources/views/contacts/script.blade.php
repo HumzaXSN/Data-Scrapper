@@ -53,51 +53,58 @@
                     name: 'id'
                 },
                 {
-                    data: 'first_name',
-                    name: 'first_name'
+                    data: 'flp_name',
+                    name: 'first_name',
                 },
                 {
                     data: 'last_name',
-                    name: 'last_name'
+                    className: 'd-none',
+                    name: 'last_name',
+                },
+                {
+                    data: 'ctl_name',
+                    name: 'company'
                 },
                 {
                     data: 'title',
+                    className: 'd-none',
                     name: 'title'
-                },
-                {
-                    data: 'company',
-                    name: 'company'
                 },
                 {
                     data: 'email',
                     name: 'email'
                 },
                 {
-                    data: 'country',
+                    data: 'csc_name',
                     name: 'country'
                 },
                 {
                     data: 'state',
+                    className: 'd-none',
                     name: 'state'
                 },
                 {
                     data: 'city',
+                    className: 'd-none',
                     name: 'city'
                 },
                 {
                     data: 'phone',
+                    className: 'd-none',
                     name: 'phone'
                 },
                 {
-                    data: 'reached_platform',
+                    data: 'pc_name',
                     name: 'reached_platform'
                 },
                 {
                     data: 'reached_count',
+                    className: 'd-none',
                     name: 'reached_count'
                 },
                 {
                     data: 'lead_status.status',
+                    className: 'd-none',
                     name: 'lead_status.status'
                 },
                 {

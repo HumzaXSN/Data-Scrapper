@@ -60,8 +60,10 @@
                             <div class="card-header border-0">
                                 <div class="card-title">
                                 Plese make sure that the Excel file is in the following format:
-                                <a href="https://docs.google.com/spreadsheets/d/11w3F4xkK5Uo0Rg8XsXhHDULtxU9FUOicq5hgbCnBxjQ/edit?usp=sharing" class="btn btn-primary" style="margin-left: 90px">Sample Sheet</a>
                                 </div>
+                                <center>
+                                <a href="https://docs.google.com/spreadsheets/d/11w3F4xkK5Uo0Rg8XsXhHDULtxU9FUOicq5hgbCnBxjQ/edit?usp=sharing" class="btn btn-primary">Sample Sheet</a>
+                                <center>
                             </div>
                         </div>
                     </div>

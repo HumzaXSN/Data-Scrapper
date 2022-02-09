@@ -18,13 +18,27 @@ class ContactsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->addColumn('flp_name', function($query){
+                return $query->first_name . ' ' . $query->last_name . '
+                <a href="'. $query->linkedIn_profile .'"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
+            })
+            ->addColumn('ctl_name', function($query){
+                return $query->company.' '.$query->title.' '.$query->lead_status->status;
+            })
+            ->addColumn('csc_name', function($query){
+                return $query->country.' '.$query->state.' '.$query->city.' '.$query->phone;
+            })
+            ->addColumn('pc_name', function($query){
+                return $query->reached_platform.' '.$query->reached_count;
+            })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
             })
             ->addColumn('checkbox', function($query){
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
-            ->rawColumns(['action','checkbox']);
+            ->escapeColumns([])
+            ->rawColumns(['flp_name','ctl_name','csc_name','pc_name','action','checkbox']);
     }
 
     /**

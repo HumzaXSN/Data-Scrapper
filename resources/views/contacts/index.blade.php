@@ -121,11 +121,11 @@
                                     data-column="3" />
                             </div>
                             <div class="col-sm-3 mb-2 mb-md-0">
-                                <input type="text" class="form-control filter-input" placeholder="Title"
+                                <input type="text" class="form-control filter-input" placeholder="Company"
                                     data-column="4" />
                             </div>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control filter-input" placeholder="Company"
+                                <input type="text" class="form-control filter-input" placeholder="Title"
                                     data-column="5" />
                             </div>
                             <div class="col-sm-3 mt-2">
@@ -141,11 +141,15 @@
                                     data-column="9" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <input type="text" class="form-control filter-input" placeholder="Platform Reached"
+                                <input type="number" class="form-control filter-input" placeholder="phone"
+                                    data-column="10" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="Platform reached"
                                     data-column="11" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <input type="number" class="form-control filter-input" placeholder="Reach Count"
+                                <input type="number" class="form-control filter-input" placeholder="Times reached"
                                     data-column="12" />
                             </div>
                             <div class="col-sm-3 mt-2">
@@ -231,18 +235,18 @@
                                         <tr>
                                             <th><input type="checkbox" name="main_checkbox"><label></label></th>
                                             <th>id</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Title</th>
-                                            <th>Company</th>
+                                            <th>Name</th>
+                                            <th class="d-none">Last Name</th>
+                                            <th>Company Detail</th>
+                                            <th class="d-none">Title</th>
                                             <th>Email</th>
-                                            <th>Country</th>
-                                            <th>State</th>
-                                            <th>City</th>
-                                            <th>Phone</th>
-                                            <th>Reached Platform</th>
-                                            <th>Times Reached</th>
-                                            <th>Lead Status</th>
+                                            <th>Lead Country</th>
+                                            <th class="d-none">State</th>
+                                            <th class="d-none">City</th>
+                                            <th class="d-none">Phone</th>
+                                            <th>Platform & Times Reached</th>
+                                            <th class="d-none">Times Reached</th>
+                                            <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
                                             <th>Action <button class="btn btn-sm btn-danger d-none"
                                                     id="deleteAllBtn">Delete Selected</button></th>

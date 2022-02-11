@@ -7,6 +7,8 @@ use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
+use App\Imports\ContactsImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\DataTables\ContactsDataTable;
 use App\Repositories\ContactRepositoryInterface;
 
@@ -162,9 +164,42 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $this->contactRepository->import($request);
+        $file = $request->file('csv_file')->store('import');
+        $import = new ContactsImport($request->source);
+        try{
+            $import->import($file);
+        }
+        catch (\Maatwebsite\Excel\Validators\ValidationException $e){
+            $failures = $e->failures();
+            foreach ($failures as $failure) {
+            $failure->row(); // row that went wrong
+            $failure->attribute(); // either heading key (if using heading row concern) or column index
+            $failure->errors(); // Actual error messages from Laravel validator
+            $failure->values(); // The values of the row that has failed.
+        }
+            return view('contacts.provisional')->with(['failures' => $failures]);
+        }
+    }
 
-        return redirect()->route('contacts.index')->with('success', 'File Imported Successfully');
+    public function provisionalPage(Request $request)
+    {
+        dd(123);
+        $this->validate($request, [
+            'fname' => 'required',
+            // 'lname' => 'required',
+            // 'email' => 'required',
+            // 'source' => 'required'
+        ]);
+
+        if ($request->ajax()) {
+            $contact = new Contact;
+            $request->name = $request->value;
+            dd($request->name);
+            $contact->first_name = $request->input('name');
+            // return response()->json(['success' => true]);
+        }
+
+        // return view('contacts.provisional');
     }
 
     /**

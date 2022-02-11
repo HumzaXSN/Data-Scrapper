@@ -46,7 +46,7 @@
                                                 placeholder="Enter Company">
                                             <strong class="mt-2">Email:</strong>
                                             <input class="form-control mt-2" type="email" name="email"
-                                                placeholder="Enter Email">
+                                                placeholder="Enter Email" required>
                                             <strong class="mt-2">Country:</strong>
                                             <input class="form-control mt-2" type="text" name="country"
                                                 placeholder="Enter Country">

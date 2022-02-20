@@ -4,20 +4,21 @@ namespace App\Imports;
 
 use App\Models\Contact;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Importable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBatchInserts ,WithChunkReading
+class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBatchInserts ,WithChunkReading, SkipsOnError, SkipsOnFailure
 {
-    use Importable, SkipsFailures;
+    private $success_rows = 0;
+    use Importable, SkipsFailures, SkipsErrors;
     protected $source;
     public function  __construct($source)
     {
@@ -31,6 +32,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     */
     public function model(array $row)
     {
+        ++$this->success_rows;
         // $json = public_path('json/US_States_and_Cities.json');
         // $contacts = json_decode(file_get_contents($json), true);
         // $states = array();
@@ -87,17 +89,17 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     //     // return view('contacts.create')->with('error', 'Invalid City Entered');
     // }
 
+    public function getRowCount(): int
+    {
+        return $this->success_rows;
+    }
+
     public function rules(): array
     {
         return [
             '*.email' => ['required', 'unique:contacts,email'],
         ];
     }
-
-    // public function onError(Throwable $error)
-    // {
-
-    // }
 
     public function batchSize(): int
     {
@@ -108,23 +110,4 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     {
         return 1000;
     }
-
-    /**
-    //  * @param Failure[] $failures
-     */
-    // public function onFailure(Failure ...$failures)
-    // {
-    //     // Handle the failures how you'd like.
-    // foreach ($import->failures() as $failure) {
-    //  $failure->row(); // row that went wrong
-    //  $failure->attribute(); // either heading key (if using heading row concern) or column index
-    //  $failure->errors(); // Actual error messages from Laravel validator
-    //  $failure->values(); // The values of the row that has failed.
-    // }
-
-    // // public function onError(Throwable $error)
-    // // {
-
-    // // }
-    // }
 }

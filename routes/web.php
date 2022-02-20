@@ -41,9 +41,6 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
                 ->name('delete.selected.contacts');
 
-    Route::get('/contacts-provisional-page',[ContactController::class,'provisionalPage'])
-                ->name('contacts-provisional-page');
-
     Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
                 ->name('update-contacts-page');
 

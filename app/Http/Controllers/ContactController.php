@@ -8,7 +8,6 @@ use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
-use Maatwebsite\Excel\Facades\Excel;
 use App\DataTables\ContactsDataTable;
 use App\Repositories\ContactRepositoryInterface;
 
@@ -164,42 +163,58 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
+        $industry = Industry::all();
         $file = $request->file('csv_file')->store('import');
         $import = new ContactsImport($request->source);
-        try{
-            $import->import($file);
-        }
-        catch (\Maatwebsite\Excel\Validators\ValidationException $e){
-            $failures = $e->failures();
-            foreach ($failures as $failure) {
+        $import->import($file);
+        foreach ($import->failures() as $failure) {
             $failure->row(); // row that went wrong
             $failure->attribute(); // either heading key (if using heading row concern) or column index
             $failure->errors(); // Actual error messages from Laravel validator
             $failure->values(); // The values of the row that has failed.
         }
-            return view('contacts.provisional')->with(['failures' => $failures]);
-        }
+        return view('contacts.provisional')->with(['failures' => $import->failures(), 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount()]);
     }
 
     public function provisionalPage(Request $request)
     {
-        dd(123);
         $this->validate($request, [
             'fname' => 'required',
-            // 'lname' => 'required',
-            // 'email' => 'required',
-            // 'source' => 'required'
+            'lname' => 'required',
+            'email' => 'required|unique:contacts'
         ]);
 
-        if ($request->ajax()) {
-            $contact = new Contact;
-            $request->name = $request->value;
-            dd($request->name);
-            $contact->first_name = $request->input('name');
-            // return response()->json(['success' => true]);
+        $fname = $request->fname;
+        $lname = $request->lname;
+        $email = $request->email;
+        $title = $request->title;
+        $company = $request->company;
+        $country = $request->country;
+        $state = $request->state;
+        $city = $request->city;
+        $phone = $request->phone;
+        $linkedin_profile = $request->linkedin_profile;
+        $industry_id = $request->industry_id;
+        $source = $request->source;
+        for($i=0; $i<count($fname); $i++){
+            $bulk_contact_insert = [
+                'first_name' => $fname[$i],
+                'last_name' => $lname[$i],
+                'title' => $title[$i],
+                'company' => $company[$i],
+                'email' => $email[$i],
+                'country' => $country[$i],
+                'state' => $state[$i],
+                'city' => $city[$i],
+                'phone' => $phone[$i],
+                'linkedin_profile' => $linkedin_profile[$i],
+                'industry_id' => $industry_id[$i],
+                'source' => $source[$i]
+            ];
+            Contact::insert($bulk_contact_insert);
         }
+        return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
 
-        // return view('contacts.provisional');
     }
 
     /**

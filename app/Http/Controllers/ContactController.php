@@ -166,20 +166,20 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file')->store('import');
         $import = new ContactsImport($request->source);
-        try{
+        // try{
             $import->import($file);
-        }
-        catch(\Maatwebsite\Excel\Validators\ValidationException $e){
-            $failures = $e->failures();
-            foreach ($failures as $failure) {
-                $errors[] = [
-                    'row' => $failure->row(),
-                    'attribute' => $failure->attribute(),
-                    'errors' => $failure->errors(),
-                    'values' => $failure->values()
-                ];
-            }
-        }
+        // }
+        // catch(\Maatwebsite\Excel\Validators\ValidationException $e){
+        //     $failures = $e->failures();
+        //     foreach ($failures as $failure) {
+        //         $errors[] = [
+        //             'row' => $failure->row(),
+        //             'attribute' => $failure->attribute(),
+        //             'errors' => $failure->errors(),
+        //             'values' => $failure->values()
+        //         ];
+        //     }
+        // }
         return view('contacts.provisional')->with(['failures' => $import->failures(), 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount()]);
     }
 

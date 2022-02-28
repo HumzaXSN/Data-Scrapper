@@ -3,7 +3,6 @@
 @section('content')
 @include('partials.header')
 
-{{-- create navbar --}}
 <div class="app-body">
     @include('partials.left_sidebar')
     <main class="main-content main_content_styling">

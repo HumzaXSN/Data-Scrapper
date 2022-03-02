@@ -41,6 +41,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/delete-selected-contacts',[ContactController::class,'deleteSelectedContacts'])
                 ->name('delete.selected.contacts');
 
+    Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
+                ->name('update-contacts-page');
+
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
     // Route::get('/import', [ContactController::class, 'index'])->name('import');

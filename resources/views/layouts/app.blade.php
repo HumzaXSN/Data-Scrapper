@@ -26,7 +26,6 @@
      <!--custom css-->
      <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
 
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">

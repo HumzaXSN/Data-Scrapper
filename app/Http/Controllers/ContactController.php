@@ -9,7 +9,9 @@ use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
+use Illuminate\Database\QueryException;
 use App\Repositories\ContactRepositoryInterface;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -166,31 +168,22 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file')->store('import');
         $import = new ContactsImport($request->source);
-        // try{
-            $import->import($file);
-        // }
-        // catch(\Maatwebsite\Excel\Validators\ValidationException $e){
-        //     $failures = $e->failures();
-        //     foreach ($failures as $failure) {
-        //         $errors[] = [
-        //             'row' => $failure->row(),
-        //             'attribute' => $failure->attribute(),
-        //             'errors' => $failure->errors(),
-        //             'values' => $failure->values()
-        //         ];
-        //     }
-        // }
-        return view('contacts.provisional')->with(['failures' => $import->failures(), 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount()]);
+        $import->import($file);
+        return redirect()->route('contactProviosonal')->with(['failures' => $import->failures(), 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount()]);
+    }
+
+    public function addProvisionalContact()
+    {
+        return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row')]);
+    }
+
+    public function storeProvisionalContactdata()
+    {
+        return view('contacts.provisionaldata');
     }
 
     public function provisionalPage(Request $request)
     {
-        $this->validate($request, [
-            'fname' => 'required',
-            'lname' => 'required',
-            'email' => 'required|unique:contacts'
-        ]);
-
         $fname = $request->fname;
         $lname = $request->lname;
         $email = $request->email;
@@ -218,10 +211,16 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            Contact::insert($bulk_contact_insert);
+            try{
+                Contact::insert($bulk_contact_insert);
+            }
+            catch(QueryException $e){
+                dd(report($e));
+                // dd($e);
+                return redirect()->route('addProvisionalContactData')->withError('HEllo'.[$request->input('fname')]);
+            }
         }
         return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
-
     }
 
     /**

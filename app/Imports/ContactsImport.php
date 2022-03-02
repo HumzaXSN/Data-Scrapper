@@ -108,6 +108,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     {
         return [
             '*.email' => ['required', 'unique:contacts,email'],
+            '*.first_name' => ['required'],
         ];
     }
 

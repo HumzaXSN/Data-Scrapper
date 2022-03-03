@@ -211,14 +211,13 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            try{
+            // try{
                 Contact::insert($bulk_contact_insert);
-            }
-            catch(QueryException $e){
-                dd(report($e));
-                // dd($e);
-                return redirect()->route('addProvisionalContactData')->withError('HEllo'.[$request->input('fname')]);
-            }
+            // }
+            // catch(QueryException $e){
+            //     report($e);
+            //     return back()->with('error',$e->getMessage());
+            // }
         }
         return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
     }

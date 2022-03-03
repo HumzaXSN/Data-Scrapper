@@ -24,6 +24,7 @@
             </div>
         </div>
 
+        @if (isset($failures))
         @if ($failures->count() > 0)
         <div class="container-fluid">
             <div class="row">
@@ -123,6 +124,7 @@
             <center>
                 <a class="btn btn-primary" href="{{ route('contacts.index') }}">Go to Contacts Page</a>
             </center>
+        @endif
         @endif
     </main>
 </div>

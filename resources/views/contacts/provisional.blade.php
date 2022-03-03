@@ -57,9 +57,14 @@
                                             <tbody>
                                                 @foreach ($failures as $failure)
                                                 <tr>
-                                                    <td> <input class="form-control" type="text" name="fname[]"
-                                                            placeholder="Enter Firstname"
-                                                            value="{{ $failure->values()['first_name'] }}" > </td>
+                                                    <td>@foreach ($failure->errors() as $error )
+                                                        @php
+                                                        $isError = true;
+                                                        @endphp
+                                                        @endforeach <input
+                                                            class="form-control @if(isset($isError)) is-invalid @endif"
+                                                            type="text" name="fname[]" placeholder="Enter Firstname"
+                                                            value="{{ $failure->values()['first_name'] }}">
                                                     </td>
                                                     <td> <input class="form-control" type="text" name="lname[]"
                                                             placeholder="Enter Lastname"
@@ -71,12 +76,15 @@
                                                     <td> <input class="form-control" type="text" name="title[]"
                                                             placeholder="Enter Title"
                                                             value="{{ $failure->values()['title'] }}"> </td>
-                                                    <td> <input class="form-control" type="email" name="email[]"
-                                                            placeholder="Enter E-mail"
+                                                    <td>@foreach ($failure->errors() as $error )
+                                                        @php
+                                                        $isError = true;
+                                                        @endphp
+                                                        @endforeach <input
+                                                            class="form-control @if(isset($isError)) is-invalid @endif"
+                                                            type="email" name="email[]" placeholder="Enter E-mail"
                                                             value="{{ $failure->values()['email'] }}" required>
-                                                            @foreach ($failure->errors() as $error )
-                                                            <p class="alert alert-danger">{{ $error }}</p>
-                                                            @endforeach </td>
+                                                    </td>
                                                     <td> <input class="form-control" type="text" name="country[]"
                                                             placeholder="Enter Country"
                                                             value="{{ $failure->values()['country'] }}"> </td>
@@ -89,7 +97,8 @@
                                                     <td> <input class="form-control" type="text" name="phone[]"
                                                             placeholder="Enter Phone"
                                                             value="{{ $failure->values()['phone'] }}"> </td>
-                                                    <td> <input class="form-control" type="text" name="linkedin_profile[]"
+                                                    <td> <input class="form-control" type="text"
+                                                            name="linkedin_profile[]"
                                                             placeholder="Enter LinkedIn Profile"
                                                             value="{{ $failure->values()['linkedin_profile'] }}"> </td>
                                                     <td> <select class="form-control" name="industry_id[]">
@@ -105,13 +114,15 @@
                                                             @endforeach
                                                         </select> </td>
                                                 </tr>
-                                                <input class="form-control" type="hidden" name="source[]" value="{{ $source }}">
+                                                <input class="form-control" type="hidden" name="source[]"
+                                                    value="{{ $source }}">
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <center>
-                                            <button type="submit" class="btn btn-primary">Insert Data</button>
-                                        </center>
+                                        <div class="d-flex justify-content-between">
+                                            <button type="submit" class="btn btn-primary">Update Records</button>
+                                            <button type="submit" class="btn btn-danger">Skip Records</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -121,9 +132,9 @@
             </div>
         </div>
         @else
-            <center>
-                <a class="btn btn-primary" href="{{ route('contacts.index') }}">Go to Contacts Page</a>
-            </center>
+        <center>
+            <a class="btn btn-primary" href="{{ route('contacts.index') }}">Go to Contacts Page</a>
+        </center>
         @endif
         @endif
     </main>

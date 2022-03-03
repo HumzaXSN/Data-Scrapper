@@ -10,8 +10,10 @@
             <div class="p-0 container-fluid">
                 <div class="row">
                     <div class="col-sm-12">
-                        @if (session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
+                        @if (isset($failures))
+                        <div class="alert alert-success">
+                            {{ $failures->count() }} row were not successfully imported.
+                        </div>
                         @endif
                     </div>
                 </div>

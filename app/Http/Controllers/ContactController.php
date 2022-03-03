@@ -196,6 +196,7 @@ class ContactController extends Controller
         $linkedin_profile = $request->linkedin_profile;
         $industry_id = $request->industry_id;
         $source = $request->source;
+        $arr = [];
         for($i=0; $i<count($fname); $i++){
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
@@ -211,15 +212,17 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            // try{
+            if($fname[$i]!= '' && !Contact::where('email', $request->email)->exists()){
                 Contact::insert($bulk_contact_insert);
-            // }
-            // catch(QueryException $e){
-            //     report($e);
-            //     return back()->with('error',$e->getMessage());
-            // }
+            } else {
+                array_push($arr, $bulk_contact_insert );
+            }
         }
-        return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+        if($arr == NULL){
+            return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+        } else {
+            return redirect()->route('addProvisionalContactData',compact($arr));
+        }
     }
 
     /**

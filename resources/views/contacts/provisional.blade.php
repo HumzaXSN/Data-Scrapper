@@ -55,16 +55,26 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($failures as $failure)
+                                                @foreach ($failures as $key=>$failure)
                                                 <tr>
-                                                    <td>@foreach ($failure->errors() as $error )
+                                                    <td>
+                                                        {{-- @foreach ($failure->errors() as $error )
                                                         @php
-                                                        $isError = true;
+                                                        if($error == $failure->values()['first_name'] ){
+                                                            $isError = true;
+                                                        }else{
+                                                            $isError = false;
+                                                        }
                                                         @endphp
-                                                        @endforeach <input
-                                                            class="form-control @if(isset($isError)) is-invalid @endif"
+                                                        @endforeach --}}
+                                                        <input
+                                                            class="form-control data-id={{$key}} @if(isset($isError)) is-invalid @endif"
                                                             type="text" name="fname[]" placeholder="Enter Firstname"
                                                             value="{{ $failure->values()['first_name'] }}">
+                                                            @foreach ($failure->errors() as $error )
+                                                            <div class="invalid-feedback">
+                                                                {{ $error }}
+                                                            @endforeach
                                                     </td>
                                                     <td> <input class="form-control" type="text" name="lname[]"
                                                             placeholder="Enter Lastname"
@@ -76,14 +86,20 @@
                                                     <td> <input class="form-control" type="text" name="title[]"
                                                             placeholder="Enter Title"
                                                             value="{{ $failure->values()['title'] }}"> </td>
-                                                    <td>@foreach ($failure->errors() as $error )
+                                                    <td>
+                                                        @foreach ($failure->errors() as $error )
                                                         @php
                                                         $isError = true;
                                                         @endphp
-                                                        @endforeach <input
+                                                        @endforeach
+                                                         <input
                                                             class="form-control @if(isset($isError)) is-invalid @endif"
                                                             type="email" name="email[]" placeholder="Enter E-mail"
                                                             value="{{ $failure->values()['email'] }}" required>
+                                                            @foreach ($failure->errors() as $error )
+                                                            <div class="invalid-feedback">
+                                                                {{ $error }}
+                                                            @endforeach
                                                     </td>
                                                     <td> <input class="form-control" type="text" name="country[]"
                                                             placeholder="Enter Country"
@@ -119,11 +135,9 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <div class="d-flex justify-content-between">
-                                            <button type="submit" class="btn btn-primary">Update Records</button>
-                                            <button type="submit" class="btn btn-danger">Skip Records</button>
-                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Records</button>
                                     </form>
+                                    <button type="submit" class="btn btn-danger text-center">Skip Records</button>
                                 </div>
                             </div>
                         </div>

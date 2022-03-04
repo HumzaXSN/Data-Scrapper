@@ -19,8 +19,13 @@ class ContactsDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('flp_name', function($query){
-                return $query->first_name . ' ' . $query->last_name . '
+                if($query->linkedIn_profile != null) {
+                    return $query->first_name . ' ' . $query->last_name . '
                 <a href="'. $query->linkedIn_profile .'"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
+                }
+                else {
+                    return $query->first_name . ' ' . $query->last_name;
+                }
             })
             ->addColumn('ctl_name', function($query){
                 return $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status;

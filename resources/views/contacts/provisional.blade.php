@@ -12,9 +12,12 @@
                     <div class="col-sm-12">
                         <h4 class="mb-0">Check Contacts</h4>
                         @if (isset($failures))
-                        <div class="alert alert-success">
-                            {{ $success_row }} row were successfully imported.
-                        </div>
+                            <div class="alert alert-success">
+                                {{ $success_row }} row were successfully imported.
+                            </div>
+                            <div class="alert alert-danger">
+                                {{ count($failures) }} row were not imported.
+                            </div>
                             @if (in_array('email', $errorsMsgs))
                                 <div class="alert alert-danger">
                                     <strong>Email</strong> already exists in the database.
@@ -25,16 +28,16 @@
                                     <strong>First Name</strong> is empty.
                                 </div>
                             @endif
-                        <div class="alert alert-danger">
-                            {{ count($failures) }} row were not imported.
-                        </div>
+                        @endif
+                        @if (isset($arr))
+                            <div class="alert alert-danger">
+                                {{ count($arr) }} row were not imported.
+                            </div>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-
-
 
         <div class="container-fluid">
             <div class="row">
@@ -43,7 +46,7 @@
                         <div class="card-header mb-3">
                             <div class="card-title">
                                 Update Contact
-                                <a class="btn btn-danger" href="{{ route('contacts.index') }}"> Skip </a>
+                                <a class="btn btn-danger" style="float: right" href="{{ route('contacts.index') }}"> Skip </a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -74,7 +77,6 @@
                                                             class="form-control @if($failure[0]['first_name'] == null) is-invalid @endif"
                                                             type="text" name="fname[]" placeholder="Enter Firstname"
                                                             value="{{ $failure[0]['first_name'] }}">
-
                                                     </td>
                                                     <td> <input class="form-control" type="text" name="lname[]"
                                                             placeholder="Enter Lastname"
@@ -88,10 +90,9 @@
                                                             value="{{ $failure[0]['title'] }}"> </td>
                                                     <td>
                                                          <input
-                                                            class="form-control @if($failure[0]['first_name'] == null || !isset($failure[1])) is-invalid @endif"
+                                                            class="form-control @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
                                                             type="email" name="email[]" placeholder="Enter E-mail"
                                                             value="{{ $failure[0]['email'] }}" required>
-
                                                     </td>
                                                     <td> <input class="form-control" type="text" name="country[]"
                                                             placeholder="Enter Country"
@@ -149,7 +150,7 @@
                                                 @foreach ($arr as $data )
                                                     <tr>
                                                         <td>
-                                                            <input class="form-control" type="text" name="fname[]"
+                                                            <input class="form-control @if($data['first_name'] == null) is-invalid @endif" type="text" name="fname[]"
                                                             value="{{ $data['first_name'] }}">
                                                         </td>
                                                         <td>
@@ -203,7 +204,9 @@
                                             </tbody>
                                         </table>
                                         @endif
+                                        <center>
                                         <button type="submit" class="btn btn-primary">Update Records</button>
+                                        </center>
                                     </form>
                                 </div>
                             </div>

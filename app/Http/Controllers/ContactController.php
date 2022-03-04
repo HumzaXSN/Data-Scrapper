@@ -194,10 +194,10 @@ class ContactController extends Controller
         return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
     }
 
-    public function storeProvisionalContactdata()
-    {
-        return view('contacts.provisionaldata');
-    }
+    // public function storeProvisionalContactdata()
+    // {
+    //     return view('contacts.provisionaldata');
+    // }
 
     public function provisionalPage(Request $request)
     {
@@ -243,43 +243,43 @@ class ContactController extends Controller
         }
     }
 
-    public function provisionalPageDataUpdate(Request $request)
-     {
-        $fname = $request->fname;
-        $lname = $request->lname;
-        $email = $request->email;
-        $title = $request->title;
-        $company = $request->company;
-        $country = $request->country;
-        $state = $request->state;
-        $city = $request->city;
-        $phone = $request->phone;
-        $linkedin_profile = $request->linkedin_profile;
-        $industry_id = $request->industry_id;
-        $source = $request->source;
-        for($i=0; $i<count($fname); $i++){
-            $bulk_contact_insert = [
-                'first_name' => $fname[$i],
-                'last_name' => $lname[$i],
-                'title' => $title[$i],
-                'company' => $company[$i],
-                'email' => $email[$i],
-                'country' => $country[$i],
-                'state' => $state[$i],
-                'city' => $city[$i],
-                'phone' => $phone[$i],
-                'linkedin_profile' => $linkedin_profile[$i],
-                'industry_id' => $industry_id[$i],
-                'source' => $source[$i]
-            ];
-            try {
-                Contact::insert($bulk_contact_insert);;
-            } catch (QueryException $e) {
-                report($e);
-                return back()->with('error', 'Some Values remain');
-            }
-        }
-     }
+    // public function provisionalPageDataUpdate(Request $request)
+    //  {
+    //     $fname = $request->fname;
+    //     $lname = $request->lname;
+    //     $email = $request->email;
+    //     $title = $request->title;
+    //     $company = $request->company;
+    //     $country = $request->country;
+    //     $state = $request->state;
+    //     $city = $request->city;
+    //     $phone = $request->phone;
+    //     $linkedin_profile = $request->linkedin_profile;
+    //     $industry_id = $request->industry_id;
+    //     $source = $request->source;
+    //     for($i=0; $i<count($fname); $i++){
+    //         $bulk_contact_insert = [
+    //             'first_name' => $fname[$i],
+    //             'last_name' => $lname[$i],
+    //             'title' => $title[$i],
+    //             'company' => $company[$i],
+    //             'email' => $email[$i],
+    //             'country' => $country[$i],
+    //             'state' => $state[$i],
+    //             'city' => $city[$i],
+    //             'phone' => $phone[$i],
+    //             'linkedin_profile' => $linkedin_profile[$i],
+    //             'industry_id' => $industry_id[$i],
+    //             'source' => $source[$i]
+    //         ];
+    //         try {
+    //             Contact::insert($bulk_contact_insert);;
+    //         } catch (QueryException $e) {
+    //             report($e);
+    //             return back()->with('error', 'Some Values remain');
+    //         }
+    //     }
+    //  }
 
     /**
      * Display the specified resource.

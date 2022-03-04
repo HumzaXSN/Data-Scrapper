@@ -9,7 +9,9 @@ use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
+use Illuminate\Database\QueryException;
 use App\Repositories\ContactRepositoryInterface;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -166,31 +168,83 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file')->store('import');
         $import = new ContactsImport($request->source);
-        // try{
-            $import->import($file);
-        // }
-        // catch(\Maatwebsite\Excel\Validators\ValidationException $e){
-        //     $failures = $e->failures();
-        //     foreach ($failures as $failure) {
-        //         $errors[] = [
-        //             'row' => $failure->row(),
-        //             'attribute' => $failure->attribute(),
-        //             'errors' => $failure->errors(),
-        //             'values' => $failure->values()
-        //         ];
-        //     }
-        // }
-        return view('contacts.provisional')->with(['failures' => $import->failures(), 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount()]);
+        $import->import($file);
+        $importFailures = $import->failures();
+        $errorsMsgs = [];
+        $failureRows = [];
+        foreach ($import->failures() as $failure) {
+            array_push($errorsMsgs,$failure->attribute());
+        }
+        foreach($importFailures as $failure) {
+
+            if(array_key_exists($failure->row(), $failureRows))
+            {
+                $failureRows[$failure->row()] = [$failure->values(),'yes'];
+            }
+            else
+            {
+                $failureRows[$failure->row()] = [$failure->values()];
+            }
+        }
+        return redirect()->route('contactProviosonal')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
+    }
+
+    public function addProvisionalContact()
+    {
+        return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
+    }
+
+    public function storeProvisionalContactdata()
+    {
+        return view('contacts.provisionaldata');
     }
 
     public function provisionalPage(Request $request)
     {
-        $this->validate($request, [
-            'fname' => 'required',
-            'lname' => 'required',
-            'email' => 'required|unique:contacts'
-        ]);
+        $industry = Industry::all();
+        $fname = $request->fname;
+        $lname = $request->lname;
+        $email = $request->email;
+        $title = $request->title;
+        $company = $request->company;
+        $country = $request->country;
+        $state = $request->state;
+        $city = $request->city;
+        $phone = $request->phone;
+        $linkedin_profile = $request->linkedin_profile;
+        $industry_id = $request->industry_id;
+        $source = $request->source;
+        $arr = [];
+        for($i=0; $i<count($fname); $i++){
+            $bulk_contact_insert = [
+                'first_name' => $fname[$i],
+                'last_name' => $lname[$i],
+                'title' => $title[$i],
+                'company' => $company[$i],
+                'email' => $email[$i],
+                'country' => $country[$i],
+                'state' => $state[$i],
+                'city' => $city[$i],
+                'phone' => $phone[$i],
+                'linkedin_profile' => $linkedin_profile[$i],
+                'industry_id' => $industry_id[$i],
+                'source' => $source[$i]
+            ];
+            if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()){
+                Contact::insert($bulk_contact_insert);
+            } else {
+                array_push($arr, $bulk_contact_insert );
+            }
+        }
+        if($arr == NULL){
+            return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+        } else {
+            return view('contacts.provisional',compact('arr', 'industry'));
+        }
+    }
 
+    public function provisionalPageDataUpdate(Request $request)
+     {
         $fname = $request->fname;
         $lname = $request->lname;
         $email = $request->email;
@@ -218,11 +272,14 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            Contact::insert($bulk_contact_insert);
+            try {
+                Contact::insert($bulk_contact_insert);;
+            } catch (QueryException $e) {
+                report($e);
+                return back()->with('error', 'Some Values remain');
+            }
         }
-        return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
-
-    }
+     }
 
     /**
      * Display the specified resource.

@@ -23,13 +23,16 @@ class ContactsDataTable extends DataTable
                 <a href="'. $query->linkedIn_profile .'"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
             })
             ->addColumn('ctl_name', function($query){
-                return $query->company.' '.$query->title.' '.$query->lead_status->status;
+                return $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status;
+            })
+            ->addColumn('email', function($query){
+                return '<a href="mailto:'.$query->email.'">'.$query->email.'</a>';
             })
             ->addColumn('csc_name', function($query){
-                return $query->country.' '.$query->state.' '.$query->city.' '.$query->phone;
+                return $query->country.' | '.$query->state.' | '.$query->city.' | '.$query->phone;
             })
             ->addColumn('pc_name', function($query){
-                return $query->reached_platform.' '.$query->reached_count;
+                return $query->reached_platform.' | '.$query->reached_count;
             })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
@@ -38,7 +41,7 @@ class ContactsDataTable extends DataTable
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
             ->escapeColumns([])
-            ->rawColumns(['flp_name','ctl_name','csc_name','pc_name','action','checkbox']);
+            ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','action','checkbox']);
     }
 
     /**
@@ -83,21 +86,7 @@ class ContactsDataTable extends DataTable
      */
     // protected function getColumns()
     // {
-    //     return [
-    //         'first_name',
-    //         'last_name',
-    //         'title',
-    //         'company',
-    //         'email',
-    //         'phone',
-    //         'lead_status',
-    //         'city',
-    //         'state',
-    //         'action' => [
-    //             'searchable' => false,
-    //             'orderable' => false
-    //         ]
-    //     ];
+        #code...
     // }
 
     /**

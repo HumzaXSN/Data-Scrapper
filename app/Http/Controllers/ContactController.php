@@ -194,10 +194,10 @@ class ContactController extends Controller
         return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
     }
 
-    public function storeProvisionalContactdata()
-    {
-        return view('contacts.provisionaldata');
-    }
+    // public function storeProvisionalContactdata()
+    // {
+    //     return view('contacts.provisionaldata');
+    // }
 
     public function provisionalPage(Request $request)
     {

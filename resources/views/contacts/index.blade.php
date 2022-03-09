@@ -95,6 +95,36 @@
                                 </form>
                             </div>
                         </div>
+                        <div class="modal" id="namemodal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <form action="/contacts" method="POST" id="editmodalname">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-content">
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {{-- First Name --}}
+                                            <strong>First Name:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="first_name" id="first_name"
+                                                placeholder="First Name">
+                                            {{-- Last Name --}}
+                                            <strong>Last Name:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="last_name" id="last_name"
+                                                placeholder="Last Name">
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" id="showmore" href="#"> Show More </a>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

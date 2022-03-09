@@ -9,9 +9,7 @@ use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
-use Illuminate\Database\QueryException;
 use App\Repositories\ContactRepositoryInterface;
-use Throwable;
 
 class ContactController extends Controller
 {
@@ -29,9 +27,10 @@ class ContactController extends Controller
      */
     public function index(ContactsDataTable $dataTable, Contact $contact)
     {
+        $contacts = Contact::all();
         $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
-        return $dataTable->render('contacts.index', compact('leadstatuses','industries'));
+        return $dataTable->render('contacts.index', compact('leadstatuses','industries', 'contact'));
     }
 
     public function bulkupdate(Request $request)
@@ -194,11 +193,6 @@ class ContactController extends Controller
         return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
     }
 
-    // public function storeProvisionalContactdata()
-    // {
-    //     return view('contacts.provisionaldata');
-    // }
-
     public function provisionalPage(Request $request)
     {
         $industry = Industry::all();
@@ -243,44 +237,6 @@ class ContactController extends Controller
         }
     }
 
-    // public function provisionalPageDataUpdate(Request $request)
-    //  {
-    //     $fname = $request->fname;
-    //     $lname = $request->lname;
-    //     $email = $request->email;
-    //     $title = $request->title;
-    //     $company = $request->company;
-    //     $country = $request->country;
-    //     $state = $request->state;
-    //     $city = $request->city;
-    //     $phone = $request->phone;
-    //     $linkedin_profile = $request->linkedin_profile;
-    //     $industry_id = $request->industry_id;
-    //     $source = $request->source;
-    //     for($i=0; $i<count($fname); $i++){
-    //         $bulk_contact_insert = [
-    //             'first_name' => $fname[$i],
-    //             'last_name' => $lname[$i],
-    //             'title' => $title[$i],
-    //             'company' => $company[$i],
-    //             'email' => $email[$i],
-    //             'country' => $country[$i],
-    //             'state' => $state[$i],
-    //             'city' => $city[$i],
-    //             'phone' => $phone[$i],
-    //             'linkedin_profile' => $linkedin_profile[$i],
-    //             'industry_id' => $industry_id[$i],
-    //             'source' => $source[$i]
-    //         ];
-    //         try {
-    //             Contact::insert($bulk_contact_insert);;
-    //         } catch (QueryException $e) {
-    //             report($e);
-    //             return back()->with('error', 'Some Values remain');
-    //         }
-    //     }
-    //  }
-
     /**
      * Display the specified resource.
      *
@@ -314,7 +270,7 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        $input = $request->all();
+        $input = $request->except(['_token', '_method']);
         $contact->update($input);
         return redirect()->route('contacts.index')->with('success', 'Contact updated successfully');
     }

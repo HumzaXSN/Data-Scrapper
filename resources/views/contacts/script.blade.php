@@ -136,6 +136,23 @@
                 .draw();
         });
 
+        table.on('click', '.editname', function() {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#first_name').val(data['first_name']);
+            $('#last_name').val(data['last_name']);
+            
+            $('#editmodalname').attr('action', '/contacts/' + data['id']);
+            $('#showmore').attr('href', '/contacts/' + data['id'] + '/edit');
+            $('#namemodal').modal('show');
+        });
+
         $(document).on('click','input[name="main_checkbox"]', function(){
             if(this.checked){
                 $('input[name="contact_checkbox"]').each(function(){

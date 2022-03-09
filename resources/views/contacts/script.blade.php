@@ -147,10 +147,64 @@
 
             $('#first_name').val(data['first_name']);
             $('#last_name').val(data['last_name']);
-            
+
             $('#editmodalname').attr('action', '/contacts/' + data['id']);
             $('#showmore').attr('href', '/contacts/' + data['id'] + '/edit');
             $('#namemodal').modal('show');
+        });
+
+        table.on('click', '.editcompany', function() {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#company').val(data['company']);
+            $('#title').val(data['title']);
+            $('#leadstatus').val(data['lead_status']['status']);
+
+            $('#editmodalcompany').attr('action', '/contacts/' + data['id']);
+            $('#company_showmore').attr('href', '/contacts/' + data['id'] + '/edit');
+            $('#companymodal').modal('show');
+        });
+
+        table.on('click', '.editcountry', function() {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#country').val(data['country']);
+            $('#state').val(data['state']);
+            $('#city').val(data['city']);
+            $('#phone').val(data['phone']);
+
+            $('#editmodalcountry').attr('action', '/contacts/' + data['id']);
+            $('#country_showmore').attr('href', '/contacts/' + data['id'] + '/edit');
+            $('#countrymodal').modal('show');
+        });
+
+        table.on('click', '.editplatform', function() {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#platfrom').val(data['reached_platform']);
+            $('#timesreached').val(data['reached_count']);
+
+            $('#editmodalplatform').attr('action', '/contacts/' + data['id']);
+            $('#platform_showmore').attr('href', '/contacts/' + data['id'] + '/edit');
+            $('#platformmodal').modal('show');
         });
 
         $(document).on('click','input[name="main_checkbox"]', function(){

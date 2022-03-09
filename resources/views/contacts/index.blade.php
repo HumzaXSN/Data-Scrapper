@@ -19,6 +19,8 @@
                         </div>
                         <button class="mb-4 btn btn-primary mx-a" data-toggle="modal" data-target="#myModal"> Add new
                         </button>
+
+                        {{-- Add New Modal --}}
                         <div class="modal fade" id="myModal">
                             <div class="modal-dialog modal-dialog-centered">
                                 <form action="{{ route('add-contact') }}" method="POST">
@@ -95,6 +97,9 @@
                                 </form>
                             </div>
                         </div>
+                        {{-- Add New Modal End --}}
+
+                        {{-- Name Modal --}}
                         <div class="modal" id="namemodal">
                             <div class="modal-dialog modal-dialog-centered">
                                 <form action="/contacts" method="POST" id="editmodalname">
@@ -125,6 +130,131 @@
                                 </form>
                             </div>
                         </div>
+                        {{-- Name Modal End --}}
+
+                        {{-- Company Detail --}}
+                        <div class="modal" id="companymodal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <form action="/contacts" method="POST" id="editmodalcompany">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-content">
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {{-- Company --}}
+                                            <strong>Company:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="company" id="company"
+                                                placeholder="Company">
+                                            {{-- Title --}}
+                                            <strong>Title:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="title" id="title"
+                                                placeholder="title">
+                                            {{-- Lead Status --}}
+                                            <strong class="mt-2">Lead Status:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="leadstatus" id="leadstatus"
+                                                placeholder="Lead Status" disabled>
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" id="company_showmore" href="#"> Show More </a>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {{-- Company Detail End --}}
+
+                        {{-- Country --}}
+                        <div class="modal" id="countrymodal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <form action="/contacts" method="POST" id="editmodalcountry">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-content">
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {{-- Country --}}
+                                            <strong>Country:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="country" id="country"
+                                                placeholder="Country">
+                                            {{-- State --}}
+                                            <strong>State:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="state" id="state"
+                                                placeholder="State">
+                                            {{-- City --}}
+                                            <strong class="mt-2">City:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="city" id="city"
+                                                placeholder="City">
+                                            {{-- Phone --}}
+                                            <strong class="mt-2">Phone:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="phone" id="phone"
+                                                placeholder="Phone">
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" id="country_showmore" href="#"> Show More </a>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {{-- Country End --}}
+
+                        {{-- Platform & Times --}}
+                        <div class="modal" id="platformmodal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <form action="/contacts" method="POST" id="editmodalplatform">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-content">
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {{-- Platform --}}
+                                            <strong>Platfrom:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="reached_platform" id="platfrom"
+                                                placeholder="Platfrom">
+                                            {{-- Times --}}
+                                            <strong>Times Reached:</strong>
+                                            <input type="number"
+                                                class="form-control"
+                                                name="reached_count" id="timesreached"
+                                                placeholder="Times Reached">
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" id="platform_showmore" href="#"> Show More </a>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {{-- Platform & Times End --}}
+
                     </div>
                 </div>
             </div>

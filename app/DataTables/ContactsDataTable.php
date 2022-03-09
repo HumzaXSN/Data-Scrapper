@@ -29,28 +29,28 @@ class ContactsDataTable extends DataTable
             })
             // Company, Title, Lead Status
             ->addColumn('ctl_name', function($query){
-                return $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status;
+                return '<a class="editcompany">'. $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status .'</a>';
             })
             // Email
             ->addColumn('email', function($query){
                 return '<a href="mailto:'.$query->email.'">'.$query->email.'</a>';
             })
-            //
+            // Lead Country
             ->addColumn('csc_name', function($query){
                 if($query->country || $query->state || $query->city || $query->phone != NULL) {
-                    return $query->country . ' | ' . $query->state . ' | ' . $query->city. ' | ' . $query->phone;
+                    return '<a class="editcountry">'. $query->country . ' | ' . $query->state . ' | ' . $query->city. ' | ' . $query->phone . '</a>';
                 }
                 else {
-                    return 'No Location';
+                    return '<a class="editcountry">'.'No Location'.'</a>';
                 }
-                return $query->country.' | '.$query->state.' | '.$query->city.' | '.$query->phone;
             })
+            // Count & Platform
             ->addColumn('pc_name', function($query){
                 if($query->reached_platform == null) {
-                    return 'No Platfrom' .' | '.$query->reached_count;
+                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count.'</a>';
                 }
                 else {
-                    return $query->reached_platform .' | '.$query->reached_count;
+                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
                 }
             })
             ->addColumn('action', function($query){

@@ -18,26 +18,40 @@ class ContactsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            // First Name, Last Name, LinkedIn Profile
             ->addColumn('flp_name', function($query){
                 if($query->linkedIn_profile != null) {
-                    return $query->first_name . ' ' . $query->last_name . '
-                <a href="'. $query->linkedIn_profile .'"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
-                }
-                else {
-                    return $query->first_name . ' ' . $query->last_name;
+                    return '<a class="editname">'.$query->first_name. ' ' .$query->last_name.'</a>'.
+                    '<a href="'. $query->linkedIn_profile .'" target="_blank"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
+                } else {
+                    return '<a class="editname">'.$query->first_name. ' ' .$query->last_name.'</a>';
                 }
             })
+            // Company, Title, Lead Status
             ->addColumn('ctl_name', function($query){
-                return $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status;
+                return '<a class="editcompany">'. $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status .'</a>';
             })
+            // Email
             ->addColumn('email', function($query){
                 return '<a href="mailto:'.$query->email.'">'.$query->email.'</a>';
             })
+            // Lead Country
             ->addColumn('csc_name', function($query){
-                return $query->country.' | '.$query->state.' | '.$query->city.' | '.$query->phone;
+                if($query->country || $query->state || $query->city || $query->phone != NULL) {
+                    return '<a class="editcountry">'. $query->country . ' | ' . $query->state . ' | ' . $query->city. ' | ' . $query->phone . '</a>';
+                }
+                else {
+                    return '<a class="editcountry">'.'No Location'.'</a>';
+                }
             })
+            // Count & Platform
             ->addColumn('pc_name', function($query){
-                return $query->reached_platform.' | '.$query->reached_count;
+                if($query->reached_platform == null) {
+                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count.'</a>';
+                }
+                else {
+                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
+                }
             })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();

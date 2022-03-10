@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
 use App\Repositories\ContactRepositoryInterface;
+use App\Helpers\ContactExcelImport;
+use Excel;
 
 class ContactController extends Controller
 {
@@ -164,9 +166,31 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $industry = Industry::all();
+        $source = $request->source;
         $file = $request->file('csv_file')->store('import');
-        $import = new ContactsImport($request->source);
+        $collection = Excel::toCollection(new ContactExcelImport, $file);
+        $get_contact_heading = $collection[0][0]->toArray();
+        $check_columns = [
+            'first_name',
+            'last_name',
+            'title',
+            'company',
+            'email',
+            'phone',
+            'country',
+            'state',
+            'city',
+            'industry',
+            'linkedin_profile'
+        ];
+        return view('contacts.check-columns', compact('get_contact_heading', 'check_columns', 'file', 'source'));
+    }
+
+    public function mapHeadings(Request $request)
+    {
+        $file = storage_path('app/'.$request->file);
+        $industry = Industry::all();
+        $import = new ContactsImport($request->source, $request->columns[0], $request->columns[1], $request->columns[2], $request->columns[3], $request->columns[4], $request->columns[5], $request->columns[6], $request->columns[7], $request->columns[8], $request->columns[9], $request->columns[10]);
         $import->import($file);
         $importFailures = $import->failures();
         $errorsMsgs = [];
@@ -185,7 +209,7 @@ class ContactController extends Controller
                 $failureRows[$failure->row()] = [$failure->values()];
             }
         }
-        return redirect()->route('contactProviosonal')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
+        return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
     }
 
     public function addProvisionalContact()

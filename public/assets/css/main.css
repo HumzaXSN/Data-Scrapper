@@ -4789,3 +4789,9 @@ custom chart style
     width:20px;
     height:20px;
 }
+
+.modalButtons
+{
+    display: flex;
+    justify-content: space-between;
+}

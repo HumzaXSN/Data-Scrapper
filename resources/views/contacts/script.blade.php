@@ -108,7 +108,7 @@
                     name: 'lead_status.status'
                 },
                 {
-                    data: 'industry.name',
+                    data: 'industry',
                     name: 'industry.name'
                 },
                 {
@@ -205,6 +205,22 @@
             $('#editmodalplatform').attr('action', '/contacts/' + data['id']);
             $('#platform_showmore').attr('href', '/contacts/' + data['id'] + '/edit');
             $('#platformmodal').modal('show');
+        });
+
+        table.on('click', '.editindsutry', function() {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#industry').val(data['industry']['name']);
+
+            $('#editmodalindustry').attr('action', '/contacts/' + data['id']);
+            $('#industry_showmore').attr('href', '/contacts/' + data['id'] + '/edit');
+            $('#industrymmodal').modal('show');
         });
 
         $(document).on('click','input[name="main_checkbox"]', function(){

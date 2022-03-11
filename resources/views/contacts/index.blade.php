@@ -6,7 +6,6 @@
 <div class="app-body">
     @include('partials.left_sidebar')
     <main class="main-content main_content_styling">
-        <!--page title start-->
         <div class="page-title">
             <div class="p-0 container-fluid">
                 <div class="row">
@@ -122,9 +121,12 @@
                                                 placeholder="Last Name">
                                         </div>
                                         <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" id="showmore" href="#"> Show More </a>
+                                        <div class="modal-footer modalButtons">
+                                            <a id="showmore" href="#"> Show More </a>
+                                            <div>
                                             <button type="submit" class="btn btn-success">Submit</button>
+                                            <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -156,16 +158,26 @@
                                                 placeholder="title">
                                             {{-- Lead Status --}}
                                             <strong class="mt-2">Lead Status:</strong>
-                                            <input type="text"
+                                            {{-- <input type="text"
                                                 class="form-control"
                                                 name="leadstatus" id="leadstatus"
-                                                placeholder="Lead Status" disabled>
+                                                placeholder="Lead Status" disabled> --}}
+                                                <select class="form-control"
+                                                name="lead_status_id">
+                                                <option id="leadstatus" selected disabled>Select Lead Status</option>
+                                                @foreach ($leadstatuses as $leadstatus )
+                                                <option value="{{ $leadstatus->id }}">{{ $leadstatus->status }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
 
                                         <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" id="company_showmore" href="#"> Show More </a>
+                                        <div class="modal-footer modalButtons">
+                                            <a id="company_showmore" href="#"> Show More </a>
+                                            <div>
                                             <button type="submit" class="btn btn-success">Submit</button>
+                                            <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -210,9 +222,12 @@
                                         </div>
 
                                         <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" id="country_showmore" href="#"> Show More </a>
+                                        <div class="modal-footer modalButtons">
+                                            <a id="country_showmore" href="#"> Show More </a>
+                                            <div>
                                             <button type="submit" class="btn btn-success">Submit</button>
+                                            <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -245,9 +260,12 @@
                                         </div>
 
                                         <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" id="platform_showmore" href="#"> Show More </a>
+                                        <div class="modal-footer modalButtons">
+                                            <a id="platform_showmore" href="#"> Show More </a>
+                                            <div>
                                             <button type="submit" class="btn btn-success">Submit</button>
+                                            <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -255,11 +273,44 @@
                         </div>
                         {{-- Platform & Times End --}}
 
+                        {{-- Industry --}}
+                        <div class="modal" id="industrymmodal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <form action="/contacts" method="POST" id="editmodalindustry">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-content">
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {{-- Industry --}}
+                                            <strong>Industry:</strong>
+                                            <select name="industry_id" class="form-control">
+                                                <option id="industry" selected disabled>Select Industry</option>
+                                                @foreach ($industries as $industry )
+                                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer modalButtons">
+                                            <a id="industry_showmore" href="#"> Show More </a>
+                                            <div>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                            <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {{-- Industry --}}
+
                     </div>
                 </div>
             </div>
         </div>
-        <!--page title end-->
 
         <div class="container-fluid">
             <!-- state start-->

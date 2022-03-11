@@ -53,6 +53,9 @@ class ContactsDataTable extends DataTable
                     return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
                 }
             })
+            ->addColumn('industry', function($query){
+                return '<a class="editindsutry">'. $query->industry->name .'</a>';
+            })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
             })
@@ -60,7 +63,7 @@ class ContactsDataTable extends DataTable
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
             ->escapeColumns([])
-            ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','action','checkbox']);
+            ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','industry','action','checkbox']);
     }
 
     /**

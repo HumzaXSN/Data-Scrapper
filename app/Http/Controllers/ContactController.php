@@ -32,7 +32,7 @@ class ContactController extends Controller
         $contacts = Contact::all();
         $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
-        return $dataTable->render('contacts.index', compact('leadstatuses','industries', 'contact'));
+        return $dataTable->render('contacts.index', compact('leadstatuses', 'industries', 'contact'));
     }
 
     public function bulkupdate(Request $request)
@@ -42,73 +42,67 @@ class ContactController extends Controller
         $get_lead = $request->lead_status_id;
         $get_industry = $request->industry_id;
         $get_reach = $request->reached_count;
-        if( strpos($bulk_range , ',') != false ) {
+        if (strpos($bulk_range, ',') != false) {
             self::bulkcommaupdate($bulk_range, $get_bulk_column, $get_lead, $get_industry, $get_reach);
-            return back()->with('success','Values Updated');
-        }
-        else{
-        $bulk_range_record = explode('-',$bulk_range);
-        $from = $bulk_range_record[0];
-        try{
-            $to = $bulk_range_record[1];
-        }
-        catch(Exception $e){
-            $to = $from;
-        }
-        if ( $get_bulk_column == 'delete' ) {
-            $result = Contact::whereBetween('id', [$from, $to])->get();
-            foreach($result as $del){
-                $del->delete();
-            }
-            return back()->with('success','Values Updated');
-        }
-        if ( $get_bulk_column == 'lead_status_id') {
-            $lead_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_lead]);
-            return back()->with('success','Values Updated');
-        }
-        if ( $get_bulk_column == 'industry_id') {
-            $industry_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_industry]);
-            return back()->with('success','Values Updated');
-        }
-        else {
+            return back()->with('success', 'Values Updated');
+        } else {
+            $bulk_range_record = explode('-', $bulk_range);
+            $from = $bulk_range_record[0];
             try {
-                $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_reach]);
-                return back()->with('success','Values Updated');
+                $to = $bulk_range_record[1];
+            } catch (Exception $e) {
+                $to = $from;
             }
-            catch(\Exception $e){
-                report($e);
-                return back()->with('error','Values not Updated');
+            if ($get_bulk_column == 'delete') {
+                $result = Contact::whereBetween('id', [$from, $to])->get();
+                foreach ($result as $del) {
+                    $del->delete();
+                }
+                return back()->with('success', 'Values Updated');
             }
-        }
+            if ($get_bulk_column == 'lead_status_id') {
+                $lead_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_lead]);
+                return back()->with('success', 'Values Updated');
+            }
+            if ($get_bulk_column == 'industry_id') {
+                $industry_update = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_industry]);
+                return back()->with('success', 'Values Updated');
+            } else {
+                try {
+                    $result = Contact::whereBetween('id', [$from, $to])->update([$get_bulk_column => $get_reach]);
+                    return back()->with('success', 'Values Updated');
+                } catch (\Exception $e) {
+                    report($e);
+                    return back()->with('error', 'Values not Updated');
+                }
+            }
         }
     }
 
     public static function bulkcommaupdate($bulk_range, $get_bulk_column, $get_lead, $get_industry, $get_reach)
     {
         $bulk_comma_record = explode(',', $bulk_range);
-        if ( $get_bulk_column == 'delete' ) {
+        if ($get_bulk_column == 'delete') {
             $result = Contact::whereIn('id', $bulk_comma_record)->get();
-            foreach($result as $del){
+            foreach ($result as $del) {
                 $del->delete();
             }
             return;
         }
-        if ( $get_bulk_column == 'lead_status_id') {
+        if ($get_bulk_column == 'lead_status_id') {
             $lead_update = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_lead]);
             return;
         }
-        if ( $get_bulk_column == 'industry_id') {
+        if ($get_bulk_column == 'industry_id') {
             $industry_update = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_industry]);
             return;
-        }
-        else {
+        } else {
             try {
                 $result = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_reach]);
                 return;
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 report($e);
-                return back()->with('error','Values not Updated');
+                return back()->with('error', 'Values not Updated');
             }
         }
     }
@@ -132,9 +126,9 @@ class ContactController extends Controller
             'source' => 'required'
         ]);
 
-        $findcontact = Contact::where('email',$request->email)->first();
+        $findcontact = Contact::where('email', $request->email)->first();
 
-        if($findcontact == NULL) {
+        if ($findcontact == NULL) {
             $contact = new Contact;
             $contact->first_name = $request->input('fname');
             $contact->last_name = $request->input('lname');
@@ -151,10 +145,9 @@ class ContactController extends Controller
             $contact->lead_status_id = $request->input('lead_status_id');
             $contact->source = $request->input('source');
             $contact->save();
-            return back()->with('success','Contact Added Successfully');
-        }
-        else{
-            return back()->with('error','Contact Email already exists');
+            return back()->with('success', 'Contact Added Successfully');
+        } else {
+            return back()->with('error', 'Contact Email already exists');
         }
     }
 
@@ -188,33 +181,28 @@ class ContactController extends Controller
 
     public function mapHeadings(Request $request)
     {
-        $file = storage_path('app/'.$request->file);
+        $file = storage_path('app/' . $request->file);
         $industry = Industry::all();
         $import = new ContactsImport($request->source, $request->columns[0], $request->columns[1], $request->columns[2], $request->columns[3], $request->columns[4], $request->columns[5], $request->columns[6], $request->columns[7], $request->columns[8], $request->columns[9], $request->columns[10]);
         $import->import($file);
         $success_row = $import->getRowCount();
         $importFailures = $import->failures();
-        dd($importFailures);
         $errorsMsgs = [];
         $failureRows = [];
         foreach ($import->failures() as $failure) {
-            array_push($errorsMsgs,$failure->attribute());
+            array_push($errorsMsgs, $failure->attribute());
         }
-        foreach($importFailures as $failure) {
-            if(array_key_exists($failure->row(), $failureRows))
-            {
-                $failureRows[$failure->row()] = [$failure->values(),'yes'];
-            }
-            else
-            {
+        foreach ($importFailures as $failure) {
+            if (array_key_exists($failure->row(), $failureRows)) {
+                $failureRows[$failure->row()] = [$failure->values(), 'yes'];
+            } else {
                 $failureRows[$failure->row()] = [$failure->values()];
             }
         }
         if (count($importFailures) > 0) {
             return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
-        }
-        else {
-            return redirect()->route('contacts.index')->with( 'success', $success_row.' Contacts Added Successfully');
+        } else {
+            return redirect()->route('contacts.index')->with('success', $success_row . ' Contacts Added Successfully');
         }
     }
 
@@ -234,7 +222,7 @@ class ContactController extends Controller
         $industry_id = $request->industry_id;
         $source = $request->source;
         $arr = [];
-        for($i=0; $i<count($fname); $i++){
+        for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
                 'last_name' => $lname[$i],
@@ -249,16 +237,16 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()){
+            if ($fname[$i] != '' && !Contact::where('email', $email[$i])->exists()) {
                 Contact::insert($bulk_contact_insert);
             } else {
-                array_push($arr, $bulk_contact_insert );
+                array_push($arr, $bulk_contact_insert);
             }
         }
-        if($arr == NULL){
+        if ($arr == NULL) {
             return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
         } else {
-            return view('contacts.provisional',compact('arr', 'industry'));
+            return view('contacts.provisional', compact('arr', 'industry'));
         }
     }
 
@@ -270,7 +258,7 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        return view('contacts.show',compact('contact'));
+        return view('contacts.show', compact('contact'));
     }
 
     /**
@@ -283,7 +271,7 @@ class ContactController extends Controller
     {
         $leadstatuses = LeadStatus::all();
         $industries = Industry::all();
-        return view('contacts.edit',compact('contact','industries','leadstatuses'));
+        return view('contacts.edit', compact('contact', 'industries', 'leadstatuses'));
     }
 
     /**
@@ -316,6 +304,6 @@ class ContactController extends Controller
     {
         $contact_ids = $request->contacts_ids;
         Contact::whereIn('id', $contact_ids)->delete();
-        return response()->json(['code'=>1, 'msg'=>'Selected Contacts deleted Successfully']);
+        return response()->json(['code' => 1, 'msg' => 'Selected Contacts deleted Successfully']);
     }
 }

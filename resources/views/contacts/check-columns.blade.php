@@ -39,12 +39,12 @@
                                                                     <option value="">Please Select</option>
                                                                     @foreach ($check_columns as $index => $columns)
                                                                         @if($loop->first)
-                                                                            <option value="ignore" selected>Ignore This Row</option>
+                                                                            <option value="NULL" selected>Ignore This Row</option>
                                                                         @endif
                                                                         @if (!$loop->last)
                                                                             <option value="{{ $columns }}"
                                                                             @if(strtolower(str_replace(' ','', str_replace('_','', $contact_heading))) == strtolower(str_replace(' ','', str_replace('_','', $columns))))
-                                                                            selected
+                                                                                selected
                                                                             @endif
                                                                             >{{ ucfirst($columns) }}</option>
                                                                         @else
@@ -64,7 +64,7 @@
                                                     <td></td>
                                                     <td>
                                                         <div style="float: right">
-                                                            <button type="submit" class="btn btn-primary">Update Records</button>
+                                                            <button type="submit" class="btn btn-primary">Insert Records</button>
                                                         </div>
                                                     </td>
                                                 </tr>

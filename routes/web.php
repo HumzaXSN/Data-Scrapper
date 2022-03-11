@@ -44,12 +44,12 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
                 ->name('update-contacts-page');
 
-    Route::post('/map-headings',[ContactController::class,'mapHeadings'])
+    Route::post('/provisional-page',[ContactController::class,'mapHeadings'])
                 ->name('map-headings');
 
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
-    Route::get('/contact-proviosonal', [ContactController::class, 'addProvisionalContact'])->name('contactProviosonal');
+    // Route::get('/contact-proviosonal', [ContactController::class, 'addProvisionalContact'])->name('contactProviosonal');
 
     Route::get('/add-provisional-contact', [ContactController::class, 'storeProvisionalContactdata'])->name('addProvisionalContactData');
 

@@ -3,13 +3,8 @@
 namespace App\Imports;
 
 use App\Models\Contact;
-use Exception;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\ImportFailed;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
@@ -18,16 +13,26 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Validators\ValidationException;
 
 class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBatchInserts ,WithChunkReading, SkipsOnError, SkipsOnFailure
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
     protected $source;
-    public function  __construct($source)
+    public function  __construct($source, $excelcolumns1, $excelcolumns2, $excelcolumns3, $excelcolumns4, $excelcolumns5, $excelcolumns6, $excelcolumns7, $excelcolumns8, $excelcolumns9, $excelcolumns10, $excelcolumns11)
     {
         $this->source= $source;
+        $this->columns[0] = $excelcolumns1;
+        $this->columns[1] = $excelcolumns2;
+        $this->columns[2] = $excelcolumns3;
+        $this->columns[3] = $excelcolumns4;
+        $this->columns[4] = $excelcolumns5;
+        $this->columns[5] = $excelcolumns6;
+        $this->columns[6] = $excelcolumns7;
+        $this->columns[7] = $excelcolumns8;
+        $this->columns[8] = $excelcolumns9;
+        $this->columns[9] = $excelcolumns10;
+        $this->columns[10] = $excelcolumns11;
     }
 
     /**
@@ -57,17 +62,17 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
                     $row['industry'] = '3';
                 }
                 return new Contact([
-                    'first_name' => $row['first_name'],
-                    'last_name' => $row['last_name'],
-                    'title' => $row['title'] ?? NULL,
-                    'company' => $row['company'],
-                    'email' => $row['email'],
-                    'phone' => $row['phone'] ?? NULL,
-                    'country' => $row['country'] ?? NULL,
-                    'city' => $row['city'] ?? NULL,
-                    'state' => $row['state'] ?? NULL,
-                    'industry_id' => $row['industry'] ?? NULL,
-                    'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+                    'first_name' => $this->columns[0] == "NULL" ? NULL : $row[$this->columns[0]],
+                    'last_name' => $this->columns[1] == "NULL" ? NULL : $row[$this->columns[1]],
+                    'title' => $this->columns[2] == "NULL" ? NULL : $row[$this->columns[2]],
+                    'company' => $this->columns[3] == "NULL" ? NULL : $row[$this->columns[3]],
+                    'email' => $this->columns[4] == "NULL" ? NULL : $row[$this->columns[4]],
+                    'phone' => $this->columns[5] == "NULL" ? NULL : $row[$this->columns[5]],
+                    'country' => $this->columns[6] == "NULL" ? NULL : $row[$this->columns[6]],
+                    'city' => $this->columns[7] == "NULL" ? NULL : $row[$this->columns[7]],
+                    'state' => $this->columns[8] == "NULL" ? NULL : $row[$this->columns[8]],
+                    'industry_id' => $this->columns[9] == "NULL" ? NULL : $row[$this->columns[9]],
+                    'linkedIn_profile' => $this->columns[10] == "NULL" ? NULL : $row[$this->columns[10]],
                     'source' => $this->source,
                 ]);
     }

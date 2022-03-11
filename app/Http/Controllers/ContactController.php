@@ -192,6 +192,7 @@ class ContactController extends Controller
         $industry = Industry::all();
         $import = new ContactsImport($request->source, $request->columns[0], $request->columns[1], $request->columns[2], $request->columns[3], $request->columns[4], $request->columns[5], $request->columns[6], $request->columns[7], $request->columns[8], $request->columns[9], $request->columns[10]);
         $import->import($file);
+        $success_row = $import->getRowCount();
         $importFailures = $import->failures();
         $errorsMsgs = [];
         $failureRows = [];
@@ -209,13 +210,18 @@ class ContactController extends Controller
                 $failureRows[$failure->row()] = [$failure->values()];
             }
         }
-        return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
+        if (count($importFailures) > 0) {
+            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
+        }
+        else {
+            return redirect()->route('contacts.index')->with( 'success', $success_row.' Contacts Added Successfully');
+        }
     }
 
-    public function addProvisionalContact()
-    {
-        return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
-    }
+    // public function addProvisionalContact()
+    // {
+    //     return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
+    // }
 
     public function provisionalPage(Request $request)
     {

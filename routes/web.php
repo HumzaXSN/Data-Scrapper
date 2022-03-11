@@ -49,8 +49,6 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
-    // Route::get('/contact-proviosonal', [ContactController::class, 'addProvisionalContact'])->name('contactProviosonal');
-
     Route::get('/add-provisional-contact', [ContactController::class, 'storeProvisionalContactdata'])->name('addProvisionalContactData');
 
     // Route::get('/import', [ContactController::class, 'index'])->name('import');

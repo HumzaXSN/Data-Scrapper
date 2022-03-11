@@ -194,13 +194,13 @@ class ContactController extends Controller
         $import->import($file);
         $success_row = $import->getRowCount();
         $importFailures = $import->failures();
+        dd($importFailures);
         $errorsMsgs = [];
         $failureRows = [];
         foreach ($import->failures() as $failure) {
             array_push($errorsMsgs,$failure->attribute());
         }
         foreach($importFailures as $failure) {
-
             if(array_key_exists($failure->row(), $failureRows))
             {
                 $failureRows[$failure->row()] = [$failure->values(),'yes'];
@@ -217,11 +217,6 @@ class ContactController extends Controller
             return redirect()->route('contacts.index')->with( 'success', $success_row.' Contacts Added Successfully');
         }
     }
-
-    // public function addProvisionalContact()
-    // {
-    //     return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
-    // }
 
     public function provisionalPage(Request $request)
     {

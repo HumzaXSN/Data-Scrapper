@@ -33,6 +33,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
         $this->columns[8] = $excelcolumns9;
         $this->columns[9] = $excelcolumns10;
         $this->columns[10] = $excelcolumns11;
+        // dd($this->columns[0], $this->columns[1], $this->columns[2], $this->columns[3], $this->columns[4], $this->columns[5], $this->columns[6], $this->columns[7], $this->columns[8], $this->columns[9], $this->columns[10]);
     }
 
     /**
@@ -112,8 +113,8 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     public function rules(): array
     {
         return [
-            '*.email' => ['required', 'unique:contacts,email'],
-            '*.first_name' => ['required'],
+            '*.'.$this->columns[4] => ['required', 'unique:contacts,email'],
+            '*.'.$this->columns[0] => ['required'],
         ];
     }
 

@@ -20,6 +20,12 @@
                             <span>Scraper Jobs</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('lists.index') }}">
+                            <i class="fa fa-dot-circle-o text-primary"></i>
+                            <span>List</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>

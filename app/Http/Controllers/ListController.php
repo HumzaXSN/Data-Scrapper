@@ -17,10 +17,8 @@ class ListController extends Controller
      */
     public function index(ListsDataTable $dataTable, Request $request)
     {
-        $user = User::all();
         $list_type = ListType::all();
-        $lists = Lists::all();
-        return $dataTable->render('lists.index', compact('user', 'list_type', 'lists'));
+        return $dataTable->render('lists.index',compact('list_type'));
     }
 
     /**
@@ -41,7 +39,7 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
-        Lists::insert([
+        Lists::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'list_type_id' => $request->input('type'),

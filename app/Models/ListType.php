@@ -12,6 +12,7 @@ class ListType extends Model
 
     protected $fillable = [
         'name',
+        'slug'
     ];
 
     public function lists()

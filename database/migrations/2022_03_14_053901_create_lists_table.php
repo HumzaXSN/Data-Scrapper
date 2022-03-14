@@ -17,9 +17,8 @@ class CreateListsTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
-            $table->text('slug')->nullable();
-            $table->foreignId('list_type_id')->nullable()->constrained('list_types');
-            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('list_type_id')->constrained('list_types');
+            $table->foreignId('user_id')->constrained('users');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Lists;
 use App\Models\ListType;
+use App\DataTables\ListsDataTable;
 use Illuminate\Http\Request;
 
 class ListController extends Controller
@@ -14,12 +15,12 @@ class ListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ListsDataTable $dataTable, Request $request)
     {
         $user = User::all();
         $list_type = ListType::all();
         $lists = Lists::all();
-        return view('lists.index', compact('lists', 'list_type', 'user'));
+        return $dataTable->render('lists.index', compact('user', 'list_type', 'lists'));
     }
 
     /**
@@ -40,13 +41,12 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
-        $list = new Lists;
-        $list->name = $request->input('name');
-        $list->description = $request->input('description');
-        $list->slug = strtolower(str_replace(' ', '-', $request->input('name')));
-        $list->list_type_id = $request->input('type');
-        $list->user_id = auth()->user()->id;
-        $list->save();
+        Lists::insert([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'list_type_id' => $request->input('type'),
+            'user_id' => auth()->user()->id,
+        ]);
 
         return redirect()->route('lists.index')->with('success', 'List created successfully');
     }
@@ -59,7 +59,7 @@ class ListController extends Controller
      */
     public function show(Lists $list)
     {
-       //
+        //
     }
 
     /**

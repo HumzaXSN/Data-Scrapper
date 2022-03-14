@@ -23,7 +23,7 @@
                     <li>
                         <a href="{{ route('lists.index') }}">
                             <i class="fa fa-dot-circle-o text-primary"></i>
-                            <span>List</span>
+                            <span>Lists</span>
                         </a>
                     </li>
                 </ul>

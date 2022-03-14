@@ -13,7 +13,6 @@ class Lists extends Model
     protected $fillable = [
         'name',
         'description',
-        'slug',
         'list_type_id',
         'user_id',
     ];
@@ -23,7 +22,7 @@ class Lists extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function list_type()
+    public function listType()
     {
         return $this->belongsTo(ListType::class);
     }

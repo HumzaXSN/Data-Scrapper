@@ -81,7 +81,7 @@
                                             <th>Name</th>
                                             <th>Description</th>
                                             <th>Type</th>
-                                            <th>User</th>
+                                            <th>Created By</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

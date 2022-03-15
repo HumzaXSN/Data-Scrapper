@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Lists;
 use App\Models\ListType;
 use App\DataTables\ListsDataTable;
@@ -57,7 +56,7 @@ class ListController extends Controller
      */
     public function show(Lists $list)
     {
-        //
+        return view('lists.show', compact('list'));
     }
 
     /**

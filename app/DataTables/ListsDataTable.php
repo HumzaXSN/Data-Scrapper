@@ -38,7 +38,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('listType', 'user');
+        return $model->newQuery()->with('user','listType');
     }
 
     /**

@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-12" style="display: flex; justify-content: space-between;">
                         <ol class="breadcrumb no-bg mb-0">
-                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                             <li class="breadcrumb-item active">Lists</li>
                         </ol>
                         <button class="mb-4 btn btn-primary mx-a" data-toggle="modal" data-target="#myModal"> Add new</button>
@@ -36,8 +36,8 @@
                                             <input class="form-control" type="text" name="name"
                                                 placeholder="Enter Name" required>
                                             <strong>Description:</strong>
-                                            <input class="form-control" type="text" name="description"
-                                                placeholder="Enter description" required>
+                                            <textarea class="form-control" type="text" name="description"
+                                                placeholder="Enter description" required></textarea>
                                             <strong>Type:</strong>
                                             <select class="form-control" name="type" required>
                                                 <option></option>

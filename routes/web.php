@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ListController;
 use App\Http\Controllers\ScraperJobController;
 use App\Http\Controllers\GoogleBusinessController;
 
@@ -27,6 +28,8 @@ Route::middleware(['auth','verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('contacts', ContactController::class);
+
+    Route::resource('lists', ListController::class);
 
     Route::resource('google-businesses', GoogleBusinessController::class)->only([
         'index', 'show', 'destroy'

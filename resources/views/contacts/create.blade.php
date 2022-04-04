@@ -55,7 +55,6 @@
                                 <center>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </center>
-                                </div>
                             </form>
                             <div class="card-header border-0">
                                 <div class="card-title">
@@ -69,8 +68,6 @@
                     </div>
                 </div>
             </div>
-            <!-- state end-->
-
         </div>
     </main>
 </div>

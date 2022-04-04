@@ -38,7 +38,7 @@
 
             <div class="mt-4 mb-4 checkbox">
                 <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input">
+                    <input type="checkbox" name="remember" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">
                         Remember me

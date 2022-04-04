@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(LeadStatusSeeder::class);
         $this->call(IndustrySeeder::class);
+        $this->call(ListTypeSeeder::class);
     }
 }

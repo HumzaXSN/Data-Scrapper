@@ -44,7 +44,7 @@ class GoogleBusinessScraperCommand extends Command
         $limit = $this->argument('limit');
         $city = $this->argument('city');
         // $searchQueries = array("https://www.google.com/maps/?q= software companies in ".$city, "https://www.google.com/maps/?q= web development companies in ".$city, "https://www.google.com/maps/?q= IT companies in ".$city);
-        $searchQueries = array("https://www.google.com/maps/?q= real estate agencies in ".$city);
+        $searchQueries = array("https://www.google.com/maps/?q= real estate agencies in " .$city);
 
         if ($lastJob !== null) {
 

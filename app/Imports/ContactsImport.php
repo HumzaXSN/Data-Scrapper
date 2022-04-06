@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBatchInserts ,WithChunkReading, SkipsOnError, SkipsOnFailure
+class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBatchInserts, WithChunkReading, SkipsOnError, SkipsOnFailure
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
@@ -27,10 +27,10 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation ,WithBat
     }
 
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         $industy = Industry::where('name', $row['industry'])->first();

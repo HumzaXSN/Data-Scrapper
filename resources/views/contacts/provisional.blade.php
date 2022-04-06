@@ -1,43 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-@include('partials.header')
+    @include('partials.header')
 
-<div class="app-body">
-    @include('partials.left_sidebar')
-    <main class="main-content main_content_styling">
-        <div class="page-title">
-            <div class="p-0 container-fluid">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="mb-0">Check Contacts</h4>
-                        @if (isset($failures))
-                            <div class="alert alert-success">
-                                {{ $success_row }} row were successfully imported.
-                            </div>
-                            <div class="alert alert-danger">
-                                {{ count($failures) }} row were not imported.
-                            </div>
-                            @if (in_array('email', $errorsMsgs))
+    <div class="app-body">
+        @include('partials.left_sidebar')
+        <main class="main-content main_content_styling">
+            <div class="page-title">
+                <div class="p-0 container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4 class="mb-0">Check Contacts</h4>
+                            @if (isset($failures))
+                                <div class="alert alert-success">
+                                    {{ $success_row }} row were successfully imported.
+                                </div>
                                 <div class="alert alert-danger">
-                                    <strong>Email</strong> already exists in the database.
+                                    {{ count($failures) }} row were not imported.
+                                </div>
+                                @if (in_array('email', $errorsMsgs))
+                                    <div class="alert alert-danger">
+                                        <strong>Email</strong> already exists in the database.
+                                    </div>
+                                @endif
+                                @if (in_array('first_name', $errorsMsgs))
+                                    <div class="alert alert-danger">
+                                        <strong>First Name</strong> is empty.
+                                    </div>
+                                @endif
+                            @endif
+                            @if (isset($arr))
+                                <div class="alert alert-danger">
+                                    {{ count($arr) }} row were not imported.
                                 </div>
                             @endif
-                            @if (in_array('first_name', $errorsMsgs))
-                                <div class="alert alert-danger">
-                                    <strong>First Name</strong> is empty.
-                                </div>
-                            @endif
-                        @endif
-                        @if (isset($arr))
-                            <div class="alert alert-danger">
-                                {{ count($arr) }} row were not imported.
-                            </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         <div class="container-fluid">
             <div class="row">
@@ -218,9 +218,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-</div>
+        </main>
+    </div>
 
-@include('partials.footer')
+    @include('partials.footer')
 @endsection

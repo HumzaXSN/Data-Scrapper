@@ -441,7 +441,7 @@
 
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered data-table" id="contact-table" style="width:100%">
+                                <table class="table data-table" id="contact-table" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th><input type="checkbox" name="main_checkbox"><label></label></th>

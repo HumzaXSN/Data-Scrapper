@@ -13,7 +13,6 @@ use App\Repositories\ContactRepositoryInterface;
 
 class ContactController extends Controller
 {
-
     protected $contactRepository;
     public function __construct(ContactRepositoryInterface $contactRepository)
     {
@@ -165,8 +164,8 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $industry = Industry::all();
-        $file = $request->file('csv_file')->store('import');
-        $import = new ContactsImport($request->source);
+        $file = $request->file('csv_file');
+        $import = new ContactsImport($request->source, $request->listId);
         $import->import($file);
         $importFailures = $import->failures();
         $errorsMsgs = [];
@@ -175,7 +174,6 @@ class ContactController extends Controller
             array_push($errorsMsgs,$failure->attribute());
         }
         foreach($importFailures as $failure) {
-
             if(array_key_exists($failure->row(), $failureRows))
             {
                 $failureRows[$failure->row()] = [$failure->values(),'yes'];
@@ -185,29 +183,20 @@ class ContactController extends Controller
                 $failureRows[$failure->row()] = [$failure->values()];
             }
         }
-        return redirect()->route('contactProviosonal')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs]);
-    }
-
-    public function addProvisionalContact()
-    {
-        return view('contacts.provisional')->with(['failures' => session('failures'),'source' => session('source'),'industry' => session('industry'),'success_row' => session('success_row'), 'errorsMsgs' => session('errorsMsgs')]);
+        if (count($importFailures) > 0) {
+            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId]);
+        } else {
+            if(empty($request->listId))
+            return redirect()->route('contacts.index')->with('success', $import->getRowCount() . ' Contacts Added Successfully');
+            else
+            return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
+        }
     }
 
     public function provisionalPage(Request $request)
     {
         $industry = Industry::all();
-        $fname = $request->fname;
-        $lname = $request->lname;
-        $email = $request->email;
-        $title = $request->title;
-        $company = $request->company;
-        $country = $request->country;
-        $state = $request->state;
-        $city = $request->city;
-        $phone = $request->phone;
-        $linkedin_profile = $request->linkedin_profile;
-        $industry_id = $request->industry_id;
-        $source = $request->source;
+        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedin_profile = $request->linkedin_profile; $industry_id = $request->industry_id; $source = $request->source;
         $arr = [];
         for($i=0; $i<count($fname); $i++){
             $bulk_contact_insert = [
@@ -224,16 +213,19 @@ class ContactController extends Controller
                 'industry_id' => $industry_id[$i],
                 'source' => $source[$i]
             ];
-            if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()){
-                Contact::insert($bulk_contact_insert);
+            if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()) {
+                Contact::create($bulk_contact_insert);
+                $getContact = Contact::where('email', $email[$i])->first();
+                $getContact->lists()->attach($request->listId);
             } else {
                 array_push($arr, $bulk_contact_insert );
             }
+            $getEmail = Contact::where('email', $email[$i])->get();
         }
         if($arr == NULL){
             return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
         } else {
-            return view('contacts.provisional',compact('arr', 'industry'));
+            return view('contacts.provisional',compact('arr', 'industry'))->with(['listId' => $request->listId, 'getEmail' => $getEmail]);
         }
     }
 

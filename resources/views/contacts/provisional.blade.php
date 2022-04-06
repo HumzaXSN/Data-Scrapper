@@ -126,6 +126,8 @@
                                                 <input class="form-control" type="hidden" name="source[]"
                                                     value="{{ $source }}">
                                                 @endforeach
+                                                <input class="form-control" type="hidden" name="listId"
+                                                    value="{{ $listId }}">
                                             </tbody>
                                         </table>
                                         @endif
@@ -166,7 +168,7 @@
                                                             value="{{ $data['title'] }}">
                                                         </td>
                                                         <td>
-                                                            <input class="form-control" type="text" name="email[]"
+                                                            <input class="form-control @if(!empty($getEmail)) is-invalid @endif" type="text" name="email[]"
                                                             value="{{ $data['email'] }}">
                                                         </td>
                                                         <td>
@@ -201,6 +203,8 @@
                                                     <input class="form-control" type="hidden" name="source[]"
                                                     value="{{ $data['source'] }}">
                                                 @endforeach
+                                                <input class="form-control" type="hidden" name="listId"
+                                                    value="{{ $listId }}">
                                             </tbody>
                                         </table>
                                         @endif

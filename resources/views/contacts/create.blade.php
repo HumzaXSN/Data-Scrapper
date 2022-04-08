@@ -52,6 +52,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if (isset($list))
+                                <input type="hidden" value={{ $list }} name="listId"/>
+                                @endif
                                 <center>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </center>

@@ -33,8 +33,8 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
      */
     public function model(array $row)
     {
-        $industy = Industry::where('name', $row['industry'])->first();
         ++$this->success_rows;
+        $industy = Industry::where('name', $row['industry'])->first();
         if($this->listId != null) {
             $getContact = Contact::create([
                 'first_name' => $row['first_name'],
@@ -50,7 +50,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source' => $this->source,
             ]);
-            $getContact->lists()->attach($this->listId);
+            $getContact->lists()->syncWithoutDetaching($this->listId);
         } else {
             return new Contact([
                 'first_name' => $row['first_name'],

@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Contact;
+use App\Models\Lists;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Services\DataTable;
 
@@ -74,7 +75,15 @@ class ContactsDataTable extends DataTable
      */
     public function query(Contact $model)
     {
-        return $model->newQuery()->with('lead_status','industry');
+        $getList = $this->getList;
+        if($getList == null) {
+            return $model->newQuery()->with('lead_status', 'industry');
+        } else {
+            return $model->newQuery()->with('lead_status', 'industry')->whereHas('lists', function($query) use ($getList){
+                $query->where('list_id', $getList);
+            });
+        }
+
     }
 
     /**

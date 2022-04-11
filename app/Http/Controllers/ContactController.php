@@ -22,7 +22,6 @@ class ContactController extends Controller
     {
         $getList = request()->list;
         $lists = Lists::all();
-        $contacts = Contact::all();
         $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
         return $dataTable->with('getList', $getList)->render('contacts.index', compact('leadstatuses', 'industries', 'contact', 'lists', 'getList'));

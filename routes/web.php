@@ -47,15 +47,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
                 ->name('update-contacts-page');
 
-    Route::post('/provisional-page',[ContactController::class,'mapHeadings'])
-                ->name('map-headings');
-
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
-
-    Route::get('/add-provisional-contact', [ContactController::class, 'storeProvisionalContactdata'])->name('addProvisionalContactData');
-
-    // Route::get('/import', [ContactController::class, 'index'])->name('import');
-    // Route::post('/import', [ContactController::class, 'import'])->name('import');
 
 });
 require __DIR__.'/auth.php';

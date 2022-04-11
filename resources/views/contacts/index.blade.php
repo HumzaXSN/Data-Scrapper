@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-12">
                         <div class="float-right ml-2 btn-group">
-                            <a class="btn btn-success" href="{{ route('contacts.create') }}"> Import Contacts</a>
+                            <a class="btn btn-success" href="{{ route('contacts.create', ['list' => $getList]) }}"> Import Contacts</a>
                         </div>
                         <button class="mb-4 btn btn-primary mx-a" data-toggle="modal" data-target="#myModal"> Add new
                         </button>
@@ -86,6 +86,18 @@
                                                 <option value="1">Internal</option>
                                                 <option value="2">External</option>
                                             </select>
+                                            @if (empty($getList))
+                                            <strong class="mt-2">Select List:</strong>
+                                            <select class="form-control" name="listId">
+                                                <option value=""> Select List </option>
+                                                @foreach($lists as $list)
+                                                <option value="{{$list->id}}">{{$list->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @endif
+                                            @if (isset($getList))
+                                            <input type="hidden" name="listId" value="{{$getList}}"/>
+                                            @endif
                                         </div>
 
                                         <!-- Modal footer -->
@@ -393,7 +405,7 @@
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4 mb-2 mb-md-0">
                                     <select class="form-control" id="bulk_update_column" name="bulk_update_column">
-                                        <option selected> Select Option </option>
+                                        <option selected hidden> Select Option </option>
                                         <option value="country"> Country </option>
                                         <option value="state"> State </option>
                                         <option value="city"> City </option>
@@ -401,6 +413,7 @@
                                         <option value="reached_count"> Times Reached </option>
                                         <option value="lead_status_id"> Lead status </option>
                                         <option value="industry_id"> Industry </option>
+                                        <option value="list_id"> List </option>
                                         <option value="delete"> Delete Record </option>
                                     </select>
                                 </div>
@@ -415,7 +428,7 @@
                                 </div>
                                 <div class="col-sm-4 mt-2 mb-md-0 d-none" id="lead_statuses">
                                     <select class="form-control" name="lead_status_id">
-                                        <option selected> Lead Status </option>
+                                        <option selected hidden> Select Lead Status </option>
                                         @foreach($leadstatuses as $leadstatus)
                                         <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
                                         @endforeach
@@ -423,9 +436,17 @@
                                 </div>
                                 <div class="col-sm-4 mt-2 mb-md-0 d-none" id="industries">
                                     <select class="form-control" name="industry_id">
-                                        <option selected> Industry </option>
+                                        <option selected hidden> Select Industry </option>
                                         @foreach($industries as $industry)
                                         <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-4 mt-2 mb-md-0 d-none" id="lists">
+                                    <select class="form-control" name="list_id">
+                                        <option selected hidden> Select List </option>
+                                        @foreach($lists as $list)
+                                        <option value="{{$list->id}}">{{$list->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

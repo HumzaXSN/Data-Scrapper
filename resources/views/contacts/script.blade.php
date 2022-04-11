@@ -10,20 +10,30 @@
                 $("#reached_count").hide();
                 $("#lead_statuses").removeClass('d-none');
                 $("#industries").addClass('d-none');
+                $("#lists").addClass('d-none');
             break;
             case "industry_id":
                 $("#reached_count").hide();
                 $("#lead_statuses").addClass('d-none');
                 $("#industries").removeClass('d-none');
+                $("#lists").addClass('d-none');
             break;
             case "delete":
                 $("#reached_count").hide();
                 $("#lead_statuses").addClass('d-none');
+                $("#lists").addClass('d-none');
+                $("#industries").addClass('d-none');
+            break;
+            case "list_id":
+                $("#reached_count").hide();
+                $("#lead_statuses").addClass('d-none');
+                $("#lists").removeClass('d-none');
                 $("#industries").addClass('d-none');
             break;
             default:
                 $("#reached_count").show();
                 $("#lead_statuses").addClass('d-none');
+                $("#lists").addClass('d-none');
                 $("#industries").addClass('d-none');
         }
     });
@@ -40,7 +50,13 @@
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('contacts.index') }}",
+            ajax: {
+                url: "{{ route('contacts.index') }}",
+                data: {
+                    'list': "{{ $getList }}",
+                },
+                type: 'GET',
+            },
             columns: [
                 {
                     data: 'checkbox',

@@ -26,4 +26,9 @@ class Lists extends Model
     {
         return $this->belongsTo(ListType::class);
     }
+
+    public function contacts()
+    {
+        return $this->belongsToMany(Contact::class, 'contact_lists', 'list_id', 'contact_id');
+    }
 }

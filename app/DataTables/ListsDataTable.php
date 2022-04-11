@@ -5,9 +5,6 @@ namespace App\DataTables;
 use App\Models\Lists;
 use App\Models\ListType;
 use Yajra\DataTables\Html\Button;
-use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ListsDataTable extends DataTable
@@ -22,6 +19,9 @@ class ListsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->addColumn('Type', function ($query) {
+                return $query->listType->name;
+            })
             ->addColumn('action', function($query){
                 $list_type = ListType::all();
                 return view('lists.datatable.action', ['list_type'=> $list_type,'list'=>$query])->render();
@@ -38,7 +38,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('user','listType');
+        return $model->newQuery()->with('user');
     }
 
     /**
@@ -75,6 +75,7 @@ class ListsDataTable extends DataTable
             'name',
             'description',
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
+            'Type',
             'action'
         ];
     }

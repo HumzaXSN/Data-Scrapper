@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Contact;
+use App\Models\Industry;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
@@ -18,21 +19,11 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
-    protected $source;
-    public function  __construct($source, $excelcolumns1, $excelcolumns2, $excelcolumns3, $excelcolumns4, $excelcolumns5, $excelcolumns6, $excelcolumns7, $excelcolumns8, $excelcolumns9, $excelcolumns10, $excelcolumns11)
+    protected $source, $listId;
+    public function  __construct($source, $listId)
     {
-        $this->source = $source;
-        $this->columns[0] = $excelcolumns1;
-        $this->columns[1] = $excelcolumns2;
-        $this->columns[2] = $excelcolumns3;
-        $this->columns[3] = $excelcolumns4;
-        $this->columns[4] = $excelcolumns5;
-        $this->columns[5] = $excelcolumns6;
-        $this->columns[6] = $excelcolumns7;
-        $this->columns[7] = $excelcolumns8;
-        $this->columns[8] = $excelcolumns9;
-        $this->columns[9] = $excelcolumns10;
-        $this->columns[10] = $excelcolumns11;
+        $this->listId = $listId;
+        $this->source= $source;
     }
 
     /**
@@ -43,27 +34,39 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
     public function model(array $row)
     {
         ++$this->success_rows;
-        $mapArr = [$this->columns[0], $this->columns[1], $this->columns[2], $this->columns[3], $this->columns[4], $this->columns[5], $this->columns[6], $this->columns[7], $this->columns[8], $this->columns[9], $this->columns[10]];
-        $industry_search = array_search('industry', $mapArr);
-        if ($row[$this->columns[$industry_search]] == 'Healthcare') {
-            $row[$this->columns[$industry_search]] = '2';
+        $industy = Industry::where('name', $row['industry'])->first();
+        if($this->listId != null) {
+            $getContact = Contact::create([
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'title' => $row['title'] ?? NULL,
+                'company' => $row['company'] ?? NULL,
+                'email' => $row['email'],
+                'phone' => $row['phone'] ?? NULL,
+                'country' => $row['country'] ?? NULL,
+                'city' => $row['city'] ?? NULL,
+                'state' => $row['state'] ?? NULL,
+                'industry_id' => $industy->id ?? NULL,
+                'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+                'source' => $this->source,
+            ]);
+            $getContact->lists()->syncWithoutDetaching($this->listId);
         } else {
-            $row[$this->columns[$industry_search]] = '3';
+            return new Contact([
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'title' => $row['title'] ?? NULL,
+                'company' => $row['company'] ?? NULL,
+                'email' => $row['email'],
+                'phone' => $row['phone'] ?? NULL,
+                'country' => $row['country'] ?? NULL,
+                'city' => $row['city'] ?? NULL,
+                'state' => $row['state'] ?? NULL,
+                'industry_id' => $industy->id ?? NULL,
+                'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+                'source' => $this->source,
+            ]);
         }
-        return new Contact([
-            'first_name' => $this->columns[0] == "NULL" ? NULL : $row[$this->columns[0]],
-            'last_name' => $this->columns[1] == "NULL" ? NULL : $row[$this->columns[1]],
-            'title' => $this->columns[2] == "NULL" ? NULL : $row[$this->columns[2]],
-            'company' => $this->columns[3] == "NULL" ? NULL : $row[$this->columns[3]],
-            'email' => $this->columns[4] == "NULL" ? NULL : $row[$this->columns[4]],
-            'phone' => $this->columns[5] == "NULL" ? NULL : $row[$this->columns[5]],
-            'country' => $this->columns[6] == "NULL" ? NULL : $row[$this->columns[6]],
-            'city' => $this->columns[7] == "NULL" ? NULL : $row[$this->columns[7]],
-            'state' => $this->columns[8] == "NULL" ? NULL : $row[$this->columns[8]],
-            'industry_id' => $this->columns[9] == "NULL" ? NULL : $row[$this->columns[9]],
-            'linkedIn_profile' => $this->columns[10] == "NULL" ? NULL : $row[$this->columns[10]],
-            'source' => $this->source,
-        ]);
     }
 
     public function getRowCount(): int
@@ -73,12 +76,9 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
 
     public function rules(): array
     {
-        $mapArr = [$this->columns[0], $this->columns[1], $this->columns[2], $this->columns[3], $this->columns[4], $this->columns[5], $this->columns[6], $this->columns[7], $this->columns[8], $this->columns[9], $this->columns[10]];
-        $email_search = array_search('email', $mapArr);
-        $fname_search = array_search('first_name', $mapArr);
         return [
-            '*.' . $this->columns[$email_search] => ['required', 'unique:contacts,email'],
-            '*.' . $this->columns[$fname_search] => ['required'],
+            '*.email' => ['required', 'unique:contacts,email'],
+            '*.first_name' => ['required'],
         ];
     }
 

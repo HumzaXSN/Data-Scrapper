@@ -15,58 +15,62 @@
                         <h4 class="mb-0">Lists</h4>
                     </div>
                     <div class="col-12" style="display: flex; justify-content: space-between;">
-                        <ol class="breadcrumb no-bg mb-0">
-                            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('lists.index') }}">List</a></li>
-                            <li class="breadcrumb-item active">Views</li>
-                        </ol>
-                        <button class="mb-4 btn btn-success mx-a" data-toggle="modal" data-target="#myModal"> Add Contacts to List </button>
-
-                        <div class="modal fade" id="myModal">
-                            <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <!-- Modal Header -->
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Add Contacts to List</h4>
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        </div>
-
-                                        <!-- Modal body -->
-                                        <div class="modal-body">
-                                            <form class="picker-form" method="POST" action="{{ route('lists.store') }}" enctype="multipart/form-data">
+                        <div>
+                            <ol class="breadcrumb no-bg mb-0">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('lists.index') }}">List</a></li>
+                                <li class="breadcrumb-item active">Views</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <a class="btn btn-primary" href="{{ route('contacts.index',['list' => $list->id]) }}" style="margin-bottom: 24px;">Show Emails</a>
+                            <button class="mb-4 btn btn-success mx-a" data-toggle="modal" data-target="#myModal"> Add Contacts to List </button>
+                            <div class="modal fade" id="myModal">
+                                <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form class="picker-form" method="POST" action="{{ route('contacts.store') }}" enctype="multipart/form-data">
                                                 {{ csrf_field() }}
-                                                <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label col-form-label-sm">Select CSV File</label>
-                                                    <div class="col-sm-6">
-                                                        <input type="file" class="form-control" name="csv_file" required>
+                                                <!-- Modal Header -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Add Contacts to List</h4>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+
+                                                <!-- Modal body -->
+                                                <div class="modal-body">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-4 col-form-label col-form-label-sm">Select CSV File</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="file" class="form-control" name="csv_file" required>
+                                                        </div>
                                                     </div>
+                                                    <center>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" id="internal" name="source" value="1" required>
+                                                                Internal
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="radio" id="external" name="source" value="0" required>
+                                                                External
+                                                            </label>
+                                                        </div>
+                                                    </center>
+                                                    <input type="hidden" value={{ $list->id }} name="listId"/>
+                                                </div>
+
+                                                <!-- Modal footer -->
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Submit</button>
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                 </div>
                                             </form>
-                                            <center>
-                                                <h5>OR</h5>
-                                            </center>
-                                            <hr class="border-bulk">
-                                            <div>
-                                                <div class="picker-form">
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-4 col-form-label col-form-label-sm">Choose from Contacts</label>
-                                                        <a href="{{ route('contacts.index') }}">
-                                                            <i class="fa fa-plus"></i>
-                                                            Add Contacts
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-
-                                        <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

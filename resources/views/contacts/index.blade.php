@@ -89,7 +89,7 @@
                                             @if (empty($getList))
                                             <strong class="mt-2">Select List:</strong>
                                             <select class="form-control" name="listId">
-                                                <option selected hidden disabled> Select List </option>
+                                                <option value=""> Select List </option>
                                                 @foreach($lists as $list)
                                                 <option value="{{$list->id}}">{{$list->name}}</option>
                                                 @endforeach

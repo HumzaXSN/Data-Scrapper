@@ -1,4 +1,3 @@
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script https="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
 
@@ -137,7 +136,6 @@
         }).on('draw', function(){
                     $('input[name="contact_checkbox"]').each(function(){this.checked = false;});
                     $('input[name="main_checkbox"]').prop('checked', false);
-                    $('button#deleteAllBtn').addClass('d-none');
                 });
 
         $('.filter-input').keyup(function () {
@@ -249,7 +247,6 @@
                     this.checked = false;
                 });
             }
-            toggledeleteAllBtn();
         });
 
         $(document).on('change','input[name="contact_checkbox"]', function(){
@@ -263,48 +260,18 @@
                }else{
                    $('input[name="main_checkbox"]').prop('checked', false);
                }
-               toggledeleteAllBtn();
            });
 
-        function toggledeleteAllBtn(){
-               if( $('input[name="contact_checkbox"]:checked').length > 0 ){
-                   $('button#deleteAllBtn').text('Delete ('+$('input[name="contact_checkbox"]:checked').length+')').removeClass('d-none');
-               }else{
-                   $('button#deleteAllBtn').addClass('d-none');
-               }
-           }
-
-        $(document).on('click','button#deleteAllBtn', function(){
-               var checkedContacts = [];
-               $('input[name="contact_checkbox"]:checked').each(function(){
-                   checkedContacts.push($(this).data('id'));
-               });
-
-               var url = '{{ route("delete.selected.contacts") }}';
-               if(checkedContacts.length > 0){
-                   swal.fire({
-                       title:'Are you sure?',
-                       html:'You want to delete <b>('+checkedContacts.length+')</b> contacts',
-                       showCancelButton:true,
-                       showCloseButton:true,
-                       confirmButtonText:'Yes, Delete',
-                       cancelButtonText:'Cancel',
-                       confirmButtonColor:'#556ee6',
-                       cancelButtonColor:'#d33',
-                       width:300,
-                       allowOutsideClick:false
-                   }).then(function(result){
-                       if(result.value){
-                           $.post(url,{contacts_ids:checkedContacts},function(data){
-                              if(data.code == 1){
-                                  $('#contact-table').DataTable().ajax.reload(null, true);
-                                  toastr.success(data.msg);
-                              }
-                           },'json');
-                       }
-                   })
-               }
-           });
+        $(document).on('change','input[name="main_checkbox"]', function(){
+            var checkedMain = [];
+            if(this.checked) {
+                $('input[name="contact_checkbox"]').each(function(){
+                checkedMain.push($(this).data('id'));
+                });
+            }
+            $("#record_range").val(checkedMain.join(','));
+        });
+        
     });
 
 </script>

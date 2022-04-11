@@ -297,12 +297,4 @@ class ContactController extends Controller
         $contact->lists()->detach();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
     }
-
-    public function deleteSelectedContacts(Request $request)
-    {
-        $contact_ids = $request->contacts_ids;
-        $contact_ids->lists()->detach();
-        Contact::whereIn('id', $contact_ids)->delete();
-        return response()->json(['code' => 1, 'msg' => 'Selected Contacts deleted Successfully']);
-    }
 }

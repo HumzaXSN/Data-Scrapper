@@ -50,7 +50,13 @@
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
-            url: "{{ route('contacts.index',['list' => $list]) }}",
+            ajax: {
+                url: "{{ route('contacts.index') }}",
+                data: {
+                    'list': "{{ $getList }}",
+                },
+                type: 'GET',
+            },
             columns: [
                 {
                     data: 'checkbox',

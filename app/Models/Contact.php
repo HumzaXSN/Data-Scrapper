@@ -20,6 +20,7 @@ class Contact extends Model
         'company',
         'phone',
         'email',
+        'unsub_link',
         'source',
         'status',
         'country',

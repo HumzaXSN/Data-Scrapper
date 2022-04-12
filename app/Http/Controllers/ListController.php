@@ -41,7 +41,7 @@ class ListController extends Controller
         Lists::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'list_type_id' => $request->input('type'),
+            'list_type_id' => 2,
             'user_id' => auth()->user()->id,
         ]);
         return redirect()->route('lists.index')->with('success', 'List created successfully');

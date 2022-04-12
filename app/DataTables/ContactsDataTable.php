@@ -3,7 +3,6 @@
 namespace App\DataTables;
 
 use App\Models\Contact;
-use App\Models\Lists;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Services\DataTable;
 

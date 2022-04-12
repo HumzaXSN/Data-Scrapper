@@ -10,7 +10,7 @@
             <div class="p-0 container-fluid">
                 <div class="row">
                     <div class="col-8">
-                        @if ($getList != 2)
+                        @if ($getList != 1)
                         <h2 class="pl-0">Contacts</h2>
                         @else
                         <h4 class="mb-0">Master Block List</h4>
@@ -21,7 +21,7 @@
                         <div class="float-right ml-2 btn-group">
                             <a class="btn btn-success" href="{{ route('contacts.create', ['list' => $getList]) }}"> Import Contacts</a>
                         </div>
-                        @if ($getList != 2)
+                        @if ($getList != 1)
                             <button class="mb-4 btn btn-primary mx-a" data-toggle="modal" data-target="#myModal"> Add new </button>
                             {{-- Add New Modal --}}
                             <div class="modal fade" id="myModal">

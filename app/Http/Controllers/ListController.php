@@ -80,7 +80,6 @@ class ListController extends Controller
     {
         $input = $request->except(['_token', '_method']);
         $list->update($input);
-
         return redirect()->route('lists.index')->with('success', 'List updated successfully');
     }
 
@@ -93,7 +92,7 @@ class ListController extends Controller
     public function destroy(Lists $list)
     {
         $list->delete();
-
+        $list->contacts()->detach();
         return redirect()->route('lists.index')->with('success', 'List deleted successfully');
     }
 }

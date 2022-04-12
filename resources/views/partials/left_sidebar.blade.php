@@ -26,6 +26,12 @@
                             <span>Lists</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('contacts.index',['list' => 1]) }}">
+                            <i class="fa fa-dot-circle-o text-primary"></i>
+                            <span>Master Block List</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>

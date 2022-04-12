@@ -147,6 +147,7 @@ class ContactController extends Controller
                 'title' => $request->title,
                 'company' => $request->company,
                 'email' => $request->email,
+                'unsub_link' => base64_encode($request->email),
                 'country' => $request->country,
                 'state' => $request->state,
                 'city' => $request->city,
@@ -219,6 +220,7 @@ class ContactController extends Controller
                 'title' => $title[$i],
                 'company' => $company[$i],
                 'email' => $email[$i],
+                'unsub_link' => base64_encode($email[$i]),
                 'country' => $country[$i],
                 'state' => $state[$i],
                 'city' => $city[$i],
@@ -296,13 +298,5 @@ class ContactController extends Controller
         $contact->delete();
         $contact->lists()->detach();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
-    }
-
-    public function deleteSelectedContacts(Request $request)
-    {
-        $contact_ids = $request->contacts_ids;
-        $contact_ids->lists()->detach();
-        Contact::whereIn('id', $contact_ids)->delete();
-        return response()->json(['code' => 1, 'msg' => 'Selected Contacts deleted Successfully']);
     }
 }

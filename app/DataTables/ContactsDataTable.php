@@ -62,6 +62,9 @@ class ContactsDataTable extends DataTable
             ->addColumn('checkbox', function($query){
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
+            ->setRowClass(function ($query) {
+                return $query->lists()->where('list_id', 1)->first() != null ? 'alert-danger' : '';
+            })
             ->escapeColumns([])
             ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','industry','action','checkbox']);
     }

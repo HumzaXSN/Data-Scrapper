@@ -63,7 +63,11 @@ class ContactsDataTable extends DataTable
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
             ->setRowClass(function ($query) {
-                return $query->lists()->where('list_id', 1)->first() != null ? 'alert-danger' : '';
+                foreach($query->lists as $list) {
+                    if($list->pivot->list_id == 1) {
+                        return 'alert-danger';
+                    }
+                }
             })
             ->escapeColumns([])
             ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','industry','action','checkbox']);

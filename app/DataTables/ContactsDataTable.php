@@ -100,9 +100,6 @@ class ContactsDataTable extends DataTable
     {
         return $this->builder()
                     ->setTableId('contacts-table')
-                    ->parameters([
-                        'order' => [['id', 'asc']]
-                    ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->buttons(

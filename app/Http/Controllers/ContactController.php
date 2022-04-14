@@ -64,8 +64,15 @@ class ContactController extends Controller
             }
             if ($get_bulk_column == 'list_id') {
                 $getContact = Contact::whereBetween('id', [$from, $to])->get();
-                foreach($getContact as $contact){
-                    $contact->lists()->syncWithoutDetaching($getList);
+                if($getList == 1) {
+                    foreach ($getContact as $contact) {
+                        $contact->lists()->sync($getList);
+                    }
+                } else {
+                    foreach ($getContact as $contact) {
+                        $contact->lists()->syncWithoutDetaching($getList);
+                        $contact->lists()->detach(1);
+                    }
                 }
                 return back()->with('success', 'Values Updated');
             }
@@ -102,8 +109,15 @@ class ContactController extends Controller
         }
         if ($get_bulk_column == 'list_id') {
             $getContact = Contact::whereIn('id', $bulk_comma_record)->get();
-            foreach ($getContact as $contact) {
-                $contact->lists()->syncWithoutDetaching($getList);
+            if($getList == 1) {
+                foreach ($getContact as $contact) {
+                    $contact->lists()->sync($getList);
+                }
+            } else {
+                foreach ($getContact as $contact) {
+                    $contact->lists()->syncWithoutDetaching($getList);
+                    $contact->lists()->detach(1);
+                }
             }
             return;
         }
@@ -181,6 +195,7 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
+        ini_set('max_execution_time', '400');
         $import->import($file);
         $importFailures = $import->failures();
         $errorsMsgs = [];
@@ -294,9 +309,15 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
-
         $contact->delete();
         $contact->lists()->detach();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
+    }
+
+    public function shiftToMBL()
+    {
+        $contacts = Contact::where('id', request()->id)->first();
+        $contacts->lists()->sync(1);
+        return redirect()->back()->with('success', 'Contact shifted to MBL successfully');
     }
 }

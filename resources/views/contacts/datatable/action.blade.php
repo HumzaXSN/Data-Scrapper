@@ -22,6 +22,10 @@
                         <i class="pr-2 icon-close text-danger"></i>
                         Delete
                     </a>
+                    <a class="dropdown-item" href="{{ route('contacts.MBL',['id' => $contact->id]) }}">
+                        <i class="pr-2 ti-export text-success"></i>
+                        Shift to MBL
+                    </a>
             </div>
         </div>
     </div>

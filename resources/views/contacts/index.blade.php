@@ -175,10 +175,6 @@
                                                 placeholder="title">
                                             {{-- Lead Status --}}
                                             <strong class="mt-2">Lead Status:</strong>
-                                            {{-- <input type="text"
-                                                class="form-control"
-                                                name="leadstatus" id="leadstatus"
-                                                placeholder="Lead Status" disabled> --}}
                                                 <select class="form-control"
                                                 name="lead_status_id">
                                                 <option id="leadstatus" selected disabled>Select Lead Status</option>

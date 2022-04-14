@@ -44,7 +44,10 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
                 ->name('update-contacts-page');
 
-    Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
+    Route::get('/shift-to-MBL',[ContactController::class,'shiftToMBL'])
+                ->name('contacts.MBL');
+
+    Route::post('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
 });
 require __DIR__.'/auth.php';

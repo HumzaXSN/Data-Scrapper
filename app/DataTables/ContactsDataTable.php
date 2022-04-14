@@ -83,11 +83,11 @@ class ContactsDataTable extends DataTable
     {
         $getList = $this->getList;
         if($getList == null) {
-            return $model->newQuery()->with('lead_status', 'industry');
+            return $model->newQuery()->with('lead_status', 'industry')->orderBy('id', 'desc');
         } else {
             return $model->newQuery()->with('lead_status', 'industry')->whereHas('lists', function($query) use ($getList){
                 $query->where('list_id', $getList);
-            });
+            })->orderBy('id', 'desc');
         }
 
     }

@@ -58,7 +58,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
                         'country' => $row['country'] ?? NULL,
                         'city' => $row['city'] ?? NULL,
                         'state' => $row['state'] ?? NULL,
-                        'industry_id' => $industy->id ?? NULL,
+                        'industry_id' => $industy->id ?? 1,
                         'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                         'source' => $this->source,
                     ]);

@@ -38,7 +38,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('user')->where('list_type_id', 2);
+        return $model->newQuery()->with('user')->where('list_type_id', 2)->orderBy('id', 'desc');
     }
 
     /**

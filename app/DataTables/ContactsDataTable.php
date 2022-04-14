@@ -89,7 +89,6 @@ class ContactsDataTable extends DataTable
                 $query->where('list_id', $getList);
             })->orderBy('id', 'desc');
         }
-
     }
 
     /**
@@ -101,9 +100,8 @@ class ContactsDataTable extends DataTable
     {
         return $this->builder()
                     ->setTableId('contacts-table')
-                    // ->columns($this->getColumns())
                     ->parameters([
-                        'order' => [[0, 'desc']]
+                        'order' => [['id', 'asc']]
                     ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')
@@ -115,16 +113,6 @@ class ContactsDataTable extends DataTable
                         Button::make('reload')
                     );
     }
-
-    /**
-     * Get columns.
-     *
-     * @return array
-     */
-    // protected function getColumns()
-    // {
-        #code...
-    // }
 
     /**
      * Get filename for export.

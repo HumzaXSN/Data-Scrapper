@@ -139,8 +139,9 @@ class ContactController extends Controller
      */
     public function create()
     {
+        $lists = Lists::all();
         $list = request()->list;
-        return view('contacts.create', compact('list'));
+        return view('contacts.create', compact('list', 'lists'));
     }
 
     public function addContact(Request $request)
@@ -195,7 +196,7 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
-        ini_set('max_execution_time', '400');
+        ini_set('max_execution_time', '600');
         $import->import($file);
         $importFailures = $import->failures();
         $errorsMsgs = [];
@@ -231,18 +232,18 @@ class ContactController extends Controller
         for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
-                'last_name' => $lname[$i],
-                'title' => $title[$i],
-                'company' => $company[$i],
+                'last_name' => isset($lname[$i]) ?: null,
+                'title' => isset($title[$i]) ?: null,
+                'company' => isset($company[$i]) ?: null,
                 'email' => $email[$i],
                 'unsub_link' => base64_encode($email[$i]),
-                'country' => $country[$i],
-                'state' => $state[$i],
-                'city' => $city[$i],
-                'phone' => $phone[$i],
-                'linkedin_profile' => $linkedin_profile[$i],
-                'industry_id' => $industry_id[$i],
-                'source' => $source[$i]
+                'country' => isset($country[$i]) ?: null,
+                'state' => isset($state[$i]) ?: null,
+                'city' => isset($city[$i]) ?: null,
+                'phone' => isset($phone[$i]) ?: null,
+                'linkedin_profile' => isset($linkedin_profile[$i]) ?: null,
+                'industry_id' => isset($industry_id[$i]) ?: null,
+                'source' => isset($source[$i]) ?: null
             ];
             if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()) {
                 Contact::create($bulk_contact_insert);

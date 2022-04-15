@@ -59,72 +59,84 @@
                                                     <th>First Name</th>
                                                     <th>Last Name</th>
                                                     <th>Company</th>
-                                                    <th>Title</th>
                                                     <th>Email</th>
-                                                    <th>Country</th>
-                                                    <th>State</th>
-                                                    <th>City</th>
-                                                    <th>Phone</th>
-                                                    <th>LinkedIn Profile</th>
-                                                    <th>Industry</th>
+                                                    <th class="d-none">Title</th>
+                                                    <th class="d-none">Country</th>
+                                                    <th class="d-none">State</th>
+                                                    <th class="d-none">City</th>
+                                                    <th class="d-none">Phone</th>
+                                                    <th class="d-none">LinkedIn Profile</th>
+                                                    <th class="d-none">Industry</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($failures as $failure)
-                                                <tr>
-                                                    <td>
-                                                        <input
-                                                            class="form-control @if($failure[0]['first_name'] == null) is-invalid @endif"
-                                                            type="text" name="fname[]" placeholder="Enter Firstname"
-                                                            value="{{ $failure[0]['first_name'] }}">
-                                                    </td>
-                                                    <td> <input class="form-control" type="text" name="lname[]"
-                                                            placeholder="Enter Lastname"
-                                                            value="{{ $failure[0]['last_name'] }}" required>
-                                                    </td>
-                                                    <td> <input class="form-control" type="text" name="company[]"
-                                                            placeholder="Enter Company name"
-                                                            value="{{ $failure[0]['company'] }}"> </td>
-                                                    <td> <input class="form-control" type="text" name="title[]"
-                                                            placeholder="Enter Title"
-                                                            value="{{ $failure[0]['title'] }}"> </td>
-                                                    <td>
-                                                         <input
-                                                            class="form-control @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
-                                                            type="email" name="email[]" placeholder="Enter E-mail"
-                                                            value="{{ $failure[0]['email'] }}" required>
-                                                    </td>
-                                                    <td> <input class="form-control" type="text" name="country[]"
-                                                            placeholder="Enter Country"
-                                                            value="{{ $failure[0]['country'] }}"> </td>
-                                                    <td> <input class="form-control" type="text" name="state[]"
-                                                            placeholder="Enter State"
-                                                            value="{{ $failure[0]['state'] }}" required> </td>
-                                                    <td> <input class="form-control" type="text" name="city[]"
-                                                            placeholder="Enter City"
-                                                            value="{{ $failure[0]['city'] }}" required> </td>
-                                                    <td> <input class="form-control" type="text" name="phone[]"
-                                                            placeholder="Enter Phone"
-                                                            value="{{ $failure[0]['phone'] }}"> </td>
-                                                    <td> <input class="form-control" type="text"
-                                                            name="linkedin_profile[]"
-                                                            placeholder="Enter LinkedIn Profile"
-                                                            value="{{ $failure[0]['linkedin_profile'] }}"> </td>
-                                                    <td> <select class="form-control" name="industry_id[]">
-                                                            @if ($failure[0]['industry'] == 'Healthcare')
-                                                            <option value="2" selected hidden>Healthcare</option>
-                                                            @endif
-                                                            @if ($failure[0]['industry'] == 'Software House')
-                                                            <option value="3" selected hidden>Software House</option>
-                                                            @endif
-                                                            @foreach($industry as $industries)
-                                                            <option value="{{$industries->id}}">{{$industries->name}}
-                                                            </option>
-                                                            @endforeach
-                                                        </select> </td>
-                                                </tr>
-                                                <input class="form-control" type="hidden" name="source[]"
-                                                    value="{{ $source }}">
+                                                    <tr>
+                                                        <td> <input
+                                                             class="form-control @if($failure[0]['first_name'] == null) is-invalid @endif"
+                                                             type="text" name="fname[]" placeholder="Enter Firstname"
+                                                             value="{{ $failure[0]['first_name'] }}">
+                                                        </td>
+                                                        <td> <input
+                                                            class="form-control"
+                                                            type="text" name="lname[]" placeholder="Enter Lastname"
+                                                            value="{{ $failure[0]['last_name'] }}">
+                                                        </td>
+                                                        <td> <input
+                                                            class="form-control"
+                                                            type="text" name="company[]" placeholder="Enter Company"
+                                                            value="{{ $failure[0]['company'] }}">
+                                                        </td>
+                                                        <td>
+                                                             <input
+                                                                class="form-control  @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
+                                                                type="email" name="email[]" placeholder="Enter E-mail"
+                                                                value="{{ $failure[0]['email'] }}" required>
+                                                        </td>
+                                                        @if (isset($failure[0]['title']))
+                                                            <td class="d-none"> <input
+                                                                type="text" name="title[]" placeholder="Enter Title"
+                                                                value="{{ $failure[0]['title'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['country']))
+                                                            <td class="d-none"> <input class="form-control d-none" type="hidden" name="country[]"
+                                                                placeholder="Enter Country"
+                                                                value="{{ $failure[0]['country'] }}"> </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['state']))
+                                                            <td class="d-none"> <input class="form-control d-none" type="hidden" name="state[]"
+                                                                placeholder="Enter State"
+                                                                value="{{ $failure[0]['state'] }}"> </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['city']))
+                                                            <td class="d-none"> <input class="form-control d-none" type="hidden" name="city[]"
+                                                                placeholder="Enter City"
+                                                                value="{{ $failure[0]['city'] }}"> </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['phone']))
+                                                            <td class="d-none"> <input type="hidden" name="phone[]"
+                                                                placeholder="Enter Phone"
+                                                                value="{{ $failure[0]['phone'] }}"> </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['linkedin_profile']))
+                                                            <td class="d-none"> <input type="hidden" name="linkedin_profile[]"
+                                                                placeholder="Enter LinkedIn Profile"
+                                                                value="{{ $failure[0]['linkedin_profile'] }}"> </td>
+                                                        @endif
+                                                        @if (isset($failure[0]['industry']))
+                                                            <td class="d-none"> <select name="industry_id[]">
+                                                                @if ($failure[0]['industry'] == 'Healthcare')
+                                                                <option value="2" selected hidden>Healthcare</option>
+                                                                @endif
+                                                                @if ($failure[0]['industry'] == 'Software House')
+                                                                <option value="3" selected hidden>Software House</option>
+                                                                @endif
+                                                            </select> </td>
+                                                        @endif
+                                                    </tr>
+                                                    <input class="form-control" type="hidden" name="source[]"
+                                                        value="{{ $source }}">
                                                 @endforeach
                                                 <input class="form-control" type="hidden" name="listId"
                                                     value="{{ $listId }}">
@@ -138,14 +150,14 @@
                                                     <th>First Name</th>
                                                     <th>Last Name</th>
                                                     <th>Company</th>
-                                                    <th>Title</th>
                                                     <th>Email</th>
-                                                    <th>Country</th>
-                                                    <th>State</th>
-                                                    <th>City</th>
-                                                    <th>Phone</th>
-                                                    <th>LinkedIn Profile</th>
-                                                    <th>Industry</th>
+                                                    <th class="d-none">Title</th>
+                                                    <th class="d-none">Country</th>
+                                                    <th class="d-none">State</th>
+                                                    <th class="d-none">City</th>
+                                                    <th class="d-none">Phone</th>
+                                                    <th class="d-none">LinkedIn Profile</th>
+                                                    <th class="d-none">Industry</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -164,41 +176,52 @@
                                                             value="{{ $data['company'] }}">
                                                         </td>
                                                         <td>
-                                                            <input class="form-control" type="text" name="title[]"
-                                                            value="{{ $data['title'] }}">
-                                                        </td>
-                                                        <td>
                                                             <input class="form-control @if(!empty($getEmail)) is-invalid @endif" type="text" name="email[]"
                                                             value="{{ $data['email'] }}">
                                                         </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" name="country[]"
-                                                            value="{{ $data['country'] }}">
-                                                        </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" name="state[]"
-                                                            value="{{ $data['state'] }}">
-                                                        </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" name="city[]"
-                                                            value="{{ $data['city'] }}">
-                                                        </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" name="phone[]"
-                                                            value="{{ $data['phone'] }}">
-                                                        </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" name="linkedin_profile[]"
-                                                            value="{{ $data['linkedin_profile'] }}">
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-control" name="industry_id[]">
-                                                                <option class="d-none" value="{{ $data['industry_id'] }}">Selected</option>
-                                                                @foreach($industry as $industries)
-                                                                    <option value="{{$industries->id}}">{{$industries->name}}</option>
-                                                                @endforeach
+                                                        @if (isset($data['title']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="title[]"
+                                                                value="{{ $data['title'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['country']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="country[]"
+                                                                value="{{ $data['country'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['state']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="state[]"
+                                                                value="{{ $data['state'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['city']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="city[]"
+                                                                value="{{ $data['city'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['phone']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="phone[]"
+                                                                value="{{ $data['phone'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['linkedin_profile']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="linkedin_profile[]"
+                                                                value="{{ $data['linkedin_profile'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['industry_id']))
+                                                        <td class="d-none">
+                                                            <select name="industry_id[]">
+                                                                <option value="{{ $data['industry_id'] }}">Selected</option>
                                                             </select>
                                                         </td>
+                                                        @endif
                                                     </tr>
                                                     <input class="form-control" type="hidden" name="source[]"
                                                     value="{{ $data['source'] }}">

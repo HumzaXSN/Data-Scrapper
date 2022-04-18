@@ -232,18 +232,18 @@ class ContactController extends Controller
         for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
-                'last_name' => isset($lname[$i]) ?: null,
-                'title' => isset($title[$i]) ?: null,
-                'company' => isset($company[$i]) ?: null,
+                'last_name' => isset($lname[$i]) ? $lname[$i] : null,
+                'title' => isset($title[$i]) ? $title[$i] : null,
+                'company' => isset($company[$i]) ? $company[$i] : null,
                 'email' => $email[$i],
                 'unsub_link' => base64_encode($email[$i]),
-                'country' => isset($country[$i]) ?: null,
-                'state' => isset($state[$i]) ?: null,
-                'city' => isset($city[$i]) ?: null,
-                'phone' => isset($phone[$i]) ?: null,
-                'linkedin_profile' => isset($linkedin_profile[$i]) ?: null,
-                'industry_id' => isset($industry_id[$i]) ?: null,
-                'source' => isset($source[$i]) ?: null
+                'country' => isset($country[$i]) ? $country[$i] : null,
+                'state' => isset($state[$i]) ? $state[$i] : null,
+                'city' => isset($city[$i]) ? $city[$i] : null,
+                'phone' => isset($phone[$i]) ? $phone[$i] : null,
+                'linkedin_profile' => isset($linkedin_profile[$i]) ? $linkedin_profile[$i] : null,
+                'industry_id' => isset($industry_id[$i]) ? $industry_id[$i] : null,
+                'source' => $source[0],
             ];
             if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()) {
                 Contact::create($bulk_contact_insert);
@@ -260,7 +260,7 @@ class ContactController extends Controller
             else
             return redirect()->route('lists.show', $request->listId)->with('success', 'Contact added successfully');
         } else {
-            return view('contacts.provisional',compact('arr', 'industry'))->with(['listId' => $request->listId, 'getEmail' => $getEmail]);
+            return view('contacts.provisional',compact('arr', 'industry'))->with(['listId' => $request->listId, 'getEmail' => $getEmail, 'source' => $source]);
         }
     }
 

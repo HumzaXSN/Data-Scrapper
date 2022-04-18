@@ -53,8 +53,13 @@ class ContactsDataTable extends DataTable
                     return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
                 }
             })
-            ->addColumn('industry', function($query){
-                return '<a class="editindsutry">'. $query->industry->name .'</a>';
+            ->addColumn('industry', function($query) {
+                if($query->industry == null) {
+                    return '<a class="editindustry">'.'No Industry'.'</a>';
+                }
+                else {
+                    return '<a class="editindustry">' .$query->industry->name.'</a>';
+                }
             })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();

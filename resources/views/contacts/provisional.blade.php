@@ -135,11 +135,11 @@
                                                             </select> </td>
                                                         @endif
                                                     </tr>
-                                                    <input class="form-control" type="hidden" name="source[]"
-                                                        value="{{ $source }}">
                                                 @endforeach
+                                                <input class="form-control" type="hidden" name="source"
+                                                        value="{{ $source }}">
                                                 <input class="form-control" type="hidden" name="listId"
-                                                    value="{{ $listId }}">
+                                                        value="{{ $listId }}">
                                             </tbody>
                                         </table>
                                         @endif
@@ -224,11 +224,11 @@
                                                         </td>
                                                         @endif
                                                     </tr>
-                                                    <input class="form-control" type="hidden" name="source[]"
-                                                    value="{{ $data['source'] }}">
                                                 @endforeach
                                                 <input class="form-control" type="hidden" name="listId"
                                                     value="{{ $listId }}">
+                                                <input class="form-control" type="hidden" name="source[]"
+                                                value="{{ $data['source'] }}">
                                             </tbody>
                                         </table>
                                         @endif

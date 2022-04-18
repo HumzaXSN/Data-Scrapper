@@ -120,7 +120,7 @@
                                                                 value="{{ $failure[0]['phone'] }}"> </td>
                                                         @endif
                                                         @if (isset($failure[0]['linkedin_profile']))
-                                                            <td class="d-none"> <input type="hidden" name="linkedin_profile[]"
+                                                            <td class="d-none"> <input type="hidden" name="linkedIn_profile[]"
                                                                 placeholder="Enter LinkedIn Profile"
                                                                 value="{{ $failure[0]['linkedin_profile'] }}"> </td>
                                                         @endif
@@ -148,10 +148,10 @@
                                             <thead>
                                                 <tr>
                                                     <th>First Name</th>
-                                                    @if (isset($arr['last_name']))
+                                                    @if (isset($arr[0]['last_name']))
                                                         <th>Last Name</th>
                                                     @endif
-                                                    @if (isset($arr['company']))
+                                                    @if (isset($arr[0]['company']))
                                                         <th>Company</th>
                                                     @endif
                                                     <th>Email</th>
@@ -210,10 +210,10 @@
                                                                 value="{{ $data['phone'] }}">
                                                             </td>
                                                         @endif
-                                                        @if (isset($data['linkedin_profile']))
+                                                        @if (isset($data['linkedIn_profile']))
                                                             <td class="d-none">
-                                                                <input type="hidden" name="linkedin_profile[]"
-                                                                value="{{ $data['linkedin_profile'] }}">
+                                                                <input type="hidden" name="linkedIn_profile[]"
+                                                                value="{{ $data['linkedIn_profile'] }}">
                                                             </td>
                                                         @endif
                                                         @if (isset($data['industry_id']))

@@ -227,7 +227,7 @@ class ContactController extends Controller
     public function provisionalPage(Request $request)
     {
         $industry = Industry::all();
-        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedin_profile = $request->linkedin_profile; $industry_id = $request->industry_id; $source = $request->source;
+        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source;
         $arr = [];
         for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
@@ -241,8 +241,8 @@ class ContactController extends Controller
                 'state' => isset($state[$i]) ? $state[$i] : null,
                 'city' => isset($city[$i]) ? $city[$i] : null,
                 'phone' => isset($phone[$i]) ? $phone[$i] : null,
-                'linkedin_profile' => isset($linkedin_profile[$i]) ? $linkedin_profile[$i] : null,
-                'industry_id' => isset($industry_id[$i]) ? $industry_id[$i] : null,
+                'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
+                'industry_id' => isset($industry_id[$i]) ? $industry_id[$i] : 1,
                 'source' => $source[0],
             ];
             if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()) {

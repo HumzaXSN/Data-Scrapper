@@ -54,12 +54,7 @@ class ContactsDataTable extends DataTable
                 }
             })
             ->addColumn('industry', function($query) {
-                if($query->industry == null) {
-                    return '<a class="editindustry">'.'No Industry'.'</a>';
-                }
-                else {
-                    return '<a class="editindustry">' .$query->industry->name.'</a>';
-                }
+                return '<a class="editindsutry">' . $query->industry->name . '</a>';
             })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();

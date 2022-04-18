@@ -14,8 +14,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBatchInserts, WithChunkReading, SkipsOnError, SkipsOnFailure
+class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBatchInserts, WithChunkReading, SkipsOnError, SkipsOnFailure, WithUpserts
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
@@ -27,83 +28,57 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
     }
 
     /**
+     * @return string|array
+     */
+    public function uniqueBy()
+    {
+        return 'email';
+    }
+
+    /**
      * @param array $row
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function model(array $row)
     {
-        $getList = $this->listId;
         ++$this->success_rows;
         $industy = Industry::where('name', $row['industry'])->first();
-        $getContact = Contact::where('email', $row['email'])->first();
-        $getBlock = Contact::where('email', $row['email'])->whereHas('lists', function ($query) {
-            $query->where('list_id', 1);
-        })->first();
-        if (isset($getBlock)) {
-            return null;
+        $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
+        if(count($getContact) > 0) {
+            return new Contact([
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'] ?? NULL,
+                'title' => $row['title'] ?? NULL,
+                'company' => $row['company'] ?? NULL,
+                'email' => $row['email'],
+                'unsub_link' => base64_encode($row['email']),
+                'phone' => $row['phone'] ?? NULL,
+                'country' => $row['country'] ?? NULL,
+                'city' => $row['city'] ?? NULL,
+                'state' => $row['state'] ?? NULL,
+                'industry_id' => $industy->id ?? 1,
+                'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+                'source' => $this->source,
+                'list_id' => 1
+            ]);
         } else {
-            if($getList != 1) {
-                if(isset($getContact)) {
-                    $getContact->lists()->syncWithoutDetaching($getList);
-                } else {
-                    $getContact = Contact::create([
-                        'first_name' => $row['first_name'],
-                        'last_name' => $row['last_name'] ?? NULL,
-                        'title' => $row['title'] ?? NULL,
-                        'company' => $row['company'] ?? NULL,
-                        'email' => $row['email'],
-                        'unsub_link' => base64_encode($row['email']),
-                        'phone' => $row['phone'] ?? NULL,
-                        'country' => $row['country'] ?? NULL,
-                        'city' => $row['city'] ?? NULL,
-                        'state' => $row['state'] ?? NULL,
-                        'industry_id' => $industy->id ?? 1,
-                        'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                        'source' => $this->source,
-                    ]);
-                    $getContact->lists()->syncWithoutDetaching($getList);
-                }
-            }
-            elseif($getList == 1) {
-                if (isset($getContact)) {
-                    $getContact->lists()->sync($getList);
-                } else {
-                    $getContact = Contact::create([
-                        'first_name' => $row['first_name'],
-                        'last_name' => $row['last_name'] ?? NULL,
-                        'title' => $row['title'] ?? NULL,
-                        'company' => $row['company'] ?? NULL,
-                        'email' => $row['email'],
-                        'unsub_link' => base64_encode($row['email']),
-                        'phone' => $row['phone'] ?? NULL,
-                        'country' => $row['country'] ?? NULL,
-                        'city' => $row['city'] ?? NULL,
-                        'state' => $row['state'] ?? NULL,
-                        'industry_id' => $industy->id ?? 1,
-                        'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                        'source' => $this->source,
-                    ]);
-                    $getContact->lists()->sync($getList);
-                }
-            }
-            else {
-                return new Contact([
-                    'first_name' => $row['first_name'],
-                    'last_name' => $row['last_name'] ?? NULL,
-                    'title' => $row['title'] ?? NULL,
-                    'company' => $row['company'] ?? NULL,
-                    'email' => $row['email'],
-                    'unsub_link' => base64_encode($row['email']),
-                    'phone' => $row['phone'] ?? NULL,
-                    'country' => $row['country'] ?? NULL,
-                    'city' => $row['city'] ?? NULL,
-                    'state' => $row['state'] ?? NULL,
-                    'industry_id' => $industy->id ?? 1,
-                    'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                    'source' => $this->source,
-                ]);
-            }
+            return new Contact([
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'] ?? NULL,
+                'title' => $row['title'] ?? NULL,
+                'company' => $row['company'] ?? NULL,
+                'email' => $row['email'],
+                'unsub_link' => base64_encode($row['email']),
+                'phone' => $row['phone'] ?? NULL,
+                'country' => $row['country'] ?? NULL,
+                'city' => $row['city'] ?? NULL,
+                'state' => $row['state'] ?? NULL,
+                'industry_id' => $industy->id ?? 1,
+                'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+                'source' => $this->source,
+                'list_id' => $this->listId
+            ]);
         }
     }
 
@@ -114,17 +89,10 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
 
     public function rules(): array
     {
-        if($this->listId == null) {
-            return [
-                '*.email' => ['required', 'unique:contacts,email'],
-                '*.first_name' => ['required'],
-            ];
-        } else {
-            return [
-                '*.email' => ['required'],
-                '*.first_name' => ['required'],
-            ];
-        }
+        return [
+            '*.email' => ['required', 'email'],
+            '*.first_name' => ['required'],
+        ];
     }
 
     public function batchSize(): int

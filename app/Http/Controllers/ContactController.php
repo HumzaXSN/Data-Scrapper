@@ -156,7 +156,7 @@ class ContactController extends Controller
         $findcontact = Contact::where('email', $request->email)->first();
 
         if ($findcontact == NULL) {
-            $contact = Contact::create([
+            Contact::create([
                 'first_name' => $request->fname,
                 'last_name' => $request->lname,
                 'title' => $request->title,
@@ -168,18 +168,13 @@ class ContactController extends Controller
                 'city' => $request->city,
                 'phone' => $request->phone,
                 'reached_platform' => $request->reach_platform,
-                'linkedin_profile' => $request->linkedin_profile,
+                'linkedIn_profile' => $request->linkedin_profile,
                 'industry_id' => $request->industry_id,
                 'lead_status_id' => $request->lead_status_id,
                 'source' => $request->source,
+                'list_id' => $request->listId,
             ]);
-            if ($request->listId != NULL) {
-                $contact->lists()->syncWithoutDetaching($request->listId);
-                return back()->with('success', 'Contact Added Successfully');
-            }
-            else {
-                return back()->with('success', 'Contact Added Successfully');
-            }
+            return back()->with('success', 'Contact Added Successfully');
         } else {
             return back()->with('error', 'Contact Email already exists');
         }
@@ -220,15 +215,13 @@ class ContactController extends Controller
             if(empty($request->listId))
             return redirect()->route('contacts.index')->with('success', $import->getRowCount() . ' Contacts Added Successfully');
             else
-            return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
+            return redirect()->redirect()->route('lists.show', $request->listId)->with('success', $import->getRowCount() . ' Contacts Added Successfully');
         }
     }
 
-    public function provisionalPage(Request $request)
+    public function provisionalPage(Contact $contact, Request $request)
     {
-        $industry = Industry::all();
-        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source;
-        $arr = [];
+        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source; $listId = $request->listId;
         for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
@@ -244,24 +237,25 @@ class ContactController extends Controller
                 'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
                 'industry_id' => isset($industry_id[$i]) ? $industry_id[$i] : 1,
                 'source' => $source[0],
+                'list_id' => $listId
             ];
-            if($fname[$i]!= '' && !Contact::where('email', $email[$i])->exists()) {
+            $getContact = Contact::where('email', $email[$i])->first();
+            if($getContact == null) {
                 Contact::create($bulk_contact_insert);
-                $getContact = Contact::where('email', $email[$i])->first();
-                $getContact->lists()->syncWithoutDetaching($request->listId);
             } else {
-                array_push($arr, $bulk_contact_insert);
+                if($getContact == $getContact) {
+                    return redirect()->back()->with('error', 'Email Already Exist');
+                } else {
+                    $getContact->update($bulk_contact_insert);
+                }
             }
-            $getEmail = Contact::where('email', $email[$i])->get();
         }
-        if ($arr == NULL) {
-            if(empty($request->listId))
-            return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
-            else
-            return redirect()->route('lists.show', $request->listId)->with('success', 'Contact added successfully');
-        } else {
-            return view('contacts.provisional',compact('arr', 'industry'))->with(['listId' => $request->listId, 'getEmail' => $getEmail, 'source' => $source]);
-        }
+            if(empty($listId)) {
+                return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+            }
+            else {
+                return redirect()->back()->with('success', 'Contact added successfully');
+            }
     }
 
     /**
@@ -311,14 +305,15 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $contact->delete();
-        $contact->lists()->detach();
         return redirect()->route('contacts.index')->with('success', 'Contact deleted successfully');
     }
 
-    public function shiftToMBL()
+    public function shiftToMBL($unsubLink)
     {
-        $contacts = Contact::where('id', request()->id)->first();
-        $contacts->lists()->sync(1);
+        $decoded_email = base64_decode($unsubLink);
+        $contacts = Contact::where('email', $decoded_email)->first();
+        $contacts->list_id = 1;
+        $contacts->update();
         return redirect()->back()->with('success', 'Contact shifted to MBL successfully');
     }
 }

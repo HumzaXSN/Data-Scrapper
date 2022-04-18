@@ -31,6 +31,7 @@ class Contact extends Model
         'reached_platform',
         'lead_status_id',
         'industry_id',
+        'list_id',
     ];
 
     public function industry()
@@ -48,8 +49,8 @@ class Contact extends Model
         return $this->belongsToMany(Note::class);
     }
 
-    public function lists()
+    public function list()
     {
-        return $this->belongsToMany(Lists::class, 'contact_lists', 'contact_id', 'list_id');
+        return $this->belongsTo(Lists::class);
     }
 }

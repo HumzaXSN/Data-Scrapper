@@ -20,7 +20,7 @@
                                 </div>
                                 @if (in_array('email', $errorsMsgs))
                                     <div class="alert alert-danger">
-                                        <strong>Email</strong> is empty.
+                                        <strong>Email</strong> Make sure the email format is correct and is not empty.
                                     </div>
                                 @endif
                                 @if (in_array('first_name', $errorsMsgs))

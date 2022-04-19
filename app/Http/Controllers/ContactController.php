@@ -291,4 +291,13 @@ class ContactController extends Controller
         $contacts->update();
         return redirect()->back()->with('success', 'Contact shifted to MBL successfully');
     }
+
+    public function encodeEmail()
+    {
+        $contacts = Contact::all();
+        foreach ($contacts as $contact) {
+            $contact->unsub_link = base64_encode($contact->email);
+            $contact->save();
+        }
+    }
 }

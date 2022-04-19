@@ -22,10 +22,12 @@
                         <i class="pr-2 icon-close text-danger"></i>
                         Delete
                     </a>
-                    <a class="dropdown-item" href="{{ route('contacts.mbl',['unsubLink' => $contact->unsub_link]) }}">
-                        <i class="pr-2 ti-export text-success"></i>
-                        Shift to MBL
-                    </a>
+                    @if (isset($contact->unsub_link))
+                        <a class="dropdown-item" href="{{ route('contacts.mbl',['unsubLink' => $contact->unsub_link]) }}">
+                            <i class="pr-2 ti-export text-success"></i>
+                            Shift to MBL
+                        </a>
+                    @endif
             </div>
         </div>
     </div>

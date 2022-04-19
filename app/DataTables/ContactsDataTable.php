@@ -53,8 +53,8 @@ class ContactsDataTable extends DataTable
                     return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
                 }
             })
-            ->addColumn('industry', function($query){
-                return '<a class="editindsutry">'. $query->industry->name .'</a>';
+            ->addColumn('industry', function($query) {
+                return '<a class="editindsutry">' . $query->industry->name . '</a>';
             })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
@@ -63,11 +63,10 @@ class ContactsDataTable extends DataTable
                 return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
             })
             ->setRowClass(function ($query) {
-                foreach($query->lists as $list) {
-                    if($list->pivot->list_id == 1) {
-                        return 'alert-danger';
-                    }
-                }
+                if(isset($query->list_id))
+                    return $query->list_id == 1 ? 'alert-danger' : '';
+                else
+                    return '';
             })
             ->escapeColumns([])
             ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','industry','action','checkbox']);
@@ -83,11 +82,9 @@ class ContactsDataTable extends DataTable
     {
         $getList = $this->getList;
         if($getList == null) {
-            return $model->newQuery()->with('lead_status', 'industry')->orderBy('id', 'desc');
+            return $model->newQuery()->with('lead_status', 'industry');
         } else {
-            return $model->newQuery()->with('lead_status', 'industry')->whereHas('lists', function($query) use ($getList){
-                $query->where('list_id', $getList);
-            })->orderBy('id', 'desc');
+            return $model->newQuery()->with('lead_status', 'industry')->where('list_id', $getList);
         }
     }
 

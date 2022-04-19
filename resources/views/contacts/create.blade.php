@@ -53,7 +53,21 @@
                                     </div>
                                 </div>
                                 @if (isset($list))
-                                <input type="hidden" value={{ $list }} name="listId"/>
+                                    <input type="hidden" value={{ $list }} name="listId"/>
+                                @else
+                                    <center>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label col-form-label-sm">Choose List</label>
+                                            <div class="col-sm-4">
+                                                <select class="form-control" name="listId">
+                                                    <option value="" selected>Select List</option>
+                                                    @foreach($lists as $list)
+                                                    <option value="{{$list->id}}">{{$list->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </center>
                                 @endif
                                 <center>
                                     <button type="submit" class="btn btn-primary">Submit</button>

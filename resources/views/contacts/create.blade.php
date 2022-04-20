@@ -62,7 +62,9 @@
                                                 <select class="form-control" name="listId">
                                                     <option value="" selected>Select List</option>
                                                     @foreach($lists as $list)
-                                                    <option value="{{$list->id}}">{{$list->name}}</option>
+                                                        @if ($list->id != 1)
+                                                            <option value="{{ $list->id }}">{{ $list->name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>

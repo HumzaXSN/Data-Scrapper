@@ -53,6 +53,8 @@
                 url: "{{ route('contacts.index') }}",
                 data: {
                     'list': "{{ $getList }}",
+                    'startDate': "{{ $startDate }}",
+                    'endDate': "{{ $endDate }}",
                 },
                 type: 'GET',
             },
@@ -86,7 +88,7 @@
                     name: 'title'
                 },
                 {
-                    data: 'email',
+                    data: 'emailLink',
                     name: 'email'
                 },
                 {
@@ -271,7 +273,7 @@
             }
             $("#record_range").val(checkedMain.join(','));
         });
-        
+
     });
 
 </script>

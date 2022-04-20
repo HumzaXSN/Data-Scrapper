@@ -20,11 +20,13 @@ class ContactController extends Controller
      */
     public function index(ContactsDataTable $dataTable, Contact $contact)
     {
+        $startDate = request()->startDate;
+        $endDate = request()->endDate;
         $getList = request()->list;
         $lists = Lists::all();
         $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
-        return $dataTable->with('getList', $getList)->render('contacts.index', compact('leadstatuses', 'industries', 'contact', 'lists', 'getList'));
+        return $dataTable->with(['getList' => $getList, 'startDate' => $startDate, 'endDate' => $endDate])->render('contacts.index', compact('leadstatuses', 'industries', 'contact', 'lists', 'getList', 'startDate', 'endDate'));
     }
 
     public function bulkupdate(Request $request)
@@ -170,7 +172,11 @@ class ContactController extends Controller
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
         ini_set('max_execution_time', '600');
-        $import->import($file);
+        try {
+            $import->import($file);
+        } catch (Exception $e) {
+            return back()->with('error', 'Please make sure the file is correct.');
+        }
         $importFailures = $import->failures();
         $errorsMsgs = [];
         $failureRows = [];
@@ -178,12 +184,9 @@ class ContactController extends Controller
             array_push($errorsMsgs, $failure->attribute());
         }
         foreach($importFailures as $failure) {
-            if(array_key_exists($failure->row(), $failureRows))
-            {
+            if(array_key_exists($failure->row(), $failureRows)) {
                 $failureRows[$failure->row()] = [$failure->values(),'yes'];
-            }
-            else
-            {
+            } else {
                 $failureRows[$failure->row()] = [$failure->values()];
             }
         }
@@ -218,17 +221,12 @@ class ContactController extends Controller
             if($getContact == null) {
                 Contact::create($bulk_contact_insert);
             } else {
-                if($getContact == $getContact) {
-                    return redirect()->back()->with('error', 'Email Already Exist');
-                } else {
-                    $getContact->update($bulk_contact_insert);
-                }
+                $getContact->update($bulk_contact_insert);
             }
         }
             if(empty($listId)) {
                 return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
-            }
-            else {
+            } else {
                 return redirect()->back()->with('success', 'Contact added successfully');
             }
     }

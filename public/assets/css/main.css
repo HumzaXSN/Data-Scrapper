@@ -4757,11 +4757,6 @@ custom chart style
     margin-right: 1rem;
 }
 
-#contact-table_wrapper>div:nth-child(2)
-{
-    overflow-x: auto;
-}
-
 .main-content.main_content_styling
 {
     width: 100%;
@@ -4791,6 +4786,18 @@ custom chart style
 }
 
 .modalButtons
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.contact-data
+{
+    overflow: auto !important;
+    height: 56vh !important;
+}
+
+.showButtons
 {
     display: flex;
     justify-content: space-between;

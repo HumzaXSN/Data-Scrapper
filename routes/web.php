@@ -35,14 +35,17 @@ Route::middleware(['auth','verified'])->group(function () {
         'index', 'show', 'destroy'
     ]);
 
+    Route::post('/update-provisional-page', [ContactController::class, 'provisionalPage'])
+        ->name('update-contacts-page');
+
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
                 ->name('bulk-update');
 
     Route::post('/add-contact', [ContactController::class, 'addContact'])
                 ->name('add-contact');
 
-    Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
-                ->name('update-contacts-page');
+    // Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
+    //             ->name('update-contacts-page');
 
     Route::post('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 

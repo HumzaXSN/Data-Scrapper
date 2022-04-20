@@ -331,8 +331,22 @@
                 <div class=" col-sm-12">
                     <div class="mb-4 card card-shadow">
                         <div class="card-header mb-3">
-                            <div class="card-title">
-                                Filters
+                            <div class="card-header showButtons">
+                                <div class="card-title">
+                                    Filters
+                                </div>
+                                <div>
+                                    <form method="GET" action="{{ route('contacts.index') }}">
+                                        <div class="form-group row">
+                                            <label>FROM</label>
+                                            <input type="date" class="form-control col-4" name="startDate" value="{{ $startDate }}" required>
+                                            <label>TO</label>
+                                            <input type="date" class="form-control col-4" name="endDate" value="{{ $endDate }}" required>
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                            <a href="{{ route('contacts.index') }}" class="btn btn-secondary">Reset</a>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         <div class="row ml-1 mr-1">
@@ -351,6 +365,10 @@
                             <div class="col-sm-3">
                                 <input type="text" class="form-control filter-input" placeholder="Title"
                                     data-column="5" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <input type="text" class="form-control filter-input" placeholder="Email"
+                                    data-column="6" />
                             </div>
                             <div class="col-sm-3 mt-2">
                                 <input type="text" class="form-control filter-input" placeholder="Country"
@@ -462,7 +480,7 @@
                         <hr class="border-bulk">
 
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div class="table-responsive contact-data">
                                 <table class="table data-table" id="contact-table" style="width:100%">
                                     <thead>
                                         <tr>
@@ -481,6 +499,7 @@
                                             <th class="d-none">Times Reached</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
+                                            <th>Created at</th>
                                             <th>Action <button class="btn btn-sm btn-danger d-none"
                                                     id="deleteAllBtn">Delete Selected</button></th>
                                         </tr>

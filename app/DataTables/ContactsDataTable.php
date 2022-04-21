@@ -32,7 +32,7 @@ class ContactsDataTable extends DataTable
                 return '<a class="editcompany">'. $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status .'</a>';
             })
             // Email
-            ->addColumn('email', function($query){
+            ->addColumn('emailLink', function($query){
                 return '<a href="mailto:'.$query->email.'">'.$query->email.'</a>';
             })
             // Lead Country
@@ -69,7 +69,7 @@ class ContactsDataTable extends DataTable
                     return '';
             })
             ->escapeColumns([])
-            ->rawColumns(['flp_name','ctl_name','email','csc_name','pc_name','industry','action','checkbox']);
+            ->rawColumns(['flp_name','ctl_name','emailLink','csc_name','pc_name','industry','action','checkbox']);
     }
 
     /**
@@ -80,11 +80,17 @@ class ContactsDataTable extends DataTable
      */
     public function query(Contact $model)
     {
+        $startDate = $this->startDate;
+        $endDate = $this->endDate;
         $getList = $this->getList;
-        if($getList == null) {
+        if(empty($startDate) && $getList == null) {
             return $model->newQuery()->with('lead_status', 'industry');
-        } else {
+        } elseif(empty($startDate) && $getList != null) {
             return $model->newQuery()->with('lead_status', 'industry')->where('list_id', $getList);
+        } elseif(!empty($startDate) && $getList == null) {
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate, $endDate]);
+        } elseif(!empty($startDate) && $getList != null) {
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate, $endDate])->where('list_id', $getList);
         }
     }
 

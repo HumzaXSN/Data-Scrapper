@@ -48,8 +48,6 @@ Route::middleware(['auth','verified'])->group(function () {
 
 });
 
-Route::get('/encode-emails', [ContactController::class, 'encodeEmail'])->name('encode-emails');
-
 Route::get('/shift-to-mbl/{unsubLink}', [ContactController::class, 'shiftToMBL'])->name('contacts.mbl');
 
 require __DIR__.'/auth.php';

@@ -88,9 +88,9 @@ class ContactsDataTable extends DataTable
         } elseif(empty($startDate) && $getList != null) {
             return $model->newQuery()->with('lead_status', 'industry')->where('list_id', $getList);
         } elseif(!empty($startDate) && $getList == null) {
-            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate, $endDate]);
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"]);
         } elseif(!empty($startDate) && $getList != null) {
-            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate, $endDate])->where('list_id', $getList);
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"])->where('list_id', $getList);
         }
     }
 

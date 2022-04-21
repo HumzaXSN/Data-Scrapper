@@ -338,13 +338,13 @@
                                 <div>
                                     <form method="GET" action="{{ route('contacts.index') }}">
                                         <div class="form-group row">
-                                            <label>FROM</label>
+                                            <label class="filter-label-one">FROM</label>
                                             <input type="date" class="form-control col-4" name="startDate" value="{{ $startDate }}" required>
-                                            <label>TO</label>
+                                            <label class="filter-label-two">TO</label>
                                             <input type="date" class="form-control col-4" name="endDate" value="{{ $endDate }}" required>
-                                            <button type="submit" class="btn btn-primary">Filter</button>
-                                            <a href="{{ route('contacts.index') }}" class="btn btn-secondary">Reset</a>
                                         </div>
+                                        <button class="btn btn-primary filter-button" type="submit">Filter</button>
+                                        <a href="{{ route('contacts.index') }}" class="btn btn-secondary">Reset</a>
                                     </form>
                                 </div>
                             </div>

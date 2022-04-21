@@ -4802,3 +4802,21 @@ custom chart style
     display: flex;
     justify-content: space-between;
 }
+
+.filter-label-one
+{
+    padding-right: 10px;
+    margin-top: auto;
+}
+
+.filter-label-two
+{
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: auto;
+}
+
+.filter-button
+{
+    margin-left: 120px;
+}

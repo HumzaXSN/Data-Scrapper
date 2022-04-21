@@ -499,7 +499,6 @@
                                             <th class="d-none">Times Reached</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
-                                            <th>Created at</th>
                                             <th>Action <button class="btn btn-sm btn-danger d-none"
                                                     id="deleteAllBtn">Delete Selected</button></th>
                                         </tr>

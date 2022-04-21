@@ -20,7 +20,7 @@
                                 </div>
                                 @if (in_array('email', $errorsMsgs))
                                     <div class="alert alert-danger">
-                                        <strong>Email</strong> Make sure the email format is correct and is not empty.
+                                        Make sure the <strong>Email</strong> format is correct and is not empty.
                                     </div>
                                 @endif
                                 @if (in_array('first_name', $errorsMsgs))
@@ -51,6 +51,7 @@
                                 <div class="table-responsive">
                                     <form action="{{ route('update-contacts-page') }}" method="post">
                                         @csrf
+                                        @if(isset($failures))
                                         <table id="editable" class="table table-bordered data-table">
                                             <thead>
                                                 <tr>
@@ -70,7 +71,7 @@
                                                         <td> <input
                                                              class="form-control @if($failure[0]['first_name'] == null) is-invalid @endif"
                                                              type="text" name="fname[]" placeholder="Enter Firstname"
-                                                             value="{{ $failure[0]['first_name'] }}" required>
+                                                             value="{{ $failure[0]['first_name'] }}">
                                                         </td>
                                                         @if (isset($failure[0]['last_name']))
                                                             <td> <input
@@ -90,7 +91,7 @@
                                                              <input
                                                                 class="form-control  @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
                                                                 type="email" name="email[]" placeholder="Enter E-mail"
-                                                                value="{{ $failure[0]['email'] }}" required>
+                                                                value="{{ $failure[0]['email'] }}">
                                                         </td>
                                                         @if (isset($failure[0]['title']))
                                                             <td class="d-none"> <input
@@ -141,6 +142,96 @@
                                                         value="{{ $listId }}">
                                             </tbody>
                                         </table>
+                                        @endif
+                                        @if(isset($arr))
+                                        <table class="table table-bordered data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>First Name</th>
+                                                    @if (isset($arr[0]['last_name']))
+                                                        <th>Last Name</th>
+                                                    @endif
+                                                    @if (isset($arr[0]['company']))
+                                                        <th>Company</th>
+                                                    @endif
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($arr as $data )
+                                                    <tr>
+                                                        <td>
+                                                            <input placeholder="Enter Firstname" class="form-control @if($data['first_name'] == null) is-invalid @endif" type="text" name="fname[]"
+                                                            value="{{ $data['first_name'] }}">
+                                                        </td>
+                                                        @if (isset($data['last_name']))
+                                                            <td>
+                                                                <input placeholder="Enter Lastname" class="form-control" type="text" name="lname[]"
+                                                                value="{{ $data['last_name'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['company']))
+                                                            <td>
+                                                                <input placeholder="Enter Company" class="form-control" type="text" name="company[]"
+                                                                value="{{ $data['company'] }}">
+                                                            </td>
+                                                        @endif
+                                                        <td>
+                                                            <input placeholder="Enter Email" class="form-control @if($data['email'] == null) is-invalid @endif" type="text" name="email[]"
+                                                            value="{{ $data['email'] }}">
+                                                        </td>
+                                                        @if (isset($data['title']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="title[]"
+                                                                value="{{ $data['title'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['country']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="country[]"
+                                                                value="{{ $data['country'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['state']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="state[]"
+                                                                value="{{ $data['state'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['city']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="city[]"
+                                                                value="{{ $data['city'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['phone']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="phone[]"
+                                                                value="{{ $data['phone'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['linkedin_profile']))
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="linkedin_profile[]"
+                                                                value="{{ $data['linkedin_profile'] }}">
+                                                            </td>
+                                                        @endif
+                                                        @if (isset($data['industry_id']))
+                                                        <td class="d-none">
+                                                            <select name="industry_id[]">
+                                                                <option value="{{ $data['industry_id'] }}">Selected</option>
+                                                            </select>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    <input class="form-control" type="hidden" name="source[]"
+                                                    value="{{ $data['source'] }}">
+                                                @endforeach
+                                                <input class="form-control" type="hidden" name="listId"
+                                                    value="{{ $listId }}">
+                                            </tbody>
+                                        </table>
+                                        @endif
                                         <center>
                                         <button type="submit" class="btn btn-primary">Update Records</button>
                                         </center>

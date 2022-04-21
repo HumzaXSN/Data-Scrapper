@@ -200,6 +200,7 @@ class ContactController extends Controller
     public function provisionalPage(Request $request)
     {
         $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source; $listId = $request->listId;
+        $arr = [];
         for ($i = 0; $i < count($fname); $i++) {
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
@@ -218,22 +219,26 @@ class ContactController extends Controller
                 'list_id' => $listId
             ];
             $getContact = Contact::where('email', $email[$i])->first();
-            $getList = Contact::where('list_id', 1)->first();
-            if($getContact == null) {
-                Contact::create($bulk_contact_insert);
-            } else {
-                if($getList == null) {
-                    $getContact->update($bulk_contact_insert);
+            if(isset($fname[$i]) && isset($email[$i])) {
+                if ($getContact == NULL) {
+                    Contact::create($bulk_contact_insert);
                 } else {
-                    continue;
+                    $getList = Contact::where([['list_id', 1], ['email', $email[$i]]])->first();
+                    if($getList == null) {
+                        $getContact->update($bulk_contact_insert);
+                    } else {
+                        continue;
+                    }
                 }
+            } else {
+                array_push($arr, $bulk_contact_insert);
             }
         }
-            if(empty($listId)) {
-                return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
-            } else {
-                return redirect()->back()->with('success', 'Contact added successfully');
-            }
+        if($arr == null) {
+            return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+        } else {
+            return view('contacts.provisional', compact('arr', 'listId'));
+        }
     }
 
     /**

@@ -218,10 +218,15 @@ class ContactController extends Controller
                 'list_id' => $listId
             ];
             $getContact = Contact::where('email', $email[$i])->first();
+            $getList = Contact::where('list_id', 1)->first();
             if($getContact == null) {
                 Contact::create($bulk_contact_insert);
             } else {
-                $getContact->update($bulk_contact_insert);
+                if($getList == null) {
+                    $getContact->update($bulk_contact_insert);
+                } else {
+                    continue;
+                }
             }
         }
             if(empty($listId)) {

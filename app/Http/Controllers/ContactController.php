@@ -49,10 +49,7 @@ class ContactController extends Controller
                 $to = $from;
             }
             if ($get_bulk_column == 'delete') {
-                $result = Contact::whereBetween('id', [$from, $to])->get();
-                foreach ($result as $del) {
-                    $del->delete();
-                }
+                Contact::whereBetween('id', [$from, $to])->delete();
                 return back()->with('success', 'Values Updated');
             }
             if ($get_bulk_column == 'lead_status_id') {
@@ -83,10 +80,7 @@ class ContactController extends Controller
     {
         $bulk_comma_record = explode(',', $bulk_range);
         if ($get_bulk_column == 'delete') {
-            $result = Contact::whereIn('id', $bulk_comma_record)->get();
-            foreach ($result as $del) {
-                $del->delete();
-            }
+            Contact::whereIn('id', $bulk_comma_record)->delete();
             return;
         }
         if ($get_bulk_column == 'lead_status_id') {

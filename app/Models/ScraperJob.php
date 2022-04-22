@@ -14,6 +14,8 @@ class ScraperJob extends Model
         'url',
         'platform',
         'status',
+        'keyword',
+        'location'
     ];
 
 }

@@ -68,6 +68,8 @@ class ScraperJobsDataTable extends DataTable
         return [
             'url',
             'platform',
+            'keyword',
+            'location',
             'created_at',
             'end_at',
         ];

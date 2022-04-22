@@ -23,7 +23,7 @@
                             </ol>
                         </div>
                         <div>
-                            <a class="btn btn-primary" href="{{ route('contacts.index',['list' => $list->id]) }}" style="margin-bottom: 24px;">Show Emails</a>
+                            <a class="btn btn-primary" href="{{ route('contacts.index',['list' => $list->id]) }}" style="margin-bottom: 24px;">Show Contacts</a>
                         </div>
                     </div>
                 </div>

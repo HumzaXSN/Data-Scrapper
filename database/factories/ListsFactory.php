@@ -24,7 +24,7 @@ class ListsFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'list_type_id' => $this->faker->randomElement([1, 2]),
+            'list_type_id' => 2,
             'user_id' => 1,
         ];
     }

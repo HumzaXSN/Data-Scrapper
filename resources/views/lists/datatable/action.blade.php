@@ -22,7 +22,7 @@
                 </a>
                 <a class="dropdown-item" href="{{ route('contacts.index',['list' => $list->id]) }}">
                     <i class="pr-2 ti-view-list-alt text-primary"></i>
-                    Show Emails
+                    Show Contacts
                 </a>
             </div>
         </div>

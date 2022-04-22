@@ -65,46 +65,46 @@ $(function() {
 
     //for lobicard
 
-    $('.lobicard-custom-icon').lobiCard({
-        reload: {
-            icon: 'ti-reload'
-        },
-        editTitle: {
-            icon: 'ti-pencil-alt',
-            icon2: 'ti-save-alt'
-        },
-        unpin: {
-            icon: 'ti-move'
-        },
-        minimize: {
-            icon: 'ti-angle-up',
-            icon2: ' ti-angle-down'
-        },
-        close: {
-            icon: 'ti-close'
-        },
-        expand: {
-            icon: 'ti-fullscreen',
-            icon2: 'ti-fullscreen'
-        }
-    });
+    // $('.lobicard-custom-icon').lobiCard({
+    //     reload: {
+    //         icon: 'ti-reload'
+    //     },
+    //     editTitle: {
+    //         icon: 'ti-pencil-alt',
+    //         icon2: 'ti-save-alt'
+    //     },
+    //     unpin: {
+    //         icon: 'ti-move'
+    //     },
+    //     minimize: {
+    //         icon: 'ti-angle-up',
+    //         icon2: ' ti-angle-down'
+    //     },
+    //     close: {
+    //         icon: 'ti-close'
+    //     },
+    //     expand: {
+    //         icon: 'ti-fullscreen',
+    //         icon2: 'ti-fullscreen'
+    //     }
+    // });
 
-    $('.lobicard-custom-control').lobiCard({
-        reload: false,
-        editTitle: false,
-        unpin: false,
-        minimize: {
-            icon: 'ti-angle-up',
-            icon2: ' ti-angle-down'
-        },
-        close: {
-            icon: 'ti-close'
-        },
-        expand: {
-            icon: 'ti-fullscreen',
-            icon2: 'ti-fullscreen'
-        }
-    });
+    // $('.lobicard-custom-control').lobiCard({
+    //     reload: false,
+    //     editTitle: false,
+    //     unpin: false,
+    //     minimize: {
+    //         icon: 'ti-angle-up',
+    //         icon2: ' ti-angle-down'
+    //     },
+    //     close: {
+    //         icon: 'ti-close'
+    //     },
+    //     expand: {
+    //         icon: 'ti-fullscreen',
+    //         icon2: 'ti-fullscreen'
+    //     }
+    // });
 
 
     //popover

@@ -46,6 +46,10 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
+    Route::get('/debug-sentry', function () {
+        throw new Exception('My first Sentry error!');
+    });
+
 });
 
 Route::get('/shift-to-mbl/{unsubLink}', [ContactController::class, 'shiftToMBL'])->name('contacts.mbl');

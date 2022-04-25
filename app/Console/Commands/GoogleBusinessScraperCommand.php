@@ -75,7 +75,8 @@ class GoogleBusinessScraperCommand extends Command
                 $job = ScraperJob::create([
                     'ip' => $ip,
                     'url' => $url,
-                    'platform' => 'Google Business'
+                    'platform' => 'Google Business',
+                    'location' => $city,
                 ]);
 
                 $jobId = $job->id;
@@ -95,7 +96,8 @@ class GoogleBusinessScraperCommand extends Command
             $job = ScraperJob::create([
                 'ip' => $ip,
                 'url' => $url,
-                'platform' => 'Google Business'
+                'platform' => 'Google Business',
+                'location' => $city,
             ]);
 
             $jobId = $job->id;

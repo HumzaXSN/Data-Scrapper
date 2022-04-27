@@ -1,4 +1,5 @@
 microservices/google-business-scraper/node_modules
+microservices/services/node_modules
 /node_modules
 /public/hot
 /public/storage

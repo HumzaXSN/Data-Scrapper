@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-extra')
+const puppeteer = require('puppeteer-extra');
 var mysql = require('mysql');
 require('dotenv').config({ path: '../../.env' });
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
@@ -10,7 +10,7 @@ puppeteer.use(
   })
 )
 
-var args=require('minimist')(process.argv.slice(2),{string:"url"});
+var args = require('minimist')(process.argv.slice(2), { string: "url" });
 var url = args.url;
 var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
@@ -32,44 +32,34 @@ con.connect(function(err) {
 
 
 async function getBusinessis() {
-
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: null
     });
 
-    const page = await browser.newPage()
+    const page = await browser.newPage();
     await page.setViewport({
         width: 1200,
         height: 768
     });
 
     await page.setDefaultNavigationTimeout(0);
-
     await page.goto(url);
     await page.solveRecaptchas();
 
     var allItems = [];
     while(allItems.length <= limit)
     {
-        if (await page.$('.V79n2d-di8rgd-aVTXAb-title')) {
+        if (await page.$('.fontHeadlineSmall')) { // Names got loaded
             break;
         }
 
-        for (let j = 1; j <= 5; j++) {
-
+        for (let j = 1; j <= 5; j++) { // Scroll down
             await page.waitForTimeout(5000);
-
             await page.evaluate(() => {
-                const container = document.querySelector('#pane > div > div.Yr7JMd-pane-content.cYB2Ge-oHo7ed > div > div > div.siAUzd-neVct.section-scrollbox.cYB2Ge-oHo7ed.cYB2Ge-ti6hGc.siAUzd-neVct-Q3DXx-BvBYQ > div.siAUzd-neVct.section-scrollbox.cYB2Ge-oHo7ed.cYB2Ge-ti6hGc.siAUzd-neVct-Q3DXx-BvBYQ');
+                const container = document.querySelectorAll('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd')[1];
                 container.scrollTop = container.scrollHeight;
             });
-            // await page.evaluate(() => {
-            //     const scrollableSection = document.getElementsByClassName(
-            //         'section-layout section-scrollbox cYB2Ge-oHo7ed cYB2Ge-ti6hGc siAUzd-neVct-Q3DXx-BvBYQ'
-            //     );
-            //     scrollableSection[1].scrollTop = scrollableSection[1].scrollHeight;
-            // });
         }
 
         var items = await page.$$eval('.V0h1Ob-haAclf a', as => as.map(a => a.href));

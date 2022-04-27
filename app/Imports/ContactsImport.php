@@ -12,11 +12,10 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithUpserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBatchInserts, WithChunkReading, SkipsOnError, SkipsOnFailure, WithUpserts
+class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure, WithUpserts, WithChunkReading
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
@@ -46,6 +45,7 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
         $industy = Industry::where('name', $row['industry'])->first();
         $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
         if(count($getContact) > 0) {
+            dd($row);
             return new Contact([
                 'first_name' => $row['first_name'],
                 'last_name' => $row['last_name'] ?? NULL,
@@ -93,11 +93,6 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, WithBat
             '*.email' => ['required', 'email'],
             '*.first_name' => ['required'],
         ];
-    }
-
-    public function batchSize(): int
-    {
-        return 1000;
     }
 
     public function chunkSize(): int

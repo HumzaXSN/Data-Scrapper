@@ -97,7 +97,7 @@ class ContactController extends Controller
         }
         else {
             try {
-                $result = Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_reach]);
+                Contact::whereIn('id', $bulk_comma_record)->update([$get_bulk_column => $get_reach]);
                 return;
             } catch (\Exception $e) {
                 report($e);

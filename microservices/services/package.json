@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node google-maps-scraper.js"
+    "start": "node index.js"
   },
-  "author": "",
+  "author": "Muhammad Humza",
   "license": "ISC",
   "dependencies": {
     "@antiadmin/anticaptchaofficial": "^1.0.14",

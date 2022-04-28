@@ -165,7 +165,7 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
-        // ini_set('max_execution_time', '600');
+        ini_set('max_execution_time', '600');
         // try {
             $import->import($file);
         // } catch (Exception $e) {

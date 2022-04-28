@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Contact;
 use App\Models\Industry;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
@@ -15,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure, WithUpserts, WithChunkReading
+class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure, WithUpserts, WithChunkReading, ShouldQueue
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;

@@ -165,30 +165,30 @@ class ContactController extends Controller
         $industry = Industry::all();
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
-        ini_set('max_execution_time', '600');
-        try {
+        // ini_set('max_execution_time', '600');
+        // try {
             $import->import($file);
-        } catch (Exception $e) {
-            return back()->with('error', 'Please make sure the file is correct.');
-        }
-        $importFailures = $import->failures();
-        $errorsMsgs = [];
-        $failureRows = [];
-        foreach ($import->failures() as $failure) {
-            array_push($errorsMsgs, $failure->attribute());
-        }
-        foreach($importFailures as $failure) {
-            if(array_key_exists($failure->row(), $failureRows)) {
-                $failureRows[$failure->row()] = [$failure->values(),'yes'];
-            } else {
-                $failureRows[$failure->row()] = [$failure->values()];
-            }
-        }
-        if (count($importFailures) > 0) {
-            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId]);
-        } else {
-            return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
-        }
+        // } catch (Exception $e) {
+        //     return back()->with('error', 'Please make sure the file is correct.');
+        // }
+        // $importFailures = $import->failures();
+        // $errorsMsgs = [];
+        // $failureRows = [];
+        // foreach ($import->failures() as $failure) {
+        //     array_push($errorsMsgs, $failure->attribute());
+        // }
+        // foreach($importFailures as $failure) {
+        //     if(array_key_exists($failure->row(), $failureRows)) {
+        //         $failureRows[$failure->row()] = [$failure->values(),'yes'];
+        //     } else {
+        //         $failureRows[$failure->row()] = [$failure->values()];
+        //     }
+        // }
+        // if (count($importFailures) > 0) {
+        //     return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId]);
+        // } else {
+        //     return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
+        // }
     }
 
     public function provisionalPage(Request $request)

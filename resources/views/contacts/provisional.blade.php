@@ -126,12 +126,7 @@
                                                         @endif
                                                         @if (isset($failure[0]['industry']))
                                                             <td class="d-none"> <select name="industry_id[]">
-                                                                @if ($failure[0]['industry'] == 'Healthcare')
-                                                                <option value="2" selected hidden>Healthcare</option>
-                                                                @endif
-                                                                @if ($failure[0]['industry'] == 'Software House')
-                                                                <option value="3" selected hidden>Software House</option>
-                                                                @endif
+                                                                <option value="{{ $failure[0]['industry'] }}" selected hidden>{{ $failure[0]['industry'] }}</option>
                                                             </select> </td>
                                                         @endif
                                                     </tr>
@@ -219,7 +214,7 @@
                                                         @if (isset($data['industry_id']))
                                                         <td class="d-none">
                                                             <select name="industry_id[]">
-                                                                <option value="{{ $data['industry_id'] }}">Selected</option>
+                                                                <option value="{{ $data['industry_id'] }}">{{ $data['industry_id'] }}</option>
                                                             </select>
                                                         </td>
                                                         @endif

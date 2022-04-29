@@ -12,7 +12,9 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFailure, WithChunkReading, ShouldQueue
+use Maatwebsite\Excel\Concerns\WithProgressBar;
+
+class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFailure, WithChunkReading, WithProgressBar
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
@@ -94,6 +96,6 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
 
     public function chunkSize(): int
     {
-        return 500;
+        return 1000;
     }
 }

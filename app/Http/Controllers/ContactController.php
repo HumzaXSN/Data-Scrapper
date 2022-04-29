@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Lists;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
-use App\Models\Lists;
 
 class ContactController extends Controller
 {
@@ -162,13 +162,14 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $industry = Industry::all();
-        $file = $request->file('csv_file');
+        // $industry = Industry::all();
+        $file = $request->file('csv_file')->storeAs('import', 'contacts.csv');
+        $csv_file = storage_path('app\import\contacts.csv');
         $import = new ContactsImport($request->source, $request->listId);
         ini_set('max_execution_time', '600');
         ini_set('memory_limit', '-1');
         // try {
-            $import->queue($file);
+            $import->import($file);
         // } catch (Exception $e) {
         //     return back()->with('error', 'Please make sure the file is correct.');
         // }

@@ -65,7 +65,14 @@ async function parseLinks(page) { //parse links
     }
 }
 
-
+async function getData(page) { // get data from url
+    const results = await page.evaluate(() => {
+        return ({
+            Comapany_Name: document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent,
+        })
+    })
+    return results;
+}
 
 (async () => {
     const browser = await puppeteer.launch({headless: false});
@@ -88,14 +95,15 @@ async function parseLinks(page) { //parse links
             for (const link of links) {
                 await page.goto(link);
                 // await page.waitForNetworkIdle();
-                const placesInPage = await parsePlaces(page);
+                const placesInPage = await getData(page);
                 // places = places.concat(placesInPage);
                 // await goToNextPage(page);
                 // await page.waitForNetworkIdle();
+                console.log(placesInPage);
             }
         }
 
-        console.log(places);
+    
 
         // console.log(links);
 

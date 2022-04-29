@@ -167,7 +167,7 @@ class ContactController extends Controller
         $import = new ContactsImport($request->source, $request->listId);
         ini_set('max_execution_time', '600');
         // try {
-            $import->import($file);
+            $import->queue($file);
         // } catch (Exception $e) {
         //     return back()->with('error', 'Please make sure the file is correct.');
         // }
@@ -189,6 +189,7 @@ class ContactController extends Controller
         // } else {
         //     return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
         // }
+        return redirect()->back()->with('success', ' Contacts Added Successfully');
     }
 
     public function provisionalPage(Request $request)

@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Models\Contact;
-use App\Models\Industry;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -12,11 +11,8 @@ use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-
-class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnError, SkipsOnFailure, WithUpserts, WithChunkReading, ShouldQueue
+class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFailure, WithChunkReading, ShouldQueue
 {
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
@@ -27,13 +23,13 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         $this->source= $source;
     }
 
-    /**
-     * @return string|array
-     */
-    public function uniqueBy()
-    {
-        return 'email';
-    }
+    // /**
+    //  * @return string|array
+    //  */
+    // public function uniqueBy()
+    // {
+    //     return 'email';
+    // }
 
     /**
      * @param array $row
@@ -42,11 +38,11 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
      */
     public function model(array $row)
     {
-        ++$this->success_rows;
-        $industy = Industry::where('name', $row['industry'])->first();
-        $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
-        if(count($getContact) > 0) {
-            dd($row);
+    //     ++$this->success_rows;
+    //     $industy = Industry::where('name', $row['industry'])->first();
+    //     $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
+    //     if(count($getContact) > 0) {
+    //         dd($row);
             return new Contact([
                 'first_name' => $row['first_name'],
                 'last_name' => $row['last_name'] ?? NULL,
@@ -58,43 +54,43 @@ class ContactsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
                 'country' => $row['country'] ?? NULL,
                 'city' => $row['city'] ?? NULL,
                 'state' => $row['state'] ?? NULL,
-                'industry_id' => $industy->id ?? 1,
+                'industry_id' => $row['industry'] ?? 1,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source' => $this->source,
-                'list_id' => 1
+                'list_id' => $this->listId,
             ]);
-        } else {
-            return new Contact([
-                'first_name' => $row['first_name'],
-                'last_name' => $row['last_name'] ?? NULL,
-                'title' => $row['title'] ?? NULL,
-                'company' => $row['company'] ?? NULL,
-                'email' => $row['email'],
-                'unsub_link' => base64_encode($row['email']),
-                'phone' => $row['phone'] ?? NULL,
-                'country' => $row['country'] ?? NULL,
-                'city' => $row['city'] ?? NULL,
-                'state' => $row['state'] ?? NULL,
-                'industry_id' => $industy->id ?? 1,
-                'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                'source' => $this->source,
-                'list_id' => $this->listId
-            ]);
-        }
+        // } else {
+        //     return new Contact([
+        //         'first_name' => $row['first_name'],
+        //         'last_name' => $row['last_name'] ?? NULL,
+        //         'title' => $row['title'] ?? NULL,
+        //         'company' => $row['company'] ?? NULL,
+        //         'email' => $row['email'],
+        //         'unsub_link' => base64_encode($row['email']),
+        //         'phone' => $row['phone'] ?? NULL,
+        //         'country' => $row['country'] ?? NULL,
+        //         'city' => $row['city'] ?? NULL,
+        //         'state' => $row['state'] ?? NULL,
+        //         'industry_id' => $industy->id ?? 1,
+        //         'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
+        //         'source' => $this->source,
+        //         'list_id' => $this->listId
+        //     ]);
+        // }
     }
 
-    public function getRowCount(): int
-    {
-        return $this->success_rows;
-    }
+    // public function getRowCount(): int
+    // {
+    //     return $this->success_rows;
+    // }
 
-    public function rules(): array
-    {
-        return [
-            '*.email' => ['required', 'email'],
-            '*.first_name' => ['required'],
-        ];
-    }
+    // public function rules(): array
+    // {
+    //     return [
+    //         '*.email' => ['required', 'email'],
+    //         '*.first_name' => ['required'],
+    //     ];
+    // }
 
     public function chunkSize(): int
     {

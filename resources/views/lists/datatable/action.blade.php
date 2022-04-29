@@ -50,13 +50,6 @@
                     <strong>Description:</strong>
                     <textarea class="form-control" type="text" name="description" placeholder="Enter description"
                         required>{{ $list->description }}</textarea>
-                    <strong>Type:</strong>
-                    <select class="form-control" name="type">
-                        <option value="{{ $list->listType->id }}" selected hidden>{{ $list->listType->name }}</option>
-                        @foreach ($list_type as $type) )
-                        <option value="{{ $type->id }}">{{ $type->name }}</option>
-                        @endforeach
-                    </select>
                 </div>
 
                 <!-- Modal footer -->

@@ -94,6 +94,6 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 500;
     }
 }

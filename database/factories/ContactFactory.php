@@ -39,7 +39,7 @@ class ContactFactory extends Factory
             'reached_platform' => $this->faker->name(),
             'lead_status_id' => $this->faker->randomElement([1, 2, 3, 4, 5]),
             'industry_id' => $this->faker->randomElement([1, 2, 3]),
-            'list_id' => $this->faker->numberBetween(1, 10),
+            'list_id' => $this->faker->numberBetween(2, 10),
         ];
     }
 }

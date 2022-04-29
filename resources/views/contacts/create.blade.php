@@ -77,7 +77,7 @@
                             </form>
                             <div class="card-header border-0">
                                 <div class="card-title">
-                                Plese make sure that the Excel file is in the following format:
+                                Please make sure that the Excel file is in the following format:
                                 </div>
                                 <center>
                                 <a href="https://docs.google.com/spreadsheets/d/11w3F4xkK5Uo0Rg8XsXhHDULtxU9FUOicq5hgbCnBxjQ/edit?usp=sharing" class="btn btn-primary">Sample Sheet</a>

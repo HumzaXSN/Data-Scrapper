@@ -166,6 +166,7 @@ class ContactController extends Controller
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
         ini_set('max_execution_time', '600');
+        ini_set('memory_limit', '-1');
         // try {
             $import->queue($file);
         // } catch (Exception $e) {

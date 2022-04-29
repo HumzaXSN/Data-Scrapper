@@ -42,7 +42,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
     public function model(array $row)
     {
         ++$this->success_rows;
-        $industy = Industry::where('name', $row['industry'])->first();
+        $industy = Industry::firstOrCreate(['name' => $row['industry']]);
         $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
         if(count($getContact) > 0) {
             return new Contact([

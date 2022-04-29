@@ -50,7 +50,7 @@ class ImportExcelCommand extends Command
     // }
     {
         $file = storage_path('app\import\contacts.csv');;
-        $import = new ContactsImport(0, 1);
+        $import = new ContactsImport(0, 6);
         $this->output->title('Starting import');
         $import->withOutput($this->output)->import($file);
         $this->output->success('Import successful');

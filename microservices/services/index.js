@@ -87,12 +87,14 @@ async function getData(page) { // get data from url
 
     console.log('Scrolling...');
     await autoScroll(page);
-    const size = 30;
+    const size = 10;
     const links = await parseLinks(page);
-    while (links.length <= size) {
-        await goToNextPage(page);
-        await autoScroll(page);
-        links.push(...await parseLinks(page));
+    if (links.length < size) {
+        while (links.length <= size) {
+            await goToNextPage(page);
+            await autoScroll(page);
+            links.push(...await parseLinks(page));
+        }
     }
 
     console.log(links.length);

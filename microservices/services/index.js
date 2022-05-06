@@ -35,17 +35,17 @@ async function parsePlaces(page) { // parse results from page
 
 async function goToNextPage(page) { // go to next page
     await page.click('button[aria-label=" Next page "]');
-    await page.waitForNetworkIdle();
+    // await page.waitForNetworkIdle();
 }
 
 async function hasNextPage(page) { // check if there is a next page
     const element = await page.$('button[aria-label=" Next page "]');
-    if(!element) {
+    if (!element) {
         throw new Error('No next page');
     }
 
     const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
-    if(disabled) {
+    if (disabled) {
         console.log('Next page disabled');
     }
 
@@ -75,7 +75,7 @@ async function getData(page) { // get data from url
 }
 
 (async () => {
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     await page.setViewport({
@@ -85,46 +85,22 @@ async function getData(page) { // get data from url
 
     await page.goto('https://www.google.com/maps/search/software+house/@31.4489924,74.3112558,14.25z');
 
-    let places = [];
-
-    // do{
+    console.log('Scrolling...');
+    await autoScroll(page);
+    const size = 30;
+    const links = await parseLinks(page);
+    while (links.length <= size) {
+        await goToNextPage(page);
         await autoScroll(page);
+        links.push(...await parseLinks(page));
+    }
 
-        const links = await parseLinks(page);
-        if(links && links.length) {
-            for (const link of links) {
-                await page.goto(link);
-                // await page.waitForNetworkIdle();
-                const placesInPage = await getData(page);
-                // places = places.concat(placesInPage);
-                // await goToNextPage(page);
-                // await page.waitForNetworkIdle();
-                console.log(placesInPage);
-            }
-        }
+    console.log(links.length);
 
-    
-
-        // console.log(links);
-
-        // places = places.concat(await parsePlaces(page));
-
-        // console.log('Parsed' + places.length + 'places');
-
-    //     await goToNextPage(page);
-    // }while(await hasNextPage(page));
-
-    // const links = await parseLinks(page);
-
-    // if (links && links.length) {
-    //     for (const link of links) {
-    //         await page.goto(link);
-    //         await page.waitForNetworkIdle();
-    //         const placesInPage = await parsePlaces(page);
-    //         places = places.concat(placesInPage);
-    //     }
-    // }
-
-    // console.log(places);
-
+    for (let i = 0; i < size; i++) {
+        const link = links[i];
+        await page.goto(link);
+        const data = await getData(page);
+        console.log(data);
+    }
 })();

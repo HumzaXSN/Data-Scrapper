@@ -3,6 +3,12 @@ const puppeteer = require('puppeteer');
 var mysql = require('mysql');
 require('dotenv').config({ path: '../../.env' });
 
+var args = require('minimist')(process.argv.slice(2), { string: "url" });
+var url = args.url;
+var limit = parseInt(process.argv[3]);
+var jobId = parseInt(process.argv[4]);
+console.log(url);
+
 var con = mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -123,9 +129,9 @@ async function getData(page) { // get data from url
         }
     }
 
-    const results = await page.evaluate(({getWebsite, getPhone}) => {
+    const results = await page.evaluate(({getWebsite, getPhone, jobId}) => {
         return ({
-            scraper_job_id: new Date().getFullYear(),
+            scraper_job_id: jobId,
             company: document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent,
             address: document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0].textContent,
             website: getWebsite,
@@ -133,7 +139,7 @@ async function getData(page) { // get data from url
             created_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds(),
             updated_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()
         })
-    }, {getWebsite, getPhone});
+    }, {getWebsite, getPhone, jobId});
 
     // insert into db
     con.query('INSERT INTO google_businesses SET ?', results, function (err) {
@@ -152,11 +158,10 @@ async function getData(page) { // get data from url
         height: 800
     });
 
-    await page.goto('https://www.google.com/maps/search/software+house/@31.4489924,74.3112558,14.25z');
-
+    await page.goto(url)
     console.log('Scrolling...');
     await autoScroll(page);
-    const size = 10;
+    const size = limit;
     const links = await parseLinks(page);
     if (links.length < size) {
         while (links.length <= size) {
@@ -176,4 +181,10 @@ async function getData(page) { // get data from url
     }
 
     browser.close();
+
+    // close connection
+    con.end(function (err) {
+        if (err) throw err;
+    });
+
 })();

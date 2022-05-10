@@ -13,7 +13,7 @@ class GoogleBusinessScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'run:google-businesses-scraper {limit} {city}';
+    protected $signature = 'run:google-businesses-scraper {limit} {city} {keyword}';
 
     /**
      * The console command description.
@@ -39,12 +39,11 @@ class GoogleBusinessScraperCommand extends Command
      */
     public function handle()
     {
-
         $lastJob = ScraperJob::latest()->first();
         $limit = $this->argument('limit');
         $city = $this->argument('city');
-        // $searchQueries = array("https://www.google.com/maps/?q= software companies in ".$city, "https://www.google.com/maps/?q= web development companies in ".$city, "https://www.google.com/maps/?q= IT companies in ".$city);
-        $searchQueries = array("https://www.google.com/maps/?q= real estate agencies in " .$city);
+        $keyword = $this->argument('keyword');
+        $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
 
         if ($lastJob !== null) {
 
@@ -77,10 +76,11 @@ class GoogleBusinessScraperCommand extends Command
                     'url' => $url,
                     'platform' => 'Google Business',
                     'location' => $city,
+                    'keyword' => $keyword,
                 ]);
 
                 $jobId = $job->id;
-                exec("node microservices/google-business-scraper/google-maps-scraper.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
+                exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
                 $job->status = 1;
                 $job->end_at = now();
                 $job->save();
@@ -98,10 +98,11 @@ class GoogleBusinessScraperCommand extends Command
                 'url' => $url,
                 'platform' => 'Google Business',
                 'location' => $city,
+                'keyword' => $keyword,
             ]);
 
             $jobId = $job->id;
-            exec("node microservices/google-business-scraper/google-maps-scraper.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
+            exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
             $job->status = 1;
             $job->end_at = now();
             $job->save();

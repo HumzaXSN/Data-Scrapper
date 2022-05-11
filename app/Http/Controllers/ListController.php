@@ -92,7 +92,6 @@ class ListController extends Controller
     public function destroy(Lists $list)
     {
         $list->delete();
-        $list->contacts()->detach();
         return redirect()->route('lists.index')->with('success', 'List deleted successfully');
     }
 }

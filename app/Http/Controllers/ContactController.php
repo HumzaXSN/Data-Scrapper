@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Lists;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
-use App\Models\Lists;
 
 class ContactController extends Controller
 {
@@ -163,6 +163,7 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $industry = Industry::all();
+        // $request->file('csv_file')->storeAs('import', 'contacts.csv');
         $file = $request->file('csv_file');
         $import = new ContactsImport($request->source, $request->listId);
         ini_set('max_execution_time', '600');
@@ -196,6 +197,11 @@ class ContactController extends Controller
         $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source; $listId = $request->listId;
         $arr = [];
         for ($i = 0; $i < count($fname); $i++) {
+            if (!is_numeric($industry_id[$i])) {
+                $industry = Industry::where('name', $industry_id[$i])->first();
+            } else {
+                $industry = Industry::find($industry_id[$i]);
+            }
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],
                 'last_name' => isset($lname[$i]) ? $lname[$i] : null,
@@ -208,7 +214,7 @@ class ContactController extends Controller
                 'city' => isset($city[$i]) ? $city[$i] : null,
                 'phone' => isset($phone[$i]) ? $phone[$i] : null,
                 'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
-                'industry_id' => isset($industry_id[$i]) ? $industry_id[$i] : 1,
+                'industry_id' => isset($industry_id[$i]) ? $industry->id : 1,
                 'source' => $source[0],
                 'list_id' => $listId
             ];

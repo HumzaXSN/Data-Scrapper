@@ -124,14 +124,14 @@ async function getData(page) { // get data from url
     }
 
     let getPhone;
-    for (let i = 2; i < 7; i++) {
+    for (let i = 2; i < 8; i++) {
         if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) !== null) {
             getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
             if (regexPhone.test(getPhone)) {
                 break;
             }
             else {
-                if (i === 6) {
+                if (i === 7) {
                     getPhone = null;
                     break;
                 } else {

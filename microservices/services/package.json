@@ -12,9 +12,10 @@
   "dependencies": {
     "@antiadmin/anticaptchaofficial": "^1.0.14",
     "deathbycaptcha2": "^1.0.0",
+    "dotenv": "^16.0.1",
     "mysql": "^2.18.1",
     "promise-poller": "^1.9.1",
-    "puppeteer": "^10.2.0",
+    "puppeteer": "^14.0.0",
     "puppeteer-extra": "^3.1.18",
     "puppeteer-extra-plugin-recaptcha": "^3.4.0",
     "puppeteer-page-proxy": "^1.2.8",

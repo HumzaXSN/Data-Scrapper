@@ -27,7 +27,7 @@ async function autoScroll(page) { // scroll down
     await page.evaluate(async () => {
         await new Promise((resolve, reject) => {
             var totalHeight = 0;
-            var distance = 300;
+            var distance = 100;
             var timer = setInterval(() => {
                 const element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
                 var scrollHeight = element.scrollHeight;
@@ -63,7 +63,7 @@ async function goToNextPage(page) { // go to next page
 async function hasNextPage(page) { // check if there is a next page
     const element = await page.$('button[aria-label=" Next page "]');
     if (!element) {
-        throw new Error('No next page');
+        console.log("No more pages");
     }
 
     const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
@@ -93,57 +93,75 @@ async function getData(page) { // get data from url
     // regex to check the international phone number
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 
+    let getAddress = await page.evaluate(() => {
+        let address = document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0];
+        if (address) {
+            address = address.textContent;
+        } else {
+            address = '';
+        }
+        return address;
+    });
+
     let getWebsite;
     for (let i = 2; i < 6; i++) {
-        getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+i+') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-        if (regexWebsite.test(getWebsite)) {
-            console.log('Valid URL');
-            break;
-        }
-        else {
-            if (i === 5) {
-                console.log('Not a valid url');
-                getWebsite = null;
+        if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+            getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+            if (regexWebsite.test(getWebsite)) {
                 break;
             } else {
-                continue;
+                if (i === 5) {
+                    getWebsite = null;
+                    break;
+                } else {
+                    continue;
+                }
             }
+        } else {
+            getWebsite = null;
+            break;
         }
     }
 
     let getPhone;
     for (let i = 2; i < 7; i++) {
-        getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+i+') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-        if (regexPhone.test(getPhone)) {
-            console.log('Valid Phone Number');
-            break;
-        }
-        else {
-            if (i === 6) {
-                console.log('Not a valid phone number');
-                getPhone = null;
+        if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+            getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+            if (regexPhone.test(getPhone)) {
                 break;
-            } else {
-                continue;
             }
+            else {
+                if (i === 6) {
+                    getPhone = null;
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        } else {
+            getPhone = null;
+            break;
         }
     }
 
-    const results = await page.evaluate(({getWebsite, getPhone, jobId}) => {
+    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress}) => {
         return ({
             scraper_job_id: jobId,
             company: document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent,
-            address: document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0].textContent,
+            address: getAddress,
             website: getWebsite,
             phone: getPhone,
             created_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds(),
             updated_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()
         })
-    }, {getWebsite, getPhone, jobId});
+    }, { getWebsite, getPhone, jobId, getAddress});
 
-    // insert into db
     con.query('INSERT INTO google_businesses SET ?', results, function (err) {
-        if (err) throw err;
+        if (err && err.code === 'ER_DUP_ENTRY') {
+            console.log('Data already exist');
+        } else if (err) {
+            console.log(err);
+        }
     });
 
     return results;
@@ -158,16 +176,20 @@ async function getData(page) { // get data from url
         height: 800
     });
 
-    await page.goto(url)
+    await page.goto(url);
     console.log('Scrolling...');
     await autoScroll(page);
     const size = limit;
     const links = await parseLinks(page);
     if (links.length < size) {
         while (links.length <= size) {
-            await goToNextPage(page);
-            await autoScroll(page);
-            links.push(...await parseLinks(page));
+            if (await hasNextPage(page)) {
+                await goToNextPage(page);
+                await autoScroll(page);
+                links.push(...await parseLinks(page));
+            } else {
+                break;
+            }
         }
     }
 

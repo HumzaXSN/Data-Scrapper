@@ -2,14 +2,15 @@
 
 namespace App\DataTables;
 
-use App\Models\ScraperJob;
+use App\Models\ScraperCriteria;
+
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class ScraperJobsDataTable extends DataTable
+class ScraperCriteriasDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -21,18 +22,22 @@ class ScraperJobsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('Scraper Status', function ($query) {
-                return $query->scraperCriteria->status;
-            });
+            ->addColumn('action', function ($query) {
+                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query])->render();
+            })
+            ->addColumn('Updated At', function ($query) {
+                return $query->updated_at;
+            })
+            ->rawColumns(['action']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\ScraperJob $model
+     * @param \ScraperCriteria $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(ScraperJob $model)
+    public function query(ScraperCriteria $model)
     {
         return $model->newQuery();
     }
@@ -45,13 +50,11 @@ class ScraperJobsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('scraperjobs-table')
+                    ->setTableId('scrapercriterias-table')
                     ->columns($this->getColumns())
-                    ->parameters([
-                        'order' => [[2, 'desc']]
-                    ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')
+                    ->orderBy(1)
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),
@@ -69,14 +72,11 @@ class ScraperJobsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'url',
-            'platform',
             'status',
-            'failed',
-            'exception',
-            'last_index',
-            'Scraper Status',
-            'end_at',
+            'keyword',
+            'location',
+            'Updated At',
+            'action'
         ];
     }
 
@@ -87,6 +87,6 @@ class ScraperJobsDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'ScraperJobs_' . date('YmdHis');
+        return 'ScraperCriterias_' . date('YmdHis');
     }
 }

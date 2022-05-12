@@ -13,7 +13,7 @@ class GoogleBusinessScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'run:google-businesses-scraper {limit} {city} {keyword}';
+    protected $signature = 'run:google-businesses-scraper {keyword} {city} {limit}';
 
     /**
      * The console command description.
@@ -40,9 +40,9 @@ class GoogleBusinessScraperCommand extends Command
     public function handle()
     {
         $lastJob = ScraperJob::latest()->first();
-        $limit = $this->argument('limit');
-        $city = $this->argument('city');
         $keyword = $this->argument('keyword');
+        $city = $this->argument('city');
+        $limit = $this->argument('limit');
         $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
 
         if ($lastJob !== null) {

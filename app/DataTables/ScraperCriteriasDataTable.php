@@ -75,6 +75,7 @@ class ScraperCriteriasDataTable extends DataTable
             'status',
             'keyword',
             'location',
+            'limit',
             'Updated At',
             'action'
         ];

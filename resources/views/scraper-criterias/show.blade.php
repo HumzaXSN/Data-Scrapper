@@ -72,6 +72,14 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <div class="form-group">
+                                            <strong>Limit:</strong>
+                                            {{ $scraperCriteria->limit }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
                                             <strong>Created At:</strong>
                                             {{ $scraperCriteria->created_at }}
                                         </div>

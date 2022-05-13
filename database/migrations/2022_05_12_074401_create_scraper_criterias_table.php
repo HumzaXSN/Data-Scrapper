@@ -18,6 +18,7 @@ class CreateScraperCriteriasTable extends Migration
             $table->string('status');
             $table->string('keyword');
             $table->string('location');
+            $table->string('limit');
             $table->softDeletes();
             $table->timestamps();
         });

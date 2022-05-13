@@ -16,7 +16,8 @@ class ScraperCriteria extends Model
     protected $fillable = [
         'status',
         'keyword',
-        'location'
+        'location',
+        'limit'
     ];
 
     public function scraperJobs() {

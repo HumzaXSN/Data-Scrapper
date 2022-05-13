@@ -13,7 +13,7 @@ class GoogleBusinessScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'run:google-businesses-scraper {keyword} {city} {limit}';
+    protected $signature = 'run:google-businesses-scraper {keyword} {city} {limit} {criteriaId}';
 
     /**
      * The console command description.
@@ -40,17 +40,15 @@ class GoogleBusinessScraperCommand extends Command
     public function handle()
     {
         $lastJob = ScraperJob::latest()->first();
+        $criteriaId = $this->argument('criteriaId');
         $keyword = $this->argument('keyword');
         $city = $this->argument('city');
         $limit = $this->argument('limit');
         $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
-
         if ($lastJob !== null) {
-
             $lastJobTime = Carbon::parse($lastJob->end_at);
             $currentTime = Carbon::parse(now());
             $duration = $lastJobTime->diffInMinutes($currentTime);
-
             if((int)$duration >= 20)
             {
                 if($lastJob !== null) {
@@ -75,20 +73,19 @@ class GoogleBusinessScraperCommand extends Command
                     'ip' => $ip,
                     'url' => $url,
                     'platform' => 'Google Business',
-                    'location' => $city,
-                    'keyword' => $keyword,
+                    'scraper_criteria_id' => $criteriaId
                 ]);
 
                 $jobId = $job->id;
-                exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
+                exec("node " . base_path('microservices/services/index.js') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId);
                 $job->status = 1;
                 $job->end_at = now();
                 $job->save();
-            }else{
+            } else {
                 return;
             }
 
-        }else{
+        } else {
 
             $url = $searchQueries[0];
 
@@ -97,12 +94,11 @@ class GoogleBusinessScraperCommand extends Command
                 'ip' => $ip,
                 'url' => $url,
                 'platform' => 'Google Business',
-                'location' => $city,
-                'keyword' => $keyword,
+                'scraper_criteria_id' => $criteriaId
             ]);
 
             $jobId = $job->id;
-            exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
+            exec("node " . base_path('microservices/services/index.js') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId);
             $job->status = 1;
             $job->end_at = now();
             $job->save();

@@ -16,11 +16,9 @@
                         <i class="pr-2 ti-pencil-alt text-warning"></i>
                         Edit
                     </a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                                    data-toggle="modal"
-                                    data-target=".contact-delete-modal-sm-{{$scraperCriteria->id}}">
-                        <i class="pr-2 icon-close text-danger"></i>
-                        Change Status
+                    <a class="dropdown-item" href="{{ route('scraper-criterias.runScraper', ['limit' => $scraperCriteria->limit, 'location' => $scraperCriteria->location, 'keyword' => $scraperCriteria->keyword, 'id' => $scraperCriteria->id]) }}">
+                        <i class="pr-2 ti-loop text-secondary"></i>
+                        Start Scraper
                     </a>
             </div>
         </div>
@@ -48,6 +46,9 @@
                     <strong>Location:</strong>
                     <input class="form-control" type="text" name="location" placeholder="Enter Status"
                         value="{{ $scraperCriteria->location }}" required>
+                    <strong>Limit:</strong>
+                    <input class="form-control" type="text" name="limit" placeholder="Enter Limit"
+                        value="{{ $scraperCriteria->limit }}" required>
                 </div>
 
                 <!-- Modal footer -->
@@ -58,39 +59,4 @@
             </div>
         </form>
     </div>
-</div>
-
-<div class="modal fade contact-delete-modal-sm-{{$scraperCriteria->id}}"
-tabindex="-1" role="dialog"
-aria-labelledby="mySmallModalLabel-{{$scraperCriteria->id}}" aria-hidden="true">
-<div class="modal-dialog modal-md">
-   <div class="modal-content">
-       <div class="modal-header">
-           <h6 class="modal-title" id="mySmallModalLabel">
-               Change Status
-               <strong>{{ $scraperCriteria->first_name }}</strong></h6>
-           <button type="button" class="close"
-                   data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-           </button>
-       </div>
-       <div class="modal-body">
-           <h6>Are you sure?</h6><br>
-           <form action="{{url('scraper-criterias/'.$scraperCriteria->id)}}"
-               method="post">
-               @csrf
-               @method('DELETE')
-               <div class="float-right">
-                   <button type="submit"
-                           class="btn btn-primary mx-a">Yes
-                   </button>
-                   <button type="button"
-                           class="btn btn-secondary mx-a"
-                           data-dismiss="modal">No
-                   </button>
-               </div>
-           </form>
-       </div>
-   </div>
-</div>
 </div>

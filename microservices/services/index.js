@@ -172,8 +172,8 @@ async function getData(page) { // get data from url
     const page = await browser.newPage();
 
     await page.setViewport({
-        width: 1200,
-        height: 800
+        width: 1920,
+        height: 1080
     });
 
     await page.goto(url);

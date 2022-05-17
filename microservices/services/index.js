@@ -1,12 +1,15 @@
 const puppeteer = require('puppeteer');
 
 var mysql = require('mysql');
+const { toArray } = require('lodash');
 require('dotenv').config({ path: '../../.env' });
 
 var args = require('minimist')(process.argv.slice(2), { string: "url" });
 var url = args.url;
 var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
+var criteriaId = parseInt(process.argv[5]);
+
 console.log(url);
 
 var con = mysql.createConnection({
@@ -29,7 +32,11 @@ async function autoScroll(page) { // scroll down
             var totalHeight = 0;
             var distance = 100;
             var timer = setInterval(() => {
-                const element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
+                if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0] != null) {
+                    var element = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0];
+                } else {
+                    var element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
+                }
                 var scrollHeight = element.scrollHeight;
                 element.scrollBy(0, distance);
                 totalHeight += distance;
@@ -176,11 +183,30 @@ async function getData(page) { // get data from url
         height: 786
     });
 
+    con.query('SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ' + criteriaId + ' ORDER BY id DESC LIMIT 1,1', function (err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (result.length) {
+                last_index = result[0].last_index;
+            } else {
+                last_index = 0;
+                console.log('No data found');
+            }
+        }
+    });
+
     await page.goto(url);
+
     console.log('Scrolling...');
     await autoScroll(page);
-    const size = limit;
-    const links = await parseLinks(page);
+
+    console.log('last_index: '+last_index);
+
+    var size = limit + last_index;
+    console.log('size: '+ size);
+
+    var links = await parseLinks(page);
     if (links.length < size) {
         while (links.length <= size) {
             if (await hasNextPage(page)) {
@@ -193,16 +219,29 @@ async function getData(page) { // get data from url
         }
     }
 
-    console.log(links.length);
+    var getSize = size - last_index;
 
-    for (let i = 0; i < size; i++) {
+    console.log('getSize: '+ getSize);
+
+    links = toArray(links).slice(last_index);
+
+    console.log('links: '+ links.length);
+
+    for (let i = 0; i < getSize; i++) {
         const link = links[i];
         await page.goto(link);
         const data = await getData(page);
         console.log(data);
     }
 
-    browser.close();
+    con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + jobId, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+    });
+
+
+    await browser.close();
 
     // close connection
     con.end(function (err) {

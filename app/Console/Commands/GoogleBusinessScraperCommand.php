@@ -52,11 +52,11 @@ class GoogleBusinessScraperCommand extends Command
             'ip' => $ip,
             'url' => $url,
             'platform' => 'Google Business',
-            'scraper_criteria_id' => $criteriaId
+            'scraper_criteria_id' => $criteriaId,
         ]);
         $jobId = $job->id;
         try {
-            exec("node " . base_path('microservices/services/index.js') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId);
+            exec("node " . base_path('microservices/services/index.js') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
             $job->status = 1;
             $job->failed = 0;
             $job->end_at = now();

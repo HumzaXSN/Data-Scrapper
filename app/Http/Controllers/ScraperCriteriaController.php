@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Models\ScraperCriteria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 
 class ScraperCriteriaController extends Controller
 {
@@ -38,7 +37,7 @@ class ScraperCriteriaController extends Controller
     public function store(Request $request)
     {
         ScraperCriteria::create([
-            'status' => 'Active',
+            'status' => 'In-Active',
             'keyword' => $request->keyword,
             'location' => $request->location,
             'limit' => $request->limit
@@ -90,18 +89,13 @@ class ScraperCriteriaController extends Controller
      */
     public function destroy(ScraperCriteria $scraperCriteria)
     {
-        // $scraperCriteria->update(['status' => 'Inactive']);
-        // return redirect()->route('scraper-criterias.index')->with('success', 'Criteria deleted successfully');
+        //
     }
 
     public function runScraper(Request $request)
     {
-        Artisan::call('run:google-businesses-scraper',[
-            'keyword' => $request->keyword,
-            'city' => $request->location,
-            'limit' => $request->limit,
-            'criteriaId' => $request->id
-        ]);
-        return redirect()->back()->with('success', 'Command Running Successfully');
+        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
+        ScraperCriteria::where('id', $request->id)->update(['status' => 'Active']);
+        return redirect()->back()->with('success', 'Scraper Job Started Successfully');
     }
 }

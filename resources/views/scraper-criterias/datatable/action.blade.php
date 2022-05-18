@@ -49,6 +49,12 @@
                     <strong>Limit:</strong>
                     <input class="form-control" type="text" name="limit" placeholder="Enter Limit"
                         value="{{ $scraperCriteria->limit }}" required>
+                    <strong class="mt-2">Status:</strong>
+                    <select class="form-control" name="status">
+                        <option selected disabled hidden>Select Status</option>
+                        <option value="In-Active">In Active</option>
+                        <option value="Active">Active</option>
+                    </select>
                 </div>
 
                 <!-- Modal footer -->

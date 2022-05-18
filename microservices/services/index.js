@@ -221,7 +221,7 @@ async function getData(page) { // get data from url
     // get all the values and pass them in the below function to insert into the database
     const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading }) => {
         return ({
-            scraper_job_id: 1,
+            scraper_job_id: jobId,
             company: getheading,
             address: getAddress,
             website: getWebsite,
@@ -236,7 +236,7 @@ async function getData(page) { // get data from url
         if (err && err.code === 'ER_DUP_ENTRY') {
             console.log('Data already exist');
         } else if (err) {
-            console.log(err);
+            console.error(err);
         }
     });
 
@@ -257,9 +257,9 @@ async function getData(page) { // get data from url
     });
 
     // get the value of last index
-    con.query('SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ' + 1 + ' ORDER BY id DESC LIMIT 1', function (err, result) {
+    con.query('SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ' + criteriaId + ' ORDER BY id DESC LIMIT 1,1', function (err, result) {
         if (err) {
-            console.log(err);
+            console.error(err);
         } else {
             if (result.length) {
                 last_index = result[0].last_index;
@@ -270,14 +270,14 @@ async function getData(page) { // get data from url
         }
     });
 
-    await page.goto('https://www.google.com/maps/?q=%20real%20estate%20agencies%20in%20lahore');
+    await page.goto(url);
 
     console.log('Scrolling...');
     await autoScroll(page);
 
     console.log('last_index: '+last_index);
 
-    var size = 10 + last_index;
+    var size = limit + last_index;
     console.log('size: '+ size);
 
     // get the links untill where it is defined in size
@@ -312,9 +312,9 @@ async function getData(page) { // get data from url
     }
 
     // update the last index of the current scraper_job
-    con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + 1, function (err, result) {
+    con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + jobId, function (err, result) {
         if (err) {
-            console.log(err);
+            console.error(err);
         }
     });
 

@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
             $getData[0]->limit,
             $getData[0]->id
         ])->daily();
+
+        $schedule->command('test:command-on-server')->everyMinute();
     }
 
     /**

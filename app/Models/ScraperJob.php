@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ScraperCriteria;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ScraperJob extends Model
 {
@@ -14,8 +16,14 @@ class ScraperJob extends Model
         'url',
         'platform',
         'status',
-        'keyword',
-        'location'
+        'failed',
+        'exception',
+        'last_index',
+        'scraper_criteria_id'
     ];
+
+    public function scraperCriteria() {
+        return $this->belongsTo(ScraperCriteria::class);
+    }
 
 }

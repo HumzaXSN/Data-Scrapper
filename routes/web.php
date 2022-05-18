@@ -5,6 +5,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ScraperJobController;
 use App\Http\Controllers\GoogleBusinessController;
+use App\Http\Controllers\ScraperCriteriaController;
+use App\Models\ScraperCriteria;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,11 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('google-businesses', GoogleBusinessController::class)->only([
         'index', 'show', 'destroy'
     ]);
+
+    Route::resource('scraper-criterias', ScraperCriteriaController::class);
+
+    Route::get('/run-scraper', [ScraperCriteriaController::class, 'runScraper'])
+                ->name('scraper-criterias.runScraper');
 
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
                 ->name('bulk-update');

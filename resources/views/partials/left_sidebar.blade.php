@@ -21,6 +21,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('scraper-criterias.index') }}">
+                            <i class="fa fa-dot-circle-o text-primary"></i>
+                            <span>Scraper Criteria</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('lists.index') }}">
                             <i class="fa fa-dot-circle-o text-primary"></i>
                             <span>Lists</span>

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\ScraperCriteria;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GoogleBusinessScraperCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -14,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\GoogleBusinessScraperCommand::class,
+        GoogleBusinessScraperCommand::class,
     ];
 
     /**
@@ -25,10 +26,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $city = config('app.city');
-        $schedule->command(GoogleBusinessScraperCommand::class, [
-            1000, $city
-        ])->everyMinute();
+        $getData = ScraperCriteria::where('status', 'Active')->get();
+        $schedule->command('run:google-businesses-scraper',[
+            $getData[0]->keyword,
+            $getData[0]->location,
+            $getData[0]->limit,
+            $getData[0]->id
+        ])->daily();
     }
 
     /**

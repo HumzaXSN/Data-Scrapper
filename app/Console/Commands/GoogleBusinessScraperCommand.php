@@ -13,7 +13,7 @@ class GoogleBusinessScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'run:google-businesses-scraper {limit} {city}';
+    protected $signature = 'run:google-businesses-scraper {keyword} {city} {limit} {criteriaId}';
 
     /**
      * The console command description.
@@ -39,70 +39,32 @@ class GoogleBusinessScraperCommand extends Command
      */
     public function handle()
     {
-
-        $lastJob = ScraperJob::latest()->first();
-        $limit = $this->argument('limit');
+        $keyword = $this->argument('keyword');
         $city = $this->argument('city');
-        // $searchQueries = array("https://www.google.com/maps/?q= software companies in ".$city, "https://www.google.com/maps/?q= web development companies in ".$city, "https://www.google.com/maps/?q= IT companies in ".$city);
-        $searchQueries = array("https://www.google.com/maps/?q= real estate agencies in " .$city);
+        $limit = $this->argument('limit');
+        $criteriaId = $this->argument('criteriaId');
 
-        if ($lastJob !== null) {
+        $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
 
-            $lastJobTime = Carbon::parse($lastJob->end_at);
-            $currentTime = Carbon::parse(now());
-            $duration = $lastJobTime->diffInMinutes($currentTime);
-
-            if((int)$duration >= 20)
-            {
-                if($lastJob !== null) {
-                    if(in_array($lastJob->url ,$searchQueries))
-                    {
-                        $i = array_search($lastJob->url, $searchQueries);
-                        if($i != count($searchQueries)-1)
-                        {
-                            $url = $searchQueries[$i+=1];
-                        }else {
-                            $url = $searchQueries[0];
-                        }
-                    }else{
-                        $url = $searchQueries[0];
-                    }
-                }else{
-                    $url = $searchQueries[0];
-                }
-
-                $ip = request()->server('SERVER_ADDR');
-                $job = ScraperJob::create([
-                    'ip' => $ip,
-                    'url' => $url,
-                    'platform' => 'Google Business',
-                    'location' => $city,
-                ]);
-
-                $jobId = $job->id;
-                exec("node microservices/google-business-scraper/google-maps-scraper.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
-                $job->status = 1;
-                $job->end_at = now();
-                $job->save();
-            }else{
-                return;
-            }
-
-        }else{
-
-            $url = $searchQueries[0];
-
-            $ip = request()->server('SERVER_ADDR');
-            $job = ScraperJob::create([
-                'ip' => $ip,
-                'url' => $url,
-                'platform' => 'Google Business',
-                'location' => $city,
-            ]);
-
-            $jobId = $job->id;
-            exec("node microservices/google-business-scraper/google-maps-scraper.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
+        $url = $searchQueries[0];
+        $ip = request()->server('SERVER_ADDR');
+        $job = ScraperJob::create([
+            'ip' => $ip,
+            'url' => $url,
+            'platform' => 'Google Business',
+            'scraper_criteria_id' => $criteriaId,
+        ]);
+        $jobId = $job->id;
+        try {
+            exec("node " . base_path('microservices/services/index.js >> microservices/services/logs.log') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
             $job->status = 1;
+            $job->failed = 0;
+            $job->end_at = now();
+            $job->save();
+        } catch (\Exception $e) {
+            $job->status = 0;
+            $job->failed = 1;
+            $job->exception = $e->getMessage();
             $job->end_at = now();
             $job->save();
         }

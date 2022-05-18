@@ -245,7 +245,10 @@ async function getData(page) { // get data from url
 
 // Main function
 (async () => {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch(
+        {   headless: true,
+            args: ["--no-sandbox"]
+        });
     const page = await browser.newPage();
 
     await page.setViewport({

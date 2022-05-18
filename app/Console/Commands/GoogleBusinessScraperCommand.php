@@ -56,7 +56,7 @@ class GoogleBusinessScraperCommand extends Command
         ]);
         $jobId = $job->id;
         try {
-            exec("node " . base_path('microservices/services/index.js') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
+            exec("node " . base_path('microservices/services/index.js >> microservices/services/logs.log') . " --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
             $job->status = 1;
             $job->failed = 0;
             $job->end_at = now();

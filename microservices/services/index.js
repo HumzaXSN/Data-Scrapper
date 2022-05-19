@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
-
+const Sentry = require('./sentry.js');
 var mysql = require('mysql');
-const { toArray, update } = require('lodash');
+const { toArray } = require('lodash');
 require('dotenv').config({ path: '../../.env' });
 
 // getting the data from laravel command
@@ -11,7 +11,7 @@ var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
 var criteriaId = parseInt(process.argv[5]);
 
-console.log(url);
+console.log('URL: "'+ url +'"');
 
 // connect to database
 var con = mysql.createConnection({
@@ -25,82 +25,121 @@ var con = mysql.createConnection({
 
 // connect to database and check for errors
 con.connect(function (err) {
-    if (err) throw err;
-    console.log("DB Connected!");
+    if (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        throw err;
+    }
+    // console.log("DB Connected!");
 });
 
 async function autoScroll(page) { // scroll down
-    await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
-            var totalHeight = 0;
-            var distance = 100;
-            var timer = setInterval(() => {
-                if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0] != null) {
-                    var element = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0];
-                } else {
-                    var element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
-                }
-                var scrollHeight = element.scrollHeight;
-                element.scrollBy(0, distance);
-                totalHeight += distance;
+    try {
+        await page.evaluate(async () => {
+            await new Promise((resolve, reject) => {
+                var totalHeight = 0;
+                var distance = 100;
+                var timer = setInterval(() => {
+                    if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0] != null) {
+                        var element = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0];
+                    } else {
+                        var element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
+                    }
+                    var scrollHeight = element.scrollHeight;
+                    element.scrollBy(0, distance);
+                    totalHeight += distance;
 
-                if (totalHeight >= scrollHeight) {
-                    clearInterval(timer);
-                    resolve();
-                }
-            }, 100);
+                    if (totalHeight >= scrollHeight) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
         });
-    });
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
+    }
 }
 
 async function parsePlaces(page) { // parse results from page
-    let places = [];
-    if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span') != null) {
-        var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
-    } else {
-        var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
-    }
-    if (elements && elements.length) {
-        for (const el of elements) {
-            const name = await el.evaluate(span => span.textContent);
-            places.push({ name });
+    try {
+        let places = [];
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span') != null) {
+            var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
+        } else {
+            var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
         }
+        if (elements && elements.length) {
+            for (const el of elements) {
+                const name = await el.evaluate(span => span.textContent);
+                places.push({ name });
+            }
+        }
+        return places;
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
-    return places;
 }
 
 async function goToNextPage(page) { // go to next page
-    await page.click('button[aria-label=" Next page "]');
+    try {
+        await page.click('button[aria-label=" Next page "]');
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
+    }
 }
 
 async function hasNextPage(page) { // check if there is a next page
-    const element = await page.$('button[aria-label=" Next page "]');
-    if (!element) {
-        console.log("No more pages");
-    }
+    try {
+        const element = await page.$('button[aria-label=" Next page "]');
+        if (!element) {
+            console.log("No more pages");
+        }
 
-    const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
-    if (disabled) {
-        console.log('Next page disabled');
-    }
+        const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
+        if (disabled) {
+            console.log('Next page disabled');
+        }
 
-    return !disabled;
+        return !disabled;
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
+    }
 }
 
 
 async function parseLinks(page) { //parse links
-    if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
-        var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
-    } else {
-        var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > a');
-    }
-    if (elements && elements.length) {
-        let links = [];
-        for (const el of elements) {
-            const href = await el.evaluate(a => a.href);
-            links.push(href);
+    try {
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
+            var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
+        } else {
+            var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > a');
         }
-        return links;
+        if (elements && elements.length) {
+            let links = [];
+            for (const el of elements) {
+                const href = await el.evaluate(a => a.href);
+                links.push(href);
+            }
+            return links;
+        }
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
 }
 
@@ -111,111 +150,150 @@ async function getData(page) { // get data from url
     // regex to check the international phone number with space in start and end
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 
-    // get the value of address
-    let getAddress = await page.evaluate(() => {
-        if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0] != null) {
-            var address = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0];
-        } else {
-            var address = document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0];
-        }
-        if (address) {
-            address = address.textContent;
-        } else {
-            address = '';
-        }
-        return address;
-    });
+    // get the value of heading
+    try {
+        var getheading = await page.evaluate(() => {
+            if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0] != null) {
+                var heading = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0].textContent;
+            } else {
+                var heading = document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent;
+            }
+            return heading;
+        });
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
+    }
 
-    // get the value of headding
-    let getheading = await page.evaluate(() => {
-        if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0] != null) {
-            var heading = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0].textContent;
-        } else {
-            var heading = document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent;
-        }
-        return heading;
-    });
+    console.log("Heading: " + getheading);
+
+    // get the value of address
+    try {
+        var getAddress = await page.evaluate(() => {
+            if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0] != null) {
+                var address = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0];
+            } else {
+                var address = document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0];
+            }
+            if (address) {
+                address = address.textContent;
+            } else {
+                address = '';
+                console.log('No address avaliable');
+            }
+            return address;
+        });
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
+    }
 
     // get the value of website
-    let getWebsite;
-    for (let i = 2; i < 6; i++) {
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) != null) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexWebsite.test(getWebsite)) {
-                    break;
-                } else {
-                    if (i === 5) {
-                        getWebsite = null;
+    try {
+        var getWebsite;
+        for (let i = 2; i < 6; i++) {
+            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) != null) {
+                if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                    getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                    if (regexWebsite.test(getWebsite)) {
                         break;
                     } else {
-                        continue;
+                        if (i === 5) {
+                            getWebsite = null;
+                            console.log('No website avaliable');
+                            break;
+                        } else {
+                            continue;
+                        }
                     }
+                } else {
+                    getWebsite = null;
+                    console.log('No website avaliable');
+                    break;
                 }
             } else {
-                getWebsite = null;
-                break;
-            }
-        } else {
-            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexWebsite.test(getWebsite)) {
-                    break;
-                } else {
-                    if (i === 5) {
-                        getWebsite = null;
+                if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                    getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                    if (regexWebsite.test(getWebsite)) {
                         break;
                     } else {
-                        continue;
+                        if (i === 5) {
+                            getWebsite = null;
+                            console.log('No website avaliable');
+                            break;
+                        } else {
+                            continue;
+                        }
                     }
+                } else {
+                    getWebsite = null;
+                    console.log('No website avaliable');
+                    break;
                 }
-            } else {
-                getWebsite = null;
-                break;
             }
         }
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
 
     // get the value of phone
-    let getPhone;
-    for (let i = 2; i < 8; i++) {
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) != null) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexPhone.test(getPhone)) {
+    try {
+        var getPhone;
+        for (let i = 2; i < 8; i++) {
+            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) != null) {
+                if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                    getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                    if (regexPhone.test(getPhone)) {
+                        break;
+                    }
+                    else {
+                        if (i === 7) {
+                            getPhone = null;
+                            console.log('No Phone avaliable');
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                } else {
+                    getPhone = null;
+                    console.log('No Phone avaliable');
                     break;
                 }
-                else {
-                    if (i === 7) {
-                        getPhone = null;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
             } else {
-                getPhone = null;
-                break;
-            }
-        } else {
-            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexPhone.test(getPhone)) {
+                if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                    getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                    if (regexPhone.test(getPhone)) {
+                        break;
+                    }
+                    else {
+                        if (i === 7) {
+                            getPhone = null;
+                            console.log('No Phone avaliable');
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                } else {
+                    getPhone = null;
+                    console.log('No Phone avaliable');
                     break;
                 }
-                else {
-                    if (i === 7) {
-                        getPhone = null;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                getPhone = null;
-                break;
             }
         }
+    } catch (err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
 
     // get all the values and pass them in the below function to insert into the database
@@ -237,6 +315,9 @@ async function getData(page) { // get data from url
             console.log('Data already exist');
         } else if (err) {
             console.error(err);
+            Sentry.captureException(err);
+            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+            throw err;
         }
     });
 
@@ -260,61 +341,85 @@ async function getData(page) { // get data from url
     con.query('SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ' + criteriaId + ' ORDER BY id DESC LIMIT 1,1', function (err, result) {
         if (err) {
             console.error(err);
+            Sentry.captureException(err);
+            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+            throw err;
         } else {
             if (result.length) {
                 last_index = result[0].last_index;
             } else {
                 last_index = 0;
-                console.log('No data found');
             }
         }
     });
 
     await page.goto(url);
 
-    console.log('Scrolling...');
+    // console.log('Scrolling...');
     await autoScroll(page);
 
     console.log('last_index: '+last_index);
 
     var size = limit + last_index;
-    console.log('size: '+ size);
+    // console.log('size: '+ size);
 
     // get the links untill where it is defined in size
     var links = await parseLinks(page);
-    if (links.length < size) {
-        while (links.length <= size) {
-            if (await hasNextPage(page)) {
-                await goToNextPage(page);
-                await autoScroll(page);
-                links.push(...await parseLinks(page));
-            } else {
-                break;
+    try {
+        if (links.length < size) {
+            while (links.length <= size) {
+                if (await hasNextPage(page)) {
+                    await goToNextPage(page);
+                    await autoScroll(page);
+                    links.push(...await parseLinks(page));
+                } else {
+                    break;
+                }
             }
         }
+    } catch(err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
 
     var getSize = size - last_index;
 
-    console.log('getSize: '+ getSize);
+    // console.log('getSize: '+ getSize);
 
     // removed already parsed links
     links = toArray(links).slice(last_index);
 
-    console.log('links: '+ links.length);
+    // console.log('links: '+ links.length);
 
     // get the data from the links
-    for (let i = 0; i < getSize; i++) {
-        const link = links[i];
-        await page.goto(link);
-        const data = await getData(page);
-        console.log(data);
+    try {
+        for (let i = 0; i < getSize; i++) {
+            const link = links[i];
+            await page.goto(link);
+            const data = await getData(page);
+            // console.log(data);
+        }
+    } catch(err) {
+        console.error(err);
+        Sentry.captureException(err);
+        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+        throw err;
     }
+
+    // wait for above function to be executed and then console.log the results
+    await page.waitForTimeout(1000);
+    console.log('');
+
 
     // update the last index of the current scraper_job
     con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + jobId, function (err, result) {
         if (err) {
             console.error(err);
+            Sentry.captureException(err);
+            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
+            throw err;
         }
     });
 
@@ -322,7 +427,10 @@ async function getData(page) { // get data from url
 
     // close connection
     con.end(function (err) {
-        if (err) throw err;
+        if (err) {
+            console.error(err);
+            Sentry.captureException(err);
+            throw err;
+        }
     });
-
 })();

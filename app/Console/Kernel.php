@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
                 $getData[0]->location,
                 $getData[0]->limit,
                 $getData[0]->id
-            ])->daily();
+            ])->daily()->timezone('Asia/Karachi');
         }
     }
 

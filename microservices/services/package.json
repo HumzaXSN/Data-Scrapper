@@ -11,7 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "@antiadmin/anticaptchaofficial": "^1.0.14",
+    "@sentry/node": "^6.19.7",
+    "@sentry/tracing": "^6.19.7",
     "deathbycaptcha2": "^1.0.0",
+    "dotenv": "^10.0.0",
     "mysql": "^2.18.1",
     "promise-poller": "^1.9.1",
     "puppeteer": "^10.2.0",
@@ -22,7 +25,6 @@
     "request-promise": "^4.2.6",
     "request-promise-native": "^1.0.9",
     "scraperapi-sdk": "^1.0.6",
-    "user-agents": "^1.0.738",
-    "dotenv": "^10.0.0"
+    "user-agents": "^1.0.738"
   }
 }

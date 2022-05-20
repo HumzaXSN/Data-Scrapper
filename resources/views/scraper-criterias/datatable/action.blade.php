@@ -16,10 +16,18 @@
                         <i class="pr-2 ti-pencil-alt text-warning"></i>
                         Edit
                     </a>
-                    <a class="dropdown-item" href="{{ route('scraper-criterias.runScraper', ['limit' => $scraperCriteria->limit, 'location' => $scraperCriteria->location, 'keyword' => $scraperCriteria->keyword, 'id' => $scraperCriteria->id]) }}">
-                        <i class="pr-2 ti-loop text-secondary"></i>
-                        Start Scraper
-                    </a>
+                    @if ($scraperCriteria->status == 'In-Active')
+                        <a class="dropdown-item" href="{{ route('scraper-criterias.runScraper', ['id' => $scraperCriteria->id]) }}">
+                            <i class="pr-2 ti-loop text-secondary"></i>
+                            Start Scraper
+                        </a>
+                    @endif
+                    @if ($scraperCriteria->status == 'Active')
+                        <a class="dropdown-item" href="{{ route('scraper-criterias.stopScraper', ['id' => $scraperCriteria->id]) }}">
+                            <i class="pr-2 icon-close text-danger"></i>
+                            Stop Scraper
+                        </a>
+                    @endif
             </div>
         </div>
     </div>
@@ -49,12 +57,6 @@
                     <strong>Limit:</strong>
                     <input class="form-control" type="text" name="limit" placeholder="Enter Limit"
                         value="{{ $scraperCriteria->limit }}" required>
-                    <strong class="mt-2">Status:</strong>
-                    <select class="form-control" name="status">
-                        <option selected disabled hidden>Select Status</option>
-                        <option value="In-Active">In Active</option>
-                        <option value="Active">Active</option>
-                    </select>
                 </div>
 
                 <!-- Modal footer -->

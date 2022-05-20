@@ -42,6 +42,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/run-scraper', [ScraperCriteriaController::class, 'runScraper'])
                 ->name('scraper-criterias.runScraper');
 
+    Route::get('/stop-scraper', [ScraperCriteriaController::class, 'stopScraper'])
+                ->name('scraper-criterias.stopScraper');
+
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
                 ->name('bulk-update');
 

@@ -98,4 +98,10 @@ class ScraperCriteriaController extends Controller
         ScraperCriteria::where('id', $request->id)->update(['status' => 'Active']);
         return redirect()->back()->with('success', 'Scraper Job Started Successfully');
     }
+
+    public function stopScraper(Request $request)
+    {
+        ScraperCriteria::where('id', $request->id)->update(['status' => 'In-Active']);
+        return redirect()->back()->with('success', 'Scraper Job Stopped Successfully');
+    }
 }

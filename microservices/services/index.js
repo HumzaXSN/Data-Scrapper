@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const Sentry = require('./sentry.js');
+const Sentry = require('./sentry/sentry.js');
 var mysql = require('mysql');
 const { toArray } = require('lodash');
 require('dotenv').config({ path: '../../.env' });
@@ -11,6 +11,10 @@ var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
 var criteriaId = parseInt(process.argv[5]);
 
+console.log('');
+console.error('');
+console.log(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Starting scraper');
+console.error(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Getting Scraper Errors');
 console.log('URL: "'+ url +'"');
 
 // connect to database
@@ -28,7 +32,7 @@ con.connect(function (err) {
     if (err) {
         console.error(err);
         Sentry.captureException(err);
-        throw err;
+        throw 'Data base connection error';
     }
     // console.log("DB Connected!");
 });
@@ -60,7 +64,7 @@ async function autoScroll(page) { // scroll down
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Auto scroll error';
     }
 }
 
@@ -83,7 +87,7 @@ async function parsePlaces(page) { // parse results from page
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Places parsing error';
     }
 }
 
@@ -94,7 +98,7 @@ async function goToNextPage(page) { // go to next page
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Next page error';
     }
 }
 
@@ -115,7 +119,7 @@ async function hasNextPage(page) { // check if there is a next page
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'There is an issue while going on a next page';
     }
 }
 
@@ -139,7 +143,7 @@ async function parseLinks(page) { //parse links
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'There was an error generated while parsing links';
     }
 }
 
@@ -164,7 +168,7 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting heading';
     }
 
     console.log("Heading: " + getheading);
@@ -189,7 +193,7 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting address';
     }
 
     // get the value of website
@@ -240,7 +244,7 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting website';
     }
 
     // get the value of phone
@@ -293,7 +297,7 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting phone';
     }
 
     // get all the values and pass them in the below function to insert into the database
@@ -317,7 +321,7 @@ async function getData(page) { // get data from url
             console.error(err);
             Sentry.captureException(err);
             con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw err;
+            throw 'Error while inserting data into the Database';
         }
     });
 
@@ -343,7 +347,7 @@ async function getData(page) { // get data from url
             console.error(err);
             Sentry.captureException(err);
             con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw err;
+            throw 'Error while getting last index';
         } else {
             if (result.length) {
                 last_index = result[0].last_index;
@@ -381,7 +385,7 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting links from different pages in loop';
     }
 
     var getSize = size - last_index;
@@ -405,13 +409,8 @@ async function getData(page) { // get data from url
         console.error(err);
         Sentry.captureException(err);
         con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw err;
+        throw 'Error while getting data from links';
     }
-
-    // wait for above function to be executed and then console.log the results
-    await page.waitForTimeout(1000);
-    console.log('');
-
 
     // update the last index of the current scraper_job
     con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + jobId, function (err, result) {
@@ -419,7 +418,7 @@ async function getData(page) { // get data from url
             console.error(err);
             Sentry.captureException(err);
             con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw err;
+            throw 'Error while updating last index';
         }
     });
 
@@ -430,7 +429,7 @@ async function getData(page) { // get data from url
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            throw err;
+            throw 'Error while closing connection to the Database';
         }
     });
 })();

@@ -21,8 +21,8 @@ class ScraperJobsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('Scraper Status', function ($query) {
-                return $query->scraperCriteria->status;
+            ->addColumn('Scraper Criteria', function ($query) {
+                return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
             });
     }
 
@@ -75,7 +75,7 @@ class ScraperJobsDataTable extends DataTable
             'failed',
             'exception',
             'last_index',
-            'Scraper Status',
+            'Scraper Criteria',
             'end_at',
         ];
     }

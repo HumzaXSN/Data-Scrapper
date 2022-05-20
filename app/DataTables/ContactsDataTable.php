@@ -105,6 +105,7 @@ class ContactsDataTable extends DataTable
                     ->setTableId('contacts-table')
                     ->minifiedAjax()
                     ->dom('Bfrtip')
+                    ->orderBy('id', 'desc')
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),

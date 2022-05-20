@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const Sentry = require('./sentry/sentry.js');
 var mysql = require('mysql');
 const { toArray } = require('lodash');
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config({ path: '.env' });
 
 // getting the data from laravel command
 var args = require('minimist')(process.argv.slice(2), { string: "url" });

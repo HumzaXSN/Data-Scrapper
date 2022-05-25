@@ -38,112 +38,74 @@ con.connect(function (err) {
 });
 
 async function autoScroll(page) { // scroll down
-    try {
-        await page.evaluate(async () => {
-            await new Promise((resolve, reject) => {
-                var totalHeight = 0;
-                var distance = 100;
-                var timer = setInterval(() => {
-                    if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0] != null) {
-                        var element = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0];
-                    } else {
-                        var element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
-                    }
-                    var scrollHeight = element.scrollHeight;
-                    element.scrollBy(0, distance);
-                    totalHeight += distance;
-
-                    if (totalHeight >= scrollHeight) {
-                        clearInterval(timer);
-                        resolve();
-                    }
-                }, 100);
-            });
+    await page.evaluate(async () => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0] != null) {
+                    var element = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div')[0];
+                } else {
+                    var element = document.querySelectorAll('#pane > div > div:nth-child(1) > div > div > div:nth-child(2) > div:nth-child(1)')[0];
+                }
+                var scrollHeight = element.scrollHeight;
+                element.scrollBy(0, distance);
+                totalHeight += distance;
+                if (totalHeight >= scrollHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
         });
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Auto scroll error';
-    }
+    });
 }
 
 async function parsePlaces(page) { // parse results from page
-    try {
-        let places = [];
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span') != null) {
-            var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
-        } else {
-            var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
-        }
-        if (elements && elements.length) {
-            for (const el of elements) {
-                const name = await el.evaluate(span => span.textContent);
-                places.push({ name });
-            }
-        }
-        return places;
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Places parsing error';
+    let places = [];
+    if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span') != null) {
+        var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
+    } else {
+        var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div:nth-child(1) > div > span');
     }
+    if (elements && elements.length) {
+        for (const el of elements) {
+            const name = await el.evaluate(span => span.textContent);
+            places.push({ name });
+        }
+    }
+    return places;
 }
 
 async function goToNextPage(page) { // go to next page
-    try {
-        await page.click('button[aria-label=" Next page "]');
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Next page error';
-    }
+    await page.click('button[aria-label=" Next page "]');
 }
 
 async function hasNextPage(page) { // check if there is a next page
-    try {
-        const element = await page.$('button[aria-label=" Next page "]');
-        if (!element) {
-            console.log("No more pages");
-        }
-
-        const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
-        if (disabled) {
-            console.log('Next page disabled');
-        }
-
-        return !disabled;
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'There is an issue while going on a next page';
+    const element = await page.$('button[aria-label=" Next page "]');
+    if (!element) {
+        console.log("No more pages");
     }
+    const disabled = await page.evaluate((el) => el.getAttribute('disabled'), element);
+    if (disabled) {
+        console.log('Next page disabled');
+    }
+    return !disabled;
 }
 
 
 async function parseLinks(page) { //parse links
-    try {
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
-            var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
-        } else {
-            var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > a');
+    if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
+        var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
+    } else {
+        var elements = await page.$$('#pane > div > div > div > div > div > div > div > div > a');
+    }
+    if (elements && elements.length) {
+        let links = [];
+        for (const el of elements) {
+            const href = await el.evaluate(a => a.href);
+            links.push(href);
         }
-        if (elements && elements.length) {
-            let links = [];
-            for (const el of elements) {
-                const href = await el.evaluate(a => a.href);
-                links.push(href);
-            }
-            return links;
-        }
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'There was an error generated while parsing links';
+        return links;
     }
 }
 
@@ -155,149 +117,121 @@ async function getData(page) { // get data from url
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 
     // get the value of heading
-    try {
-        var getheading = await page.evaluate(() => {
-            if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0] != null) {
-                var heading = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0].textContent;
-            } else {
-                var heading = document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent;
-            }
-            return heading;
-        });
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting heading';
-    }
+    var getheading = await page.evaluate(() => {
+        if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0] != null) {
+            var heading = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > h1 > span')[0].textContent;
+        } else {
+            var heading = document.querySelectorAll('#pane > div > div > div > div > div > div > div > div > h1 > span:nth-child(1)')[0].textContent;
+        }
+        return heading;
+    });
 
     console.log("Heading: " + getheading);
 
     // get the value of address
-    try {
-        var getAddress = await page.evaluate(() => {
-            if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0] != null) {
-                var address = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0];
-            } else {
-                var address = document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0];
-            }
-            if (address) {
-                address = address.textContent;
-            } else {
-                address = '';
-                console.log('No address avaliable');
-            }
-            return address;
-        });
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting address';
-    }
+    var getAddress = await page.evaluate(() => {
+        if (document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0] != null) {
+            var address = document.querySelectorAll('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div > button > div > div > div.fontBodyMedium')[0];
+        } else {
+            var address = document.querySelectorAll('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(1) > button > div > div > div.fontBodyMedium')[0];
+        }
+        if (address) {
+            address = address.textContent;
+        } else {
+            address = '';
+            console.log('No address avaliable');
+        }
+        return address;
+    });
 
     // get the value of website
-    try {
-        var getWebsite;
-        for (let i = 2; i < 6; i++) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) != null) {
-                if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                    getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                    if (regexWebsite.test(getWebsite)) {
+    var getWebsite;
+    for (let i = 2; i < 6; i++) {
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) != null) {
+            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                if (regexWebsite.test(getWebsite)) {
+                    break;
+                } else {
+                    if (i === 5) {
+                        getWebsite = null;
+                        console.log('No website avaliable');
                         break;
                     } else {
-                        if (i === 5) {
-                            getWebsite = null;
-                            console.log('No website avaliable');
-                            break;
-                        } else {
-                            continue;
-                        }
+                        continue;
                     }
-                } else {
-                    getWebsite = null;
-                    console.log('No website avaliable');
-                    break;
                 }
             } else {
-                if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                    getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                    if (regexWebsite.test(getWebsite)) {
+                getWebsite = null;
+                console.log('No website avaliable');
+                break;
+            }
+        } else {
+            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                if (regexWebsite.test(getWebsite)) {
+                    break;
+                } else {
+                    if (i === 5) {
+                        getWebsite = null;
+                        console.log('No website avaliable');
                         break;
                     } else {
-                        if (i === 5) {
-                            getWebsite = null;
-                            console.log('No website avaliable');
-                            break;
-                        } else {
-                            continue;
-                        }
+                        continue;
                     }
-                } else {
-                    getWebsite = null;
-                    console.log('No website avaliable');
-                    break;
                 }
+            } else {
+                getWebsite = null;
+                console.log('No website avaliable');
+                break;
             }
         }
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting website';
     }
 
     // get the value of phone
-    try {
-        var getPhone;
-        for (let i = 2; i < 8; i++) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) != null) {
-                if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                    getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                    if (regexPhone.test(getPhone)) {
-                        break;
-                    }
-                    else {
-                        if (i === 7) {
-                            getPhone = null;
-                            console.log('No Phone avaliable');
-                            break;
-                        } else {
-                            continue;
-                        }
-                    }
-                } else {
-                    getPhone = null;
-                    console.log('No Phone avaliable');
+    var getPhone;
+    for (let i = 2; i < 8; i++) {
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) != null) {
+            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                if (regexPhone.test(getPhone)) {
                     break;
+                }
+                else {
+                    if (i === 7) {
+                        getPhone = null;
+                        console.log('No Phone avaliable');
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
             } else {
-                if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                    getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                    if (regexPhone.test(getPhone)) {
-                        break;
-                    }
-                    else {
-                        if (i === 7) {
-                            getPhone = null;
-                            console.log('No Phone avaliable');
-                            break;
-                        } else {
-                            continue;
-                        }
-                    }
-                } else {
-                    getPhone = null;
-                    console.log('No Phone avaliable');
+                getPhone = null;
+                console.log('No Phone avaliable');
+                break;
+            }
+        } else {
+            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+                getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+                if (regexPhone.test(getPhone)) {
                     break;
                 }
+                else {
+                    if (i === 7) {
+                        getPhone = null;
+                        console.log('No Phone avaliable');
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                getPhone = null;
+                console.log('No Phone avaliable');
+                break;
             }
         }
-    } catch (err) {
-        console.error(err);
-        Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting phone';
     }
 
     // get all the values and pass them in the below function to insert into the database
@@ -320,8 +254,7 @@ async function getData(page) { // get data from url
         } else if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw 'Error while inserting data into the Database';
+            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         }
     });
 
@@ -346,8 +279,7 @@ async function getData(page) { // get data from url
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw 'Error while getting last index';
+            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         } else {
             if (result.length) {
                 last_index = result[0].last_index;
@@ -365,7 +297,6 @@ async function getData(page) { // get data from url
     console.log('last_index: '+last_index);
 
     var size = limit + last_index;
-    // console.log('size: '+ size);
 
     // get the links untill where it is defined in size
     var links = await parseLinks(page);
@@ -382,34 +313,29 @@ async function getData(page) { // get data from url
             }
         }
     } catch(err) {
+        console.error('Error while getting links from different pages in loop')
         console.error(err);
         Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting links from different pages in loop';
+        con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
     }
 
     var getSize = size - last_index;
 
-    // console.log('getSize: '+ getSize);
-
     // removed already parsed links
     links = toArray(links).slice(last_index);
-
-    // console.log('links: '+ links.length);
 
     // get the data from the links
     try {
         for (let i = 0; i < getSize; i++) {
             const link = links[i];
             await page.goto(link);
-            const data = await getData(page);
-            // console.log(data);
+            await getData(page);
         }
     } catch(err) {
+        console.error('Error while getting data from links')
         console.error(err);
         Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-        throw 'Error while getting data from links';
+        con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
     }
 
     // update the last index of the current scraper_job
@@ -417,8 +343,7 @@ async function getData(page) { // get data from url
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1, exception = ' + err + ', status = 1, end_at = ' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' WHERE id = ' + jobId + ';');
-            throw 'Error while updating last index';
+            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         }
     });
 
@@ -429,7 +354,6 @@ async function getData(page) { // get data from url
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            throw 'Error while closing connection to the Database';
         }
     });
 })();

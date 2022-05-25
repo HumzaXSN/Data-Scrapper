@@ -55,18 +55,9 @@ class GoogleBusinessScraperCommand extends Command
             'scraper_criteria_id' => $criteriaId,
         ]);
         $jobId = $job->id;
-        try {
-            exec("node microservices/services/index.js >> microservices/services/data.log 2>> microservices/services/errors.log --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
-            $job->status = 1;
-            $job->failed = 0;
-            $job->end_at = now();
-            $job->save();
-        } catch (\Exception $e) {
-            $job->status = 0;
-            $job->failed = 1;
-            $job->exception = $e->getMessage();
-            $job->end_at = now();
-            $job->save();
-        }
+        exec("node microservices/services/index.js >> microservices/services/data.log 2>> microservices/services/errors.log --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
+        $job->status = 1;
+        $job->end_at = now();
+        $job->save();
     }
 }

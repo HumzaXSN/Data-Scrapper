@@ -56,6 +56,9 @@ class ContactsDataTable extends DataTable
             ->addColumn('industry', function($query) {
                 return '<a class="editindsutry">' . $query->industry->name . '</a>';
             })
+            ->addColumn('created_at', function ($query) {
+                return $query->created_at->format('d-m-Y H:i:s');
+            })
             ->addColumn('action', function($query){
                 return view('contacts.datatable.action', ['contact'=>$query])->render();
             })

@@ -38,7 +38,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('user')->where('list_type_id', 2)->orderBy('id', 'desc');
+        return $model->newQuery()->with('user')->where('list_type_id', 2);
     }
 
     /**
@@ -53,7 +53,7 @@ class ListsDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(0)
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),

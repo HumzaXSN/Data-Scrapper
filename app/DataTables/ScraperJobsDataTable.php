@@ -48,7 +48,7 @@ class ScraperJobsDataTable extends DataTable
                     ->setTableId('scraperjobs-table')
                     ->columns($this->getColumns())
                     ->parameters([
-                        'order' => [[2, 'desc']]
+                        'order' => [[7, 'desc']]
                     ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')

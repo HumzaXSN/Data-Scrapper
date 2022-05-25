@@ -139,7 +139,7 @@ async function getData(page) { // get data from url
             address = address.textContent;
         } else {
             address = '';
-            console.log('No address avaliable');
+            console.log('No address available');
         }
         return address;
     });
@@ -155,7 +155,7 @@ async function getData(page) { // get data from url
                 } else {
                     if (i === 5) {
                         getWebsite = null;
-                        console.log('No website avaliable');
+                        console.log('No website available');
                         break;
                     } else {
                         continue;
@@ -163,7 +163,7 @@ async function getData(page) { // get data from url
                 }
             } else {
                 getWebsite = null;
-                console.log('No website avaliable');
+                console.log('No website available');
                 break;
             }
         } else {
@@ -174,7 +174,7 @@ async function getData(page) { // get data from url
                 } else {
                     if (i === 5) {
                         getWebsite = null;
-                        console.log('No website avaliable');
+                        console.log('No website available');
                         break;
                     } else {
                         continue;
@@ -182,7 +182,7 @@ async function getData(page) { // get data from url
                 }
             } else {
                 getWebsite = null;
-                console.log('No website avaliable');
+                console.log('No website available');
                 break;
             }
         }
@@ -200,7 +200,7 @@ async function getData(page) { // get data from url
                 else {
                     if (i === 7) {
                         getPhone = null;
-                        console.log('No Phone avaliable');
+                        console.log('No Phone available');
                         break;
                     } else {
                         continue;
@@ -208,7 +208,7 @@ async function getData(page) { // get data from url
                 }
             } else {
                 getPhone = null;
-                console.log('No Phone avaliable');
+                console.log('No Phone available');
                 break;
             }
         } else {
@@ -220,7 +220,7 @@ async function getData(page) { // get data from url
                 else {
                     if (i === 7) {
                         getPhone = null;
-                        console.log('No Phone avaliable');
+                        console.log('No Phone available');
                         break;
                     } else {
                         continue;
@@ -228,7 +228,7 @@ async function getData(page) { // get data from url
                 }
             } else {
                 getPhone = null;
-                console.log('No Phone avaliable');
+                console.log('No Phone available');
                 break;
             }
         }
@@ -298,7 +298,7 @@ async function getData(page) { // get data from url
 
     var size = limit + last_index;
 
-    // get the links untill where it is defined in size
+    // get the links until where it is defined in size
     var links = await parseLinks(page);
     try {
         if (links.length < size) {

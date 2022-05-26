@@ -34,7 +34,6 @@ con.connect(function (err) {
         Sentry.captureException(err);
         throw 'Data base connection error';
     }
-    // console.log("DB Connected!");
 });
 
 async function autoScroll(page) { // scroll down
@@ -254,7 +253,6 @@ async function getData(page) { // get data from url
         } else if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         }
     });
 
@@ -263,10 +261,10 @@ async function getData(page) { // get data from url
 
 // Main function
 (async () => {
-    const browser = await puppeteer.launch(
-        {   headless: true,
-            args: ["--no-sandbox"]
-        });
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ["--no-sandbox"]
+    });
     const page = await browser.newPage();
 
     await page.setViewport({
@@ -322,11 +320,13 @@ async function getData(page) { // get data from url
     var getSize = size - last_index;
 
     // removed already parsed links
+    console.log('Links Caught: '+ links.length);
     links = toArray(links).slice(last_index);
 
     // get the data from the links
+    let i = 0;
     try {
-        for (let i = 0; i < getSize; i++) {
+        for (i; i < getSize; i++) {
             const link = links[i];
             await page.goto(link);
             await getData(page);
@@ -335,15 +335,15 @@ async function getData(page) { // get data from url
         console.error('Error while getting data from links')
         console.error(err);
         Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
+        con.query(`UPDATE scraper_jobs SET failed = 1 WHERE id = ${jobId};`);
     }
 
     // update the last index of the current scraper_job
-    con.query('UPDATE scraper_jobs SET last_index = ' + size + ' WHERE id = ' + jobId, function (err, result) {
+    let getLast = i - 1 + last_index;
+    con.query('UPDATE scraper_jobs SET last_index = ' + getLast + ' WHERE id = ' + jobId, function (err, result) {
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         }
     });
 

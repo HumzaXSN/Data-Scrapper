@@ -21,9 +21,22 @@ class ScraperJobsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->addColumn('created_at', function ($query) {
+                return $query->created_at->format('d-m-Y H:i:s');
+            })
+            ->addColumn('status', function ($query) {
+                if($query->status == 0) {
+                    return '<p class="text-warning">processing</p>';
+                } else if ($query->status == 1) {
+                    return '<p class="text-success">successful</p>';
+                } else {
+                    return '<p class="text-danger">failed</p>';
+                }
+            })
             ->addColumn('Scraper Criteria', function ($query) {
                 return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
-            });
+            })
+            ->rawColumns(['status']);
     }
 
     /**
@@ -34,7 +47,12 @@ class ScraperJobsDataTable extends DataTable
      */
     public function query(ScraperJob $model)
     {
-        return $model->newQuery();
+        $getJobs = $this->getJobs;
+        if($getJobs == null) {
+            return $model->newQuery();
+        } else {
+            return $model->newQuery()->where('scraper_criteria_id', $getJobs);
+        }
     }
 
     /**
@@ -72,11 +90,11 @@ class ScraperJobsDataTable extends DataTable
             'url',
             'platform',
             'status',
-            'failed',
-            'exception',
+            'message',
             'last_index',
             'Scraper Criteria',
-            'end_at',
+            'created_at',
+            'end_at'
         ];
     }
 

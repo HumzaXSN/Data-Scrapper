@@ -15,7 +15,8 @@ class GoogleBusinessController extends Controller
      */
     public function index(GoogleBusinessesDataTable $dataTable)
     {
-        return $dataTable->render('google-businesses.index');
+        $getBusiness = request()->id;
+        return $dataTable->with(['getBusiness' => $getBusiness])->render('google-businesses.index');
     }
 
     /**

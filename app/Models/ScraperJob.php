@@ -16,14 +16,19 @@ class ScraperJob extends Model
         'url',
         'platform',
         'status',
-        'failed',
-        'exception',
+        'message',
         'last_index',
         'scraper_criteria_id'
     ];
 
-    public function scraperCriteria() {
+    public function scraperCriteria()
+    {
         return $this->belongsTo(ScraperCriteria::class);
+    }
+
+    public function googleBusinesses()
+    {
+        return $this->hasMany(GoogleBusiness::class);
     }
 
 }

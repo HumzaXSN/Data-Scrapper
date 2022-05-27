@@ -20,7 +20,13 @@ class ScraperCriteria extends Model
         'limit'
     ];
 
-    public function scraperJobs() {
+    public function scraperJobs()
+    {
         return $this->hasMany(ScraperJob::class);
+    }
+
+    public function googlebusinesses()
+    {
+        return $this->hasManyThrough(GoogleBusiness::class, ScraperJob::class);
     }
 }

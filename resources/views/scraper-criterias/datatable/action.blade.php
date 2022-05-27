@@ -16,18 +16,30 @@
                         <i class="pr-2 ti-pencil-alt text-warning"></i>
                         Edit
                     </a>
+                    <a class="dropdown-item" href="{{ route('scraper-criterias.startScraper', ['id' => $scraperCriteria->id]) }}">
+                        <i class="pr-2 ti-reload"></i>
+                        Force Start Scrapper
+                    </a>
                     @if ($scraperCriteria->status == 'In-Active')
                         <a class="dropdown-item" href="{{ route('scraper-criterias.runScraper', ['id' => $scraperCriteria->id]) }}">
                             <i class="pr-2 ti-loop text-secondary"></i>
-                            Start Scraper
+                            Activate Scraper
                         </a>
                     @endif
                     @if ($scraperCriteria->status == 'Active')
                         <a class="dropdown-item" href="{{ route('scraper-criterias.stopScraper', ['id' => $scraperCriteria->id]) }}">
                             <i class="pr-2 icon-close text-danger"></i>
-                            Stop Scraper
+                            In-Activate Scraper
                         </a>
                     @endif
+                    <a class="dropdown-item" href="{{ route('scraper-jobs-show.index', ['id' => $scraperCriteria->id]) }}">
+                        <i class="pr-2 ti-menu text-info"></i>
+                        Show Jobs
+                    </a>
+                    <a class="dropdown-item" href="{{ route('google-businesses.showBusinesses', ['id' => $scraperCriteria->id]) }}">
+                        <i class="pr-2 ti-more text-muted"></i>
+                        Show Businesses
+                    </a>
             </div>
         </div>
     </div>

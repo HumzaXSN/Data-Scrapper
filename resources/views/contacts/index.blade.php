@@ -298,10 +298,10 @@
                                         <div class="modal-body">
                                             {{-- Industry --}}
                                             <strong>Industry:</strong>
-                                            <select name="industry_id" class="form-control">
+                                            <select name="industry_id" data-live-search="true" class="form-control selectpicker">
                                                 <option id="industry" selected disabled>Select Industry</option>
                                                 @foreach ($industries as $industry )
-                                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+                                                <option data-tokens="{{ $industry->name }}" value="{{ $industry->id }}">{{ $industry->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -403,10 +403,10 @@
                                 </select>
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <select class="form-control filter-select" data-column="14">
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="14">
                                     <option value="">Industries</option>
                                     @foreach ($industries as $industry )
-                                    <option value="{{ $industry->name }}">{{ $industry->name }}</option>
+                                    <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -454,18 +454,16 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-4 mt-2 mb-md-0 d-none" id="industries">
-                                    <select class="form-control" name="industry_id">
-                                        <option selected hidden> Select Industry </option>
+                                    <select class="form-control selectpicker" data-live-search="true" name="industry_id">
                                         @foreach($industries as $industry)
-                                        <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                        <option data-tokens="{{$industry->name}}" value="{{$industry->id}}">{{$industry->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4 mt-2 mb-md-0 d-none" id="lists">
-                                    <select class="form-control" name="list_id">
-                                        <option selected hidden> Select List </option>
+                                    <select class="form-control selectpicker" data-live-search="true" name="list_id">
                                         @foreach($lists as $list)
-                                        <option value="{{$list->id}}">{{$list->name}}</option>
+                                        <option data-tokens="{{$list->name}}" value="{{$list->id}}">{{$list->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -499,6 +497,7 @@
                                             <th class="d-none">Times Reached</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
+                                            <th>Created At</th>
                                             <th>Action <button class="btn btn-sm btn-danger d-none"
                                                     id="deleteAllBtn">Delete Selected</button></th>
                                         </tr>

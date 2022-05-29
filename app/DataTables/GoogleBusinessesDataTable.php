@@ -20,6 +20,12 @@ class GoogleBusinessesDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($query){
                 return view('google-businesses.datatable.action', ['googleBusiness'=>$query])->render();
+            })
+            ->addColumn('Scraper_Criteria', function ($query) {
+                return $query->scraperJob->scraperCriteria->keyword . ' in ' . $query->scraperJob->scraperCriteria->location;
+            })
+            ->addColumn('created_at', function ($query) {
+                return $query->created_at->format('d-m-Y H:i:s');
             });
     }
 
@@ -67,6 +73,9 @@ class GoogleBusinessesDataTable extends DataTable
             'phone',
             'address',
             'website',
+            'industry',
+            'Scraper_Criteria',
+            'created_at',
             'action' => [
                 'searchable' => false,
                 'orderable' => false

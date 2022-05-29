@@ -26,6 +26,9 @@ class ListsDataTable extends DataTable
                 $list_type = ListType::all();
                 return view('lists.datatable.action', ['list_type'=> $list_type,'list'=>$query])->render();
             })
+            ->addColumn('created_at', function ($query) {
+                return $query->created_at->format('d-m-Y H:i:s');
+            })
             ->escapeColumns([])
             ->rawColumns(['action']);
     }
@@ -38,7 +41,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('user')->where('list_type_id', 2)->orderBy('id', 'desc');
+        return $model->newQuery()->with('user')->where('list_type_id', 2);
     }
 
     /**
@@ -53,7 +56,7 @@ class ListsDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(0)
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),
@@ -76,6 +79,7 @@ class ListsDataTable extends DataTable
             'description',
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
+            'created_at',
             'action'
         ];
     }

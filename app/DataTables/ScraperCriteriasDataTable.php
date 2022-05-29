@@ -2,14 +2,15 @@
 
 namespace App\DataTables;
 
-use App\Models\ScraperJob;
+use App\Models\ScraperCriteria;
+
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class ScraperJobsDataTable extends DataTable
+class ScraperCriteriasDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -21,38 +22,24 @@ class ScraperJobsDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('created_at', function ($query) {
-                return $query->created_at->format('d-m-Y H:i:s');
+            ->addColumn('action', function ($query) {
+                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query])->render();
             })
-            ->addColumn('status', function ($query) {
-                if($query->status == 0) {
-                    return '<p class="text-warning">processing</p>';
-                } else if ($query->status == 1) {
-                    return '<p class="text-success">successful</p>';
-                } else {
-                    return '<p class="text-danger">failed</p>';
-                }
+            ->addColumn('Updated At', function ($query) {
+                return $query->updated_at;
             })
-            ->addColumn('Scraper Criteria', function ($query) {
-                return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
-            })
-            ->rawColumns(['status']);
+            ->rawColumns(['action']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\ScraperJob $model
+     * @param \ScraperCriteria $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(ScraperJob $model)
+    public function query(ScraperCriteria $model)
     {
-        $getJobs = $this->getJobs;
-        if($getJobs == null) {
-            return $model->newQuery();
-        } else {
-            return $model->newQuery()->where('scraper_criteria_id', $getJobs);
-        }
+        return $model->newQuery();
     }
 
     /**
@@ -63,13 +50,11 @@ class ScraperJobsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('scraperjobs-table')
+                    ->setTableId('scrapercriterias-table')
                     ->columns($this->getColumns())
-                    ->parameters([
-                        'order' => [[7, 'desc']]
-                    ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')
+                    ->orderBy(1)
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),
@@ -87,14 +72,12 @@ class ScraperJobsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'url',
-            'platform',
             'status',
-            'message',
-            'last_index',
-            'Scraper Criteria',
-            'created_at',
-            'end_at'
+            'keyword',
+            'location',
+            'limit',
+            'Updated At',
+            'action'
         ];
     }
 
@@ -105,6 +88,6 @@ class ScraperJobsDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'ScraperJobs_' . date('YmdHis');
+        return 'ScraperCriterias_' . date('YmdHis');
     }
 }

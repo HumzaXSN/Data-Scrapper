@@ -49,6 +49,7 @@
         var table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
+            // order: [[1, "desc"]],
             ajax: {
                 url: "{{ route('contacts.index') }}",
                 data: {
@@ -129,11 +130,15 @@
                     name: 'industry.name'
                 },
                 {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
                     searchable: false
-                },
+                }
             ]
         }).on('draw', function(){
                     $('input[name="contact_checkbox"]').each(function(){this.checked = false;});

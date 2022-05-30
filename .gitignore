@@ -1,5 +1,8 @@
 microservices/google-business-scraper/node_modules
 microservices/services/node_modules
+microservices/services/data.log
+microservices/services/errors.log
+microservices/services/.idea
 /node_modules
 /public/hot
 /public/storage

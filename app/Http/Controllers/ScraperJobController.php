@@ -9,6 +9,7 @@ class ScraperJobController extends Controller
 {
     public function index(ScraperJobsDataTable $dataTable)
     {
-        return $dataTable->render('scraper-jobs.index');
+        $getJobs = request()->id;
+        return $dataTable->with(['getJobs' => $getJobs])->render('scraper-jobs.index');
     }
 }

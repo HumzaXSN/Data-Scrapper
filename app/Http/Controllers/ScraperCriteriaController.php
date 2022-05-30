@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ScraperCriteriasDataTable;
-use App\Models\ScraperCriteria;
 use Illuminate\Http\Request;
+use App\Models\ScraperCriteria;
+use Illuminate\Support\Facades\Artisan;
+use App\DataTables\ScraperCriteriasDataTable;
 
 class ScraperCriteriaController extends Controller
 {
@@ -103,5 +104,13 @@ class ScraperCriteriaController extends Controller
     {
         ScraperCriteria::where('id', $request->id)->update(['status' => 'In-Active']);
         return redirect()->back()->with('success', 'Scraper Job Stopped Successfully');
+    }
+
+    public function startScraper()
+    {
+        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
+        ScraperCriteria::where('id', request()->id)->update(['status' => 'Active']);
+        Artisan::call('run:spider-scraper');
+        return redirect()->back()->with('success', 'Scraper Initiated');
     }
 }

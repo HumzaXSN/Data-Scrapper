@@ -26,6 +26,9 @@ class ListsDataTable extends DataTable
                 $list_type = ListType::all();
                 return view('lists.datatable.action', ['list_type'=> $list_type,'list'=>$query])->render();
             })
+            ->addColumn('created_at', function ($query) {
+                return $query->created_at->format('d-m-Y H:i:s');
+            })
             ->escapeColumns([])
             ->rawColumns(['action']);
     }
@@ -76,6 +79,7 @@ class ListsDataTable extends DataTable
             'description',
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
+            'created_at',
             'action'
         ];
     }

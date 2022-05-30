@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\ScraperJob;
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Process;
 
 class GoogleBusinessScraperCommand extends Command
 {
@@ -43,9 +44,7 @@ class GoogleBusinessScraperCommand extends Command
         $city = $this->argument('city');
         $limit = $this->argument('limit');
         $criteriaId = $this->argument('criteriaId');
-
         $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
-
         $url = $searchQueries[0];
         $ip = request()->server('SERVER_ADDR');
         $job = ScraperJob::create([
@@ -55,8 +54,8 @@ class GoogleBusinessScraperCommand extends Command
             'scraper_criteria_id' => $criteriaId,
         ]);
         $jobId = $job->id;
-        exec("node microservices/services/index.js >> microservices/services/data.log 2>> microservices/services/errors.log --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
-        $job->status = 1;
+        $path = base_path() . '/microservices/services/index.js >> ' . base_path() . '/microservices/services/data.log 2>> ' . base_path() . '/microservices/services/errors.log';
+        exec("node " . $path." --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
         $job->end_at = now();
         $job->save();
     }

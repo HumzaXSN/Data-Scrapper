@@ -54,7 +54,7 @@ async function autoScroll(page) { // scroll down
                     clearInterval(timer);
                     resolve();
                 }
-            }, 100);
+            }, 800);
         });
     });
 }
@@ -111,7 +111,7 @@ async function parseLinks(page) { //parse links
 async function getData(page) { // get data from url
 
     // regex to check if the following is a url or not with space in start and end
-    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|businesses|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
+    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|business|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
     // regex to check the international phone number with space in start and end
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 
@@ -233,18 +233,29 @@ async function getData(page) { // get data from url
         }
     }
 
+    // get Industry
+    var getIndustry = await page.evaluate(() => {
+        if (document.querySelector('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span > button') != null) {
+            var industry = document.querySelector('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span > button').textContent;
+        } else {
+            var industry = null;
+        }
+        return industry;
+    });
+
     // get all the values and pass them in the below function to insert into the database
-    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading }) => {
+    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading, getIndustry }) => {
         return ({
             scraper_job_id: jobId,
             company: getheading,
             address: getAddress,
             website: getWebsite,
             phone: getPhone,
+            industry: getIndustry,
             created_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds(),
             updated_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()
         })
-    }, { getWebsite, getPhone, jobId, getAddress, getheading});
+    }, { getWebsite, getPhone, jobId, getAddress, getheading, getIndustry});
 
     // return the results to insert into the database
     con.query('INSERT INTO google_businesses SET ?', results, function (err) {
@@ -262,7 +273,7 @@ async function getData(page) { // get data from url
 // Main function
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ["--no-sandbox"]
     });
     const page = await browser.newPage();
@@ -273,11 +284,10 @@ async function getData(page) { // get data from url
     });
 
     // get the value of last index
-    con.query('SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ' + criteriaId + ' ORDER BY id DESC LIMIT 1,1', function (err, result) {
+    con.query(`SELECT * FROM scraper_jobs WHERE scraper_criteria_id = ${criteriaId} ORDER BY id DESC LIMIT 1,1`, function (err, result) {
         if (err) {
             console.error(err);
             Sentry.captureException(err);
-            con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
         } else {
             if (result.length) {
                 last_index = result[0].last_index;
@@ -288,7 +298,6 @@ async function getData(page) { // get data from url
     });
 
     await page.goto(url);
-
     // console.log('Scrolling...');
     await autoScroll(page);
 
@@ -297,11 +306,13 @@ async function getData(page) { // get data from url
     var size = limit + last_index;
 
     // get the links until where it is defined in size
+    page.waitForTimeout(1000);
     var links = await parseLinks(page);
     try {
         if (links.length < size) {
             while (links.length <= size) {
                 if (await hasNextPage(page)) {
+                    await page.waitForTimeout(2000);
                     await goToNextPage(page);
                     await autoScroll(page);
                     links.push(...await parseLinks(page));
@@ -314,40 +325,41 @@ async function getData(page) { // get data from url
         console.error('Error while getting links from different pages in loop')
         console.error(err);
         Sentry.captureException(err);
-        con.query('UPDATE scraper_jobs SET failed = 1 WHERE id = ' + jobId + ';');
     }
 
     var getSize = size - last_index;
 
     // removed already parsed links
-    console.log('Links Caught: '+ links.length);
     links = toArray(links).slice(last_index);
-
+    con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     // get the data from the links
     let i = 0;
     try {
         for (i; i < getSize; i++) {
             const link = links[i];
+            await page.waitForTimeout(1000);
             await page.goto(link);
+            await page.waitForTimeout(2000);
             await getData(page);
         }
     } catch(err) {
         console.error('Error while getting data from links')
         console.error(err);
         Sentry.captureException(err);
-        con.query(`UPDATE scraper_jobs SET failed = 1 WHERE id = ${jobId};`);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while getting data from links" WHERE id = ${jobId};`);
     }
 
     // update the last index of the current scraper_job
     let getLast = i - 1 + last_index;
-    con.query('UPDATE scraper_jobs SET last_index = ' + getLast + ' WHERE id = ' + jobId, function (err, result) {
+    con.query(`UPDATE scraper_jobs SET last_index = ${getLast} WHERE id = ${jobId}`, function (err, result) {
         if (err) {
             console.error(err);
             Sentry.captureException(err);
         }
     });
 
-    await browser.close();
+    const pages = await browser.pages();
+    for (const page of pages) await page.close();
 
     // close connection
     con.end(function (err) {

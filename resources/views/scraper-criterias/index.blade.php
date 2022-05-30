@@ -39,7 +39,7 @@
                                             <strong>Location:</strong>
                                             <input class="form-control" type="text" name="location"
                                                 placeholder="Enter location" required>
-                                            <strong>Limit:</strong>
+                                            <strong>Daily Limit:</strong>
                                             <input class="form-control" type="text" name="limit"
                                                 placeholder="Enter limit" required>
                                         </div>

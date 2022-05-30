@@ -1,13 +1,13 @@
 {
   "name": "scrapper",
   "version": "1.0.0",
-  "description": "",
+  "description": "Scraper to scrap Google Maps",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "Muhammad Humza",
+  "author": "Muhammad Humza Riaz",
   "license": "ISC",
   "dependencies": {
     "@antiadmin/anticaptchaofficial": "^1.0.14",

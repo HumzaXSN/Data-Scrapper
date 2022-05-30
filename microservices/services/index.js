@@ -91,7 +91,6 @@ async function hasNextPage(page) { // check if there is a next page
     return !disabled;
 }
 
-
 async function parseLinks(page) { //parse links
     if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
         var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
@@ -273,7 +272,7 @@ async function getData(page) { // get data from url
 // Main function
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ["--no-sandbox"]
     });
     const page = await browser.newPage();

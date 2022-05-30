@@ -111,6 +111,6 @@ class ScraperCriteriaController extends Controller
         ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
         ScraperCriteria::where('id', request()->id)->update(['status' => 'Active']);
         Artisan::call('run:spider-scraper');
-        return redirect()->back()->with('success', 'Scraper Initiated');
+        return redirect()->back()->with('success', 'Scraper Completed');
     }
 }

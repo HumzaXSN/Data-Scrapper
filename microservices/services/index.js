@@ -54,7 +54,7 @@ async function autoScroll(page) { // scroll down
                     clearInterval(timer);
                     resolve();
                 }
-            }, 800);
+            }, 400);
         });
     });
 }
@@ -297,7 +297,14 @@ async function getData(page) { // get data from url
         }
     });
 
-    await page.goto(url);
+    try {
+        await page.goto(url);
+    } catch {
+        console.error('Error while going to the url')
+        console.error(err);
+        Sentry.captureException(err);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while going to the URL" WHERE id = ${jobId};`);
+    }
     // console.log('Scrolling...');
     await autoScroll(page);
 
@@ -312,8 +319,9 @@ async function getData(page) { // get data from url
         if (links.length < size) {
             while (links.length <= size) {
                 if (await hasNextPage(page)) {
-                    await page.waitForTimeout(2000);
+                    await page.waitForTimeout(800);
                     await goToNextPage(page);
+                    await page.waitForTimeout(500);
                     await autoScroll(page);
                     links.push(...await parseLinks(page));
                 } else {
@@ -325,23 +333,24 @@ async function getData(page) { // get data from url
         console.error('Error while getting links from different pages in loop')
         console.error(err);
         Sentry.captureException(err);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while parsing links" WHERE id = ${jobId};`);
     }
 
     var getSize = size - last_index;
 
     // removed already parsed links
     links = toArray(links).slice(last_index);
-    con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     // get the data from the links
     let i = 0;
     try {
         for (i; i < getSize; i++) {
             const link = links[i];
-            await page.waitForTimeout(1000);
+            await page.waitForTimeout(800);
             await page.goto(link);
-            await page.waitForTimeout(2000);
+            await page.waitForTimeout(800);
             await getData(page);
         }
+        con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     } catch(err) {
         console.error('Error while getting data from links')
         console.error(err);
@@ -360,6 +369,7 @@ async function getData(page) { // get data from url
 
     const pages = await browser.pages();
     for (const page of pages) await page.close();
+    await browser.close();
 
     // close connection
     con.end(function (err) {

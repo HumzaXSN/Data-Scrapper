@@ -36,7 +36,10 @@ class ScraperJobsDataTable extends DataTable
             ->addColumn('Scraper Criteria', function ($query) {
                 return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
             })
-            ->rawColumns(['status']);
+            ->addColumn('action', function ($query) {
+                return view('scraper-jobs.datatable.action', ['scraperJob' => $query])->render();
+            })
+            ->rawColumns(['status', 'action']);
     }
 
     /**
@@ -94,7 +97,11 @@ class ScraperJobsDataTable extends DataTable
             'last_index',
             'Scraper Criteria',
             'created_at',
-            'end_at'
+            'end_at',
+            'action' => [
+                'searchable' => false,
+                'orderable' => false
+            ]
         ];
     }
 

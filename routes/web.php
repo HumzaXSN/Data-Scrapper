@@ -37,9 +37,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'index', 'show', 'destroy'
     ]);
 
-    Route::get('/show-businesses', [GoogleBusinessController::class, 'index'])
-        ->name('google-businesses.showBusinesses');
-
     Route::resource('scraper-criterias', ScraperCriteriaController::class);
 
     Route::get('/run-scraper', [ScraperCriteriaController::class, 'runScraper'])
@@ -61,8 +58,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('update-contacts-page');
 
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
-
-    Route::get('/show-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs-show.index');
 
     Route::get('/debug-sentry', function () {
         throw new Exception('My first Sentry error!');

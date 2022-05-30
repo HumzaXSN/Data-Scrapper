@@ -32,11 +32,11 @@
                             In-Activate Scraper
                         </a>
                     @endif
-                    <a class="dropdown-item" href="{{ route('scraper-jobs-show.index', ['id' => $scraperCriteria->id]) }}">
+                    <a class="dropdown-item" href="{{ route('scraper-jobs.index', ['id' => $scraperCriteria->id]) }}">
                         <i class="pr-2 ti-menu text-info"></i>
                         Show Jobs
                     </a>
-                    <a class="dropdown-item" href="{{ route('google-businesses.showBusinesses', ['id' => $scraperCriteria->id]) }}">
+                    <a class="dropdown-item" href="{{ route('google-businesses.index', ['showBusiness' => $scraperCriteria->id]) }}">
                         <i class="pr-2 ti-more text-muted"></i>
                         Show Businesses
                     </a>

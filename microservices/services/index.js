@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 const Sentry = require('./sentry/sentry.js');
 var mysql = require('mysql');
-const { toArray } = require('lodash');
+const { toArray, pad } = require('lodash');
+const moment = require('moment');
 require('dotenv').config({ path: '.env' });
 
 // getting the data from laravel command
@@ -242,8 +243,10 @@ async function getData(page) { // get data from url
         return industry;
     });
 
+    var getTime = moment().format('YYYY-MM-DD HH:mm:ss');
+
     // get all the values and pass them in the below function to insert into the database
-    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading, getIndustry }) => {
+    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading, getIndustry, getTime }) => {
         return ({
             scraper_job_id: jobId,
             company: getheading,
@@ -251,10 +254,10 @@ async function getData(page) { // get data from url
             website: getWebsite,
             phone: getPhone,
             industry: getIndustry,
-            created_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds(),
-            updated_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()
+            created_at: getTime,
+            updated_at: getTime
         })
-    }, { getWebsite, getPhone, jobId, getAddress, getheading, getIndustry});
+    }, { getWebsite, getPhone, jobId, getAddress, getheading, getIndustry, getTime });
 
     // return the results to insert into the database
     con.query('INSERT INTO google_businesses SET ?', results, function (err) {

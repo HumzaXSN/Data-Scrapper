@@ -1,30 +1,35 @@
 const puppeteer = require('puppeteer');
 const Sentry = require('./sentry/sentry.js');
 var mysql = require('mysql');
-const { toArray, pad } = require('lodash');
+const { toArray } = require('lodash');
 const moment = require('moment');
-require('dotenv').config({ path: '.env' });
+const minimist = require('minimist');
 
 // getting the data from laravel command
-var args = require('minimist')(process.argv.slice(2), { string: "url" });
+var args = minimist(process.argv.slice(2), { string: "url" });
 var url = args.url;
 var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
 var criteriaId = parseInt(process.argv[5]);
+var host = minimist(process.argv.slice(2), { string: "host" }).host;
+var port = parseInt(process.argv[7]);
+var database = minimist(process.argv.slice(2), { string: "database" }).database;
+var username = minimist(process.argv.slice(2), { string: "username" }).username;
+var password = minimist(process.argv.slice(2), { string: "password" }).password;
 
 console.log('');
 console.error('');
-console.log(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Starting scraper');
-console.error(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Getting Scraper Errors');
+console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Starting scraper');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Scraper Errors');
 console.log('URL: "'+ url +'"');
 
 // connect to database
 var con = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: host,
+    port: port,
+    user: username,
+    password: password,
+    database: database,
     connectionLimit: 10
 });
 

@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@ashlarglobal.com',
-            'password' => bcrypt('12345678'),
+            'password' => bcrypt('Ashlar*Scraper1'),
             'email_verified_at' =>  Carbon::now()->timestamp
         ]);
     }

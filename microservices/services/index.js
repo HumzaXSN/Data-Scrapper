@@ -4,6 +4,8 @@ var mysql = require('mysql');
 const { toArray } = require('lodash');
 const moment = require('moment');
 const minimist = require('minimist');
+const { exec } = require('child_process');
+const path = require('path');
 
 // getting the data from laravel command
 var args = minimist(process.argv.slice(2), { string: "url" });
@@ -42,9 +44,14 @@ con.connect(function (err) {
     }
 });
 
-async function autoScroll(page) { // scroll down
-    await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
+// produce random number for the delay upto 3 digits
+function randomInt() {
+    return Math.floor(Math.random() * (35 - 10) + 10) + '00';
+}
+
+async function autoScroll(page, randomInt) { // scroll down
+    await page.evaluate(async (randomInt) => {
+        await new Promise((resolve) => {
             var totalHeight = 0;
             var distance = 100;
             var timer = setInterval(() => {
@@ -60,9 +67,9 @@ async function autoScroll(page) { // scroll down
                     clearInterval(timer);
                     resolve();
                 }
-            }, 400);
+            }, randomInt);
         });
-    });
+    }, randomInt);
 }
 
 async function parsePlaces(page) { // parse results from page
@@ -269,8 +276,9 @@ async function getData(page) { // get data from url
         if (err && err.code === 'ER_DUP_ENTRY') {
             console.log('Data already exist');
         } else if (err) {
-            console.error(err);
             Sentry.captureException(err);
+            con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while inserting data to the database" WHERE id = ${jobId};`);
+            throw err;
         }
     });
 
@@ -306,30 +314,29 @@ async function getData(page) { // get data from url
 
     try {
         await page.goto(url);
-    } catch {
-        console.error('Error while going to the url')
-        console.error(err);
+    } catch(err) {
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while going to the URL" WHERE id = ${jobId};`);
-    }
-    // console.log('Scrolling...');
-    await autoScroll(page);
+        throw err;
+    };
+
+    await autoScroll(page, randomInt());
 
     console.log('last_index: '+last_index);
 
     var size = limit + last_index;
 
     // get the links until where it is defined in size
-    page.waitForTimeout(1000);
+    page.waitForTimeout(randomInt());
     var links = await parseLinks(page);
     try {
         if (links.length < size) {
             while (links.length <= size) {
                 if (await hasNextPage(page)) {
-                    await page.waitForTimeout(800);
+                    await page.waitForTimeout(randomInt());
                     await goToNextPage(page);
-                    await page.waitForTimeout(500);
-                    await autoScroll(page);
+                    await page.waitForTimeout(randomInt());
+                    await autoScroll(page, randomInt());
                     links.push(...await parseLinks(page));
                 } else {
                     break;
@@ -337,10 +344,9 @@ async function getData(page) { // get data from url
             }
         }
     } catch(err) {
-        console.error('Error while getting links from different pages in loop')
-        console.error(err);
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while parsing links" WHERE id = ${jobId};`);
+        console.error(err);
     }
 
     var getSize = size - last_index;
@@ -352,17 +358,16 @@ async function getData(page) { // get data from url
     try {
         for (i; i < getSize; i++) {
             const link = links[i];
-            await page.waitForTimeout(800);
+            await page.waitForTimeout(randomInt());
             await page.goto(link);
-            await page.waitForTimeout(800);
+            await page.waitForTimeout(randomInt());
             await getData(page);
         }
         con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     } catch(err) {
-        console.error('Error while getting data from links')
-        console.error(err);
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while getting data from links" WHERE id = ${jobId};`);
+        throw err;
     }
 
     // update the last index of the current scraper_job
@@ -377,6 +382,24 @@ async function getData(page) { // get data from url
     const pages = await browser.pages();
     for (const page of pages) await page.close();
     await browser.close();
+
+    // con.query(`SELECT * FROM scraper_jobs WHERE id = ${jobId}`, function (err, result) {
+    //     if (err) {
+    //         console.error(err);
+    //         Sentry.captureException(err);
+    //     } else {
+    //         if (result[0].status === 1) {
+    //             var getDirectory = path.dirname(__filename);
+    //             var getFile = getDirectory + '/scrap-data.js >> ' + getDirectory + '/scrap-data.log 2>> ' + getDirectory + '/scrap-error.log';
+    //             exec(`node ${getFile} --jobId ${jobId} --host ${host} --port ${port} --database ${database} --username ${username} --password ${password}`, (err) => {
+    //                 if (err) {
+    //                     Sentry.captureException(err);
+    //                     throw err;
+    //                 }
+    //             });
+    //         }
+    //     }
+    // });
 
     // close connection
     con.end(function (err) {

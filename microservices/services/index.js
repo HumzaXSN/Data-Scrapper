@@ -123,7 +123,7 @@ async function parseLinks(page) { //parse links
 async function getData(page) { // get data from url
 
     // regex to check if the following is a url or not with space in start and end
-    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|business|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
+    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
     // regex to check the international phone number with space in start and end
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 

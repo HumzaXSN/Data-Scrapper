@@ -276,9 +276,8 @@ async function getData(page) { // get data from url
         if (err && err.code === 'ER_DUP_ENTRY') {
             console.log('Data already exist');
         } else if (err) {
+            console.error(err);
             Sentry.captureException(err);
-            con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while inserting data to the database" WHERE id = ${jobId};`);
-            throw err;
         }
     });
 
@@ -315,9 +314,10 @@ async function getData(page) { // get data from url
     try {
         await page.goto(url);
     } catch(err) {
+        console.error('Error while going to the url')
+        console.error(err);
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while going to the URL" WHERE id = ${jobId};`);
-        throw err;
     };
 
     await autoScroll(page, randomInt());
@@ -344,9 +344,10 @@ async function getData(page) { // get data from url
             }
         }
     } catch(err) {
+        console.error('Error while getting links from different pages in loop')
+        console.error(err);
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while parsing links" WHERE id = ${jobId};`);
-        console.error(err);
     }
 
     var getSize = size - last_index;
@@ -365,9 +366,10 @@ async function getData(page) { // get data from url
         }
         con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     } catch(err) {
+        console.error('Error while getting data from links')
+        console.error(err);
         Sentry.captureException(err);
         con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while getting data from links" WHERE id = ${jobId};`);
-        throw err;
     }
 
     // update the last index of the current scraper_job

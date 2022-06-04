@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\ScraperJobController;
 use App\Http\Controllers\GoogleBusinessController;
+use App\Http\Controllers\ScraperCriteriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -35,23 +36,33 @@ Route::middleware(['auth','verified'])->group(function () {
         'index', 'show', 'destroy'
     ]);
 
+    Route::resource('scraper-criterias', ScraperCriteriaController::class);
+
+    Route::get('/run-scraper', [ScraperCriteriaController::class, 'runScraper'])
+        ->name('scraper-criterias.runScraper');
+
+    Route::get('/stop-scraper', [ScraperCriteriaController::class, 'stopScraper'])
+        ->name('scraper-criterias.stopScraper');
+
+    Route::get('/start-scraper', [ScraperCriteriaController::class, 'startScraper'])
+        ->name('scraper-criterias.startScraper');
+
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
-                ->name('bulk-update');
+        ->name('bulk-update');
 
     Route::post('/add-contact', [ContactController::class, 'addContact'])
-                ->name('add-contact');
+        ->name('add-contact');
 
-    Route::post('/update-provisional-page',[ContactController::class,'provisionalPage'])
-                ->name('update-contacts-page');
+    Route::post('/update-provisional-page', [ContactController::class, 'provisionalPage'])
+        ->name('update-contacts-page');
 
     Route::get('/scraper-jobs', [ScraperJobController::class, 'index'])->name('scraper-jobs.index');
 
     Route::get('/debug-sentry', function () {
         throw new Exception('My first Sentry error!');
     });
-
 });
 
 Route::get('/shift-to-mbl/{unsubLink}', [ContactController::class, 'shiftToMBL'])->name('contacts.mbl');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

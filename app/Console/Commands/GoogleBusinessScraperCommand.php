@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\ScraperJob;
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Process;
 
 class GoogleBusinessScraperCommand extends Command
 {
@@ -13,7 +14,7 @@ class GoogleBusinessScraperCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'run:google-businesses-scraper {limit} {city} {keyword}';
+    protected $signature = 'run:google-businesses-scraper {keyword} {city} {limit} {criteriaId}';
 
     /**
      * The console command description.
@@ -39,73 +40,28 @@ class GoogleBusinessScraperCommand extends Command
      */
     public function handle()
     {
-        $lastJob = ScraperJob::latest()->first();
-        $limit = $this->argument('limit');
-        $city = $this->argument('city');
+        $host = config('app.host');
+        $port = config('app.port');
+        $database = config('app.database');
+        $username = config('app.username');
+        $password = config('app.password');
         $keyword = $this->argument('keyword');
+        $city = $this->argument('city');
+        $limit = $this->argument('limit');
+        $criteriaId = $this->argument('criteriaId');
         $searchQueries = array("https://www.google.com/maps/?q=" .$keyword. " in " .$city);
-
-        if ($lastJob !== null) {
-
-            $lastJobTime = Carbon::parse($lastJob->end_at);
-            $currentTime = Carbon::parse(now());
-            $duration = $lastJobTime->diffInMinutes($currentTime);
-
-            if((int)$duration >= 20)
-            {
-                if($lastJob !== null) {
-                    if(in_array($lastJob->url ,$searchQueries))
-                    {
-                        $i = array_search($lastJob->url, $searchQueries);
-                        if($i != count($searchQueries)-1)
-                        {
-                            $url = $searchQueries[$i+=1];
-                        }else {
-                            $url = $searchQueries[0];
-                        }
-                    }else{
-                        $url = $searchQueries[0];
-                    }
-                }else{
-                    $url = $searchQueries[0];
-                }
-
-                $ip = request()->server('SERVER_ADDR');
-                $job = ScraperJob::create([
-                    'ip' => $ip,
-                    'url' => $url,
-                    'platform' => 'Google Business',
-                    'location' => $city,
-                    'keyword' => $keyword,
-                ]);
-
-                $jobId = $job->id;
-                exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
-                $job->status = 1;
-                $job->end_at = now();
-                $job->save();
-            }else{
-                return;
-            }
-
-        }else{
-
-            $url = $searchQueries[0];
-
-            $ip = request()->server('SERVER_ADDR');
-            $job = ScraperJob::create([
-                'ip' => $ip,
-                'url' => $url,
-                'platform' => 'Google Business',
-                'location' => $city,
-                'keyword' => $keyword,
-            ]);
-
-            $jobId = $job->id;
-            exec("node microservices/services/index.js --url="."\"{$url}\""." ".$limit. " " .$jobId);
-            $job->status = 1;
-            $job->end_at = now();
-            $job->save();
-        }
+        $url = $searchQueries[0];
+        $ip = request()->server('SERVER_ADDR');
+        $job = ScraperJob::create([
+            'ip' => $ip,
+            'url' => $url,
+            'platform' => 'Google Business',
+            'scraper_criteria_id' => $criteriaId,
+        ]);
+        $jobId = $job->id;
+        $path = base_path() . '/microservices/services/index.js >> ' . base_path() . '/microservices/services/data.log 2>> ' . base_path() . '/microservices/services/errors.log';
+        exec("node " . $path." --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId . " " . " --host=". "\"{$host}\"" . " " . $port . " " ." --database=" . "\"{$database}\"" . " " ." --username=" . "\"{$username}\"" . " " ." --password=" . "\"{$password}\"");
+        $job->end_at = now();
+        $job->save();
     }
 }

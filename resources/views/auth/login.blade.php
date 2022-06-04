@@ -35,25 +35,7 @@
                     </span>
                 @enderror
             </div>
-
-            <div class="mt-4 mb-4 checkbox">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" name="remember" class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">
-                        Remember me
-                    </span>
-                </label>
-                <a href="{{ route('password.request') }}"  class="float-right text-muted">Forgot Password ?</a>
-            </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-
-            <div class="mt-4">
-                <span>
-                    Don't have an account yet ?
-                </span>
-                <a href="{{ route('register')}}" class="text-primary">Sign Up</a>
-            </div>
         </form>
 
     </div>

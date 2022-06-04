@@ -25,7 +25,7 @@ class ScraperCriteria extends Model
         return $this->hasMany(ScraperJob::class);
     }
 
-    public function googlebusinesses()
+    public function googleBusinesses()
     {
         return $this->hasManyThrough(GoogleBusiness::class, ScraperJob::class);
     }

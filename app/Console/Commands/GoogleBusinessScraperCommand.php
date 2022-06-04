@@ -40,6 +40,11 @@ class GoogleBusinessScraperCommand extends Command
      */
     public function handle()
     {
+        $host = config('app.host');
+        $port = config('app.port');
+        $database = config('app.database');
+        $username = config('app.username');
+        $password = config('app.password');
         $keyword = $this->argument('keyword');
         $city = $this->argument('city');
         $limit = $this->argument('limit');
@@ -55,7 +60,7 @@ class GoogleBusinessScraperCommand extends Command
         ]);
         $jobId = $job->id;
         $path = base_path() . '/microservices/services/index.js >> ' . base_path() . '/microservices/services/data.log 2>> ' . base_path() . '/microservices/services/errors.log';
-        exec("node " . $path." --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId);
+        exec("node " . $path." --url=" . "\"{$url}\"" . " " . $limit . " " . $jobId . " " . $criteriaId . " " . " --host=". "\"{$host}\"" . " " . $port . " " ." --database=" . "\"{$database}\"" . " " ." --username=" . "\"{$username}\"" . " " ." --password=" . "\"{$password}\"");
         $job->end_at = now();
         $job->save();
     }

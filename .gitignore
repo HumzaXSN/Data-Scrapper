@@ -3,6 +3,8 @@ microservices/services/node_modules
 microservices/services/data.log
 microservices/services/errors.log
 microservices/services/.idea
+microservices/services/scrap-data.log
+microservices/services/scrap-error.log
 /node_modules
 /public/hot
 /public/storage

@@ -37,7 +37,17 @@ class GoogleBusinessesDataTable extends DataTable
      */
     public function query(GoogleBusiness $model)
     {
-        return $model->newQuery();
+        $getJobBusinesses = $this->getJobBusinesses;
+        $getBusiness = $this->getBusiness;
+        if (isset($getBusiness)) {
+            return $model->newQuery()->whereHas('scraperJob', function ($query) use ($getBusiness) {
+                $query->where('scraper_criteria_id', $getBusiness);
+            });
+        } elseif(isset($getJobBusinesses)) {
+            return $model->newQuery()->where('scraper_job_id', $getJobBusinesses);
+        } else {
+            return $model->newQuery();
+        }
     }
 
     /**

@@ -2,28 +2,36 @@ const puppeteer = require('puppeteer');
 const Sentry = require('./sentry/sentry.js');
 var mysql = require('mysql');
 const { toArray } = require('lodash');
-require('dotenv').config({ path: '.env' });
+const moment = require('moment');
+const minimist = require('minimist');
+const { exec } = require('child_process');
+const path = require('path');
 
 // getting the data from laravel command
-var args = require('minimist')(process.argv.slice(2), { string: "url" });
+var args = minimist(process.argv.slice(2), { string: "url" });
 var url = args.url;
 var limit = parseInt(process.argv[3]);
 var jobId = parseInt(process.argv[4]);
 var criteriaId = parseInt(process.argv[5]);
+var host = minimist(process.argv.slice(2), { string: "host" }).host;
+var port = parseInt(process.argv[7]);
+var database = minimist(process.argv.slice(2), { string: "database" }).database;
+var username = minimist(process.argv.slice(2), { string: "username" }).username;
+var password = minimist(process.argv.slice(2), { string: "password" }).password;
 
 console.log('');
 console.error('');
-console.log(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Starting scraper');
-console.error(new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + ' - Getting Scraper Errors');
+console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Starting scraper');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Scraper Errors');
 console.log('URL: "'+ url +'"');
 
 // connect to database
 var con = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: host,
+    port: port,
+    user: username,
+    password: password,
+    database: database,
     connectionLimit: 10
 });
 
@@ -36,9 +44,14 @@ con.connect(function (err) {
     }
 });
 
-async function autoScroll(page) { // scroll down
-    await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
+// produce random number for the delay upto 3 digits
+function randomInt() {
+    return Math.floor(Math.random() * (35 - 10) + 10) + '00';
+}
+
+async function autoScroll(page, randomInt) { // scroll down
+    await page.evaluate(async (randomInt) => {
+        await new Promise((resolve) => {
             var totalHeight = 0;
             var distance = 100;
             var timer = setInterval(() => {
@@ -54,9 +67,9 @@ async function autoScroll(page) { // scroll down
                     clearInterval(timer);
                     resolve();
                 }
-            }, 800);
+            }, randomInt);
         });
-    });
+    }, randomInt);
 }
 
 async function parsePlaces(page) { // parse results from page
@@ -91,7 +104,6 @@ async function hasNextPage(page) { // check if there is a next page
     return !disabled;
 }
 
-
 async function parseLinks(page) { //parse links
     if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
         var elements = await page.$$('#QA0Szd > div > div > div > div > div > div > div > div > div > div > div > div > a');
@@ -111,7 +123,7 @@ async function parseLinks(page) { //parse links
 async function getData(page) { // get data from url
 
     // regex to check if the following is a url or not with space in start and end
-    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|business|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
+    const regexWebsite = /^\s*(https?:\/\/)?(?!(www\.)?(?:google|facebook|whatsapp|instagram|youtube))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\s*$/gi;
     // regex to check the international phone number with space in start and end
     const regexPhone = /^\s*((?:\(?(?:00|\+)(?:[1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})\s*$/gi;
 
@@ -243,8 +255,10 @@ async function getData(page) { // get data from url
         return industry;
     });
 
+    var getTime = moment().format('YYYY-MM-DD HH:mm:ss');
+
     // get all the values and pass them in the below function to insert into the database
-    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading, getIndustry }) => {
+    const results = await page.evaluate(({ getWebsite, getPhone, jobId, getAddress, getheading, getIndustry, getTime }) => {
         return ({
             scraper_job_id: jobId,
             company: getheading,
@@ -252,10 +266,10 @@ async function getData(page) { // get data from url
             website: getWebsite,
             phone: getPhone,
             industry: getIndustry,
-            created_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds(),
-            updated_at: new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()
+            created_at: getTime,
+            updated_at: getTime
         })
-    }, { getWebsite, getPhone, jobId, getAddress, getheading, getIndustry});
+    }, { getWebsite, getPhone, jobId, getAddress, getheading, getIndustry, getTime });
 
     // return the results to insert into the database
     con.query('INSERT INTO google_businesses SET ?', results, function (err) {
@@ -273,7 +287,7 @@ async function getData(page) { // get data from url
 // Main function
 (async () => {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ["--no-sandbox"]
     });
     const page = await browser.newPage();
@@ -297,24 +311,32 @@ async function getData(page) { // get data from url
         }
     });
 
-    await page.goto(url);
-    // console.log('Scrolling...');
-    await autoScroll(page);
+    try {
+        await page.goto(url);
+    } catch(err) {
+        console.error('Error while going to the url')
+        console.error(err);
+        Sentry.captureException(err);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while going to the URL" WHERE id = ${jobId};`);
+    };
+
+    await autoScroll(page, randomInt());
 
     console.log('last_index: '+last_index);
 
     var size = limit + last_index;
 
     // get the links until where it is defined in size
-    page.waitForTimeout(1000);
+    page.waitForTimeout(randomInt());
     var links = await parseLinks(page);
     try {
         if (links.length < size) {
             while (links.length <= size) {
                 if (await hasNextPage(page)) {
-                    await page.waitForTimeout(2000);
+                    await page.waitForTimeout(randomInt());
                     await goToNextPage(page);
-                    await autoScroll(page);
+                    await page.waitForTimeout(randomInt());
+                    await autoScroll(page, randomInt());
                     links.push(...await parseLinks(page));
                 } else {
                     break;
@@ -325,23 +347,24 @@ async function getData(page) { // get data from url
         console.error('Error while getting links from different pages in loop')
         console.error(err);
         Sentry.captureException(err);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while parsing links" WHERE id = ${jobId};`);
     }
 
     var getSize = size - last_index;
 
     // removed already parsed links
     links = toArray(links).slice(last_index);
-    con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     // get the data from the links
     let i = 0;
     try {
         for (i; i < getSize; i++) {
             const link = links[i];
-            await page.waitForTimeout(1000);
+            await page.waitForTimeout(randomInt());
             await page.goto(link);
-            await page.waitForTimeout(2000);
+            await page.waitForTimeout(randomInt());
             await getData(page);
         }
+        con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
     } catch(err) {
         console.error('Error while getting data from links')
         console.error(err);
@@ -360,6 +383,25 @@ async function getData(page) { // get data from url
 
     const pages = await browser.pages();
     for (const page of pages) await page.close();
+    await browser.close();
+
+    // con.query(`SELECT * FROM scraper_jobs WHERE id = ${jobId}`, function (err, result) {
+    //     if (err) {
+    //         console.error(err);
+    //         Sentry.captureException(err);
+    //     } else {
+    //         if (result[0].status === 1) {
+    //             var getDirectory = path.dirname(__filename);
+    //             var getFile = getDirectory + '/scrap-data.js >> ' + getDirectory + '/scrap-data.log 2>> ' + getDirectory + '/scrap-error.log';
+    //             exec(`node ${getFile} --jobId ${jobId} --host ${host} --port ${port} --database ${database} --username ${username} --password ${password}`, (err) => {
+    //                 if (err) {
+    //                     Sentry.captureException(err);
+    //                     throw err;
+    //                 }
+    //             });
+    //         }
+    //     }
+    // });
 
     // close connection
     con.end(function (err) {

@@ -36,7 +36,10 @@ class ScraperJobsDataTable extends DataTable
             ->addColumn('Scraper Criteria', function ($query) {
                 return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
             })
-            ->rawColumns(['status']);
+            ->addColumn('action', function ($query) {
+                return view('scraper-jobs.datatable.action', ['scraperJob' => $query])->render();
+            })
+            ->rawColumns(['status', 'action']);
     }
 
     /**
@@ -66,7 +69,7 @@ class ScraperJobsDataTable extends DataTable
                     ->setTableId('scraperjobs-table')
                     ->columns($this->getColumns())
                     ->parameters([
-                        'order' => [[7, 'desc']]
+                        'order' => [[0, 'desc']]
                     ])
                     ->minifiedAjax()
                     ->dom('Bfrtip')
@@ -87,6 +90,7 @@ class ScraperJobsDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'id',
             'url',
             'platform',
             'status',
@@ -94,7 +98,11 @@ class ScraperJobsDataTable extends DataTable
             'last_index',
             'Scraper Criteria',
             'created_at',
-            'end_at'
+            'end_at',
+            'action' => [
+                'searchable' => false,
+                'orderable' => false
+            ]
         ];
     }
 

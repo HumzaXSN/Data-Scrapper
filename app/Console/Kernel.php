@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\DecisionMakerCommand;
 use App\Models\ScraperCriteria;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GoogleBusinessScraperCommand;
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         GoogleBusinessScraperCommand::class,
         RunScraperCommand::class,
+        DecisionMakerCommand::class,
     ];
 
     /**

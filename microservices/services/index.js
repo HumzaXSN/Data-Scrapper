@@ -4,7 +4,6 @@ var mysql = require('mysql');
 const { toArray } = require('lodash');
 const moment = require('moment');
 const minimist = require('minimist');
-const { exec } = require('child_process');
 const path = require('path');
 
 // getting the data from laravel command
@@ -40,13 +39,14 @@ con.connect(function (err) {
     if (err) {
         console.error(err);
         Sentry.captureException(err);
+        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while connecting to Database" WHERE id = ${jobId};`);
         throw 'Data base connection error';
     }
 });
 
 // produce random number for the delay upto 3 digits
 function randomInt() {
-    return Math.floor(Math.random() * (35 - 10) + 10) + '00';
+    return Math.floor(Math.random() * (40 - 10) + 10) + '00';
 }
 
 async function autoScroll(page, randomInt) { // scroll down
@@ -284,6 +284,19 @@ async function getData(page) { // get data from url
     return results;
 }
 
+async function bringData() {
+    return new Promise(resolve => {
+        con.query('SELECT google_businesses.id, company, industry, scraper_criterias.location AS location FROM google_businesses INNER JOIN scraper_jobs ON google_businesses.scraper_job_id = scraper_jobs.id INNER JOIN scraper_criterias ON scraper_jobs.scraper_criteria_id = scraper_criterias.id ORDER BY google_businesses.id DESC LIMIT 1;', function (err, result) {
+            if (err) {
+                console.error(err);
+                Sentry.captureException(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 // Main function
 (async () => {
     const browser = await puppeteer.launch({
@@ -317,7 +330,6 @@ async function getData(page) { // get data from url
         console.error('Error while going to the url')
         console.error(err);
         Sentry.captureException(err);
-        con.query(`UPDATE scraper_jobs SET status = 2, message = "Error while going to the URL" WHERE id = ${jobId};`);
     };
 
     await autoScroll(page, randomInt());
@@ -363,8 +375,12 @@ async function getData(page) { // get data from url
             await page.goto(link);
             await page.waitForTimeout(randomInt());
             await getData(page);
+            let getLatestRecord = await bringData();
+            var query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + getLatestRecord[0].company + ' in ' + getLatestRecord[0].location + ' @LinkedIn.com';
+            var makeQuery = query.replace(/\s/g, '%20');
+            con.query(`UPDATE google_businesses SET url = '${makeQuery}' WHERE id = ${getLatestRecord[0].id};`);
         }
-        con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfully" WHERE id = ${jobId};`);
+        con.query(`UPDATE scraper_jobs SET status = 1, message = "Scraper Completed Successfuly" WHERE id = ${jobId};`);
     } catch(err) {
         console.error('Error while getting data from links')
         console.error(err);
@@ -384,24 +400,6 @@ async function getData(page) { // get data from url
     const pages = await browser.pages();
     for (const page of pages) await page.close();
     await browser.close();
-
-    // con.query(`SELECT * FROM scraper_jobs WHERE id = ${jobId}`, function (err, result) {
-    //     if (err) {
-    //         console.error(err);
-    //         Sentry.captureException(err);
-    //     } else {
-    //         if (result[0].status === 1) {
-    //             var getDirectory = path.dirname(__filename);
-    //             var getFile = getDirectory + '/scrap-data.js >> ' + getDirectory + '/scrap-data.log 2>> ' + getDirectory + '/scrap-error.log';
-    //             exec(`node ${getFile} --jobId ${jobId} --host ${host} --port ${port} --database ${database} --username ${username} --password ${password}`, (err) => {
-    //                 if (err) {
-    //                     Sentry.captureException(err);
-    //                     throw err;
-    //                 }
-    //             });
-    //         }
-    //     }
-    // });
 
     // close connection
     con.end(function (err) {

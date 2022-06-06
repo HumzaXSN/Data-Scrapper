@@ -4,23 +4,16 @@ var mysql = require('mysql');
 const minimist = require('minimist');
 const moment = require('moment');
 
-var host = '127.0.0.1';
-var port = '3306';
-var database = 'laravel_spider';
-var username = 'root';
-var password = '';
-
-// var jobId = minimist(process.argv.slice(2), { string: "jobId" }).jobId;
-// var host = minimist(process.argv.slice(2), { string: "host" }).host;
-// var port = minimist(process.argv.slice(2), { string: "port" }).port;
-// var database = minimist(process.argv.slice(2), { string: "database" }).database;
-// var username = minimist(process.argv.slice(2), { string: "username" }).username;
-// var password = minimist(process.argv.slice(2), { string: "password" }).password;
+var host = minimist(process.argv.slice(2), { string: "host" }).host;
+var port = minimist(process.argv.slice(2), { string: "port" }).port;
+var database = minimist(process.argv.slice(2), { string: "database" }).database;
+var username = minimist(process.argv.slice(2), { string: "username" }).username;
+var password = minimist(process.argv.slice(2), { string: "password" }).password;
 
 console.log('');
 console.error('');
-console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Starting scraper');
-console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Scraper Errors');
+console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Starting Next Script');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Next Script Erros');
 
 // connect to database
 var con = mysql.createConnection({
@@ -43,12 +36,12 @@ con.connect(function (err) {
 
 // produce random number for the delay upto 3 digits
 function randomInt() {
-    return Math.floor(Math.random() * (35 - 10) + 10) + '00';
+    return Math.floor(Math.random() * (10 - 5) + 5) + '00';
 }
 
 async function bringData() {
     return new Promise(resolve => {
-        con.query('SELECT google_businesses.id, company, industry, scraper_criterias.location AS location FROM google_businesses INNER JOIN scraper_jobs ON google_businesses.scraper_job_id = scraper_jobs.id INNER JOIN scraper_criterias ON scraper_jobs.scraper_criteria_id = scraper_criterias.id WHERE scraper_jobs.id = ' + 1 + ';', function (err, result) {
+        con.query('SELECT * FROM google_businesses;', function (err, result) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
@@ -61,33 +54,35 @@ async function bringData() {
 }
 
 async function getName(page) {
-    await page.waitForTimeout(5000);
-    let getHead = [];
     if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
         var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span');
     } else {
         var elements = await page.$$('#rso > div > div > div > div > a > h3');
     }
     if (elements && elements.length) {
+        let getHead = [];
         for (const el of elements) {
             const name = await el.evaluate(span => span.textContent);
             getHead.push({ name });
         }
+        return getHead;
     }
-    return getHead;
-    // var evalName = await page.evaluate(() => {
-    //     if (document.querySelector('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
-    //        var headName = document.querySelector('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span').textContent;
-    //     } else if (document.querySelector('#rso > div > div > div > div > a > h3') != null) {
-    //         let getHead = [];
-    //         for (var i = 0; i < document.querySelectorAll('#rso > div > div > div > div > a > h3').length; i++) {
-    //            var headName = document.querySelectorAll('#rso > div > div > div > div > a > h3')[0].textContent;
-    //             getHead.push(headName);
-    //         }
-    //         return getHead;
-    //     }
+}
 
-    // });
+async function parseLinks(page) { //parse links
+    if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
+        var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a');
+    } else {
+        var elements = await page.$$('#rso > div > div > div > div > a');
+    }
+    if (elements && elements.length) {
+        let links = [];
+        for (const el of elements) {
+            const href = await el.evaluate(a => a.href);
+            links.push({href});
+        }
+        return links;
+    }
 }
 
 (async () => {
@@ -104,19 +99,38 @@ async function getName(page) {
         height: 786
     });
 
-    // Loop throgh data from database
-    for (let i = 0; i < getData.length; i++) {
-        await page.goto('https://www.google.com/');
-        await page.waitForTimeout(randomInt());
-        var query = 'CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + getData[i].company + ' in ' + getData[i].location;
-        await page.type('input[name="q"]', query);
-        await page.waitForTimeout(randomInt());
-        await page.keyboard.press("Enter");
-        await page.waitForTimeout(randomInt());
-        var googleNames = await getName(page);
-        requiredNames = googleNames.slice(0, 5);
-
-        con.query()
+    try {
+        for (let i = 0; i < getData.length; i++) {
+            await page.goto(getData[i].url, { waitUntil: 'networkidle2' });
+            await page.waitForTimeout(randomInt());
+            var googleNames = await getName(page);
+            requiredNames = googleNames.slice(0, 5);
+            var names = requiredNames.map(function (item) {
+                return item.name;
+            });
+            var link = await parseLinks(page);
+            var requiredLinks = link.slice(0, 5);
+            var links = requiredLinks.map(function (item) {
+                return item.link;
+            });
+            var sql = 'INSERT IGNORE INTO decision_makers (name, url, google_business_id, created_at, updated_at) VALUES ?';
+            var values = [
+                [names[0], links[0], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[1], links[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[2], links[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[3], links[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[4], links[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
+            ];
+            con.query(sql, [values], function (err) {
+                if (err) {
+                    console.error(err);
+                    Sentry.captureException(err);
+                }
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        Sentry.captureException(error);
     }
 
     const pages = await browser.pages();

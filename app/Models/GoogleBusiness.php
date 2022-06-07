@@ -29,7 +29,7 @@ class GoogleBusiness extends Model
         return $this->belongsToMany(Note::class);
     }
 
-    public function DecesionMakers()
+    public function decisionMakers()
     {
         return $this->hasMany(DecisionMaker::class);
     }

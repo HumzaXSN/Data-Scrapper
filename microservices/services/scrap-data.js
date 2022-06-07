@@ -12,8 +12,8 @@ var password = minimist(process.argv.slice(2), { string: "password" }).password;
 
 console.log('');
 console.error('');
-console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Starting Next Script');
-console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Next Script Erros');
+console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Scraping data from Google Businesses');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Errors from Google Businesses');
 
 // connect to database
 var con = mysql.createConnection({
@@ -108,6 +108,7 @@ async function parseLinks(page) { //parse links
             var names = requiredNames.map(function (item) {
                 return item.name;
             });
+            await page.waitForTimeout(randomInt());
             var link = await parseLinks(page);
             var requiredLinks = link.slice(0, 5);
             var sql = 'INSERT IGNORE INTO decision_makers (name, url, google_business_id, created_at, updated_at) VALUES ?';
@@ -124,6 +125,8 @@ async function parseLinks(page) { //parse links
                     Sentry.captureException(err);
                 }
             });
+            console.log('Company Name: ' + getData[i].company);
+            console.log('Names: ' + names);
         }
     } catch (error) {
         console.error(error);

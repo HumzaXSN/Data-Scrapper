@@ -36,7 +36,7 @@ con.connect(function (err) {
 
 // produce random number for the delay upto 3 digits
 function randomInt() {
-    return Math.floor(Math.random() * (10 - 5) + 5) + '00';
+    return Math.floor(Math.random() * (40 - 10) + 10) + '00';
 }
 
 async function bringData() {
@@ -79,7 +79,7 @@ async function parseLinks(page) { //parse links
         let links = [];
         for (const el of elements) {
             const href = await el.evaluate(a => a.href);
-            links.push({href});
+            links.push(href);
         }
         return links;
     }
@@ -89,7 +89,7 @@ async function parseLinks(page) { //parse links
     let getData = await bringData();
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox']
     });
     const page = await browser.newPage();
@@ -104,22 +104,19 @@ async function parseLinks(page) { //parse links
             await page.goto(getData[i].url, { waitUntil: 'networkidle2' });
             await page.waitForTimeout(randomInt());
             var googleNames = await getName(page);
-            requiredNames = googleNames.slice(0, 5);
+            var requiredNames = googleNames.slice(0, 5);
             var names = requiredNames.map(function (item) {
                 return item.name;
             });
             var link = await parseLinks(page);
             var requiredLinks = link.slice(0, 5);
-            var links = requiredLinks.map(function (item) {
-                return item.link;
-            });
             var sql = 'INSERT IGNORE INTO decision_makers (name, url, google_business_id, created_at, updated_at) VALUES ?';
             var values = [
-                [names[0], links[0], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[1], links[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[2], links[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[3], links[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[4], links[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
+                [names[0], requiredLinks[0], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[1], requiredLinks[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[2], requiredLinks[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[3], requiredLinks[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [names[4], requiredLinks[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
             ];
             con.query(sql, [values], function (err) {
                 if (err) {

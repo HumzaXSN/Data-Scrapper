@@ -41,7 +41,7 @@ function randomInt() {
 
 async function bringData() {
     return new Promise(resolve => {
-        con.query('SELECT * FROM google_businesses;', function (err, result) {
+        con.query('SELECT * FROM google_businesses WHERE url IS NOT NULL;', function (err, result) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);

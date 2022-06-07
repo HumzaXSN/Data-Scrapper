@@ -61,6 +61,7 @@ class GoogleBusinessesDataTable extends DataTable
                     ->setTableId('googlebusinesses-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
+                    ->orderBy(0)
                     ->dom('Bfrtip')
                     ->buttons(
                         Button::make('create'),
@@ -79,6 +80,7 @@ class GoogleBusinessesDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'id',
             'company',
             'phone',
             'address',

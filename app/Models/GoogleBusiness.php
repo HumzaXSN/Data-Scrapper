@@ -15,7 +15,8 @@ class GoogleBusiness extends Model
         'email',
         'address',
         'website',
-        'scraper_job_id'
+        'scraper_job_id',
+        'url'
     ];
 
     public function scraperJob()
@@ -26,5 +27,10 @@ class GoogleBusiness extends Model
     public function Notes()
     {
         return $this->belongsToMany(Note::class);
+    }
+
+    public function decisionMakers()
+    {
+        return $this->hasMany(DecisionMaker::class);
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use App\Models\ScraperJob;
 use Illuminate\Console\Command;
-use Symfony\Component\Process\Process;
 
 class GoogleBusinessScraperCommand extends Command
 {

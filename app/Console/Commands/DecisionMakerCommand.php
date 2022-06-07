@@ -11,7 +11,7 @@ class DecisionMakerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'get:decision-maker-names';
+    protected $signature = 'get:decision-makers-data';
 
     /**
      * The console command description.

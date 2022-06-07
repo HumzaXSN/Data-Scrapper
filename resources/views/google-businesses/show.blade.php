@@ -89,117 +89,41 @@
                                 Names Reterived from Google
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                @if (isset($googleBusiness->decisionMakers[0]->name))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div class="row p-3">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                @foreach ($googleBusiness->decisionMakers as $decisionMaker)
+                                    @if (isset($decisionMaker->name))
                                         <div class="form-group">
                                             <div class="form-group">
                                                 <strong>Name:</strong>
-                                                {{ $googleBusiness->decisionMakers[0]->name }}
+                                                {{ $decisionMaker->name }}
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[0]->url))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                @foreach ($googleBusiness->decisionMakers as $decisionMaker)
+                                    @if (isset($decisionMaker->name))
                                         <div class="form-group">
                                             <div class="form-group">
                                                 <strong>URL:</strong>
-                                                {{ $googleBusiness->decisionMakers[0]->url }}
+                                                {{ $decisionMaker->url }}
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[1]->name))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>Name:</strong>
-                                                {{ $googleBusiness->decisionMakers[1]->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[1]->url))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>URL:</strong>
-                                                {{ $googleBusiness->decisionMakers[1]->url }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[2]->name))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>Name:</strong>
-                                                {{ $googleBusiness->decisionMakers[2]->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[2]->url))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>URL:</strong>
-                                                {{ $googleBusiness->decisionMakers[2]->url }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[3]->name))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>Name:</strong>
-                                                {{ $googleBusiness->decisionMakers[3]->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[3]->url))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>URL:</strong>
-                                                {{ $googleBusiness->decisionMakers[3]->url }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[4]->name))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>Name:</strong>
-                                                {{ $googleBusiness->decisionMakers[4]->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if (isset($googleBusiness->decisionMakers[4]->url))
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <strong>URL:</strong>
-                                                {{ $googleBusiness->decisionMakers[4]->url }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {{-- End Second State --}}
 
         </div>
-    </main>
+        {{-- End Second State --}}
+
+</div>
+</main>
 </div>
 
 @include('partials.footer')

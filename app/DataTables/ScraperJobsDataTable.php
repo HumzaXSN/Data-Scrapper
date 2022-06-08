@@ -33,13 +33,22 @@ class ScraperJobsDataTable extends DataTable
                     return '<p class="text-danger">failed</p>';
                 }
             })
+            ->addColumn('decision_makers_status', function ($query) {
+                if ($query->decision_makers_status == 0) {
+                    return '<p class="text-warning">pending</p>';
+                } else if ($query->decision_makers_status == 1) {
+                    return '<p class="text-success">successful</p>';
+                } else {
+                    return '<p class="text-danger">failed</p>';
+                }
+            })
             ->addColumn('Scraper Criteria', function ($query) {
                 return $query->scraperCriteria->keyword. ' in ' . $query->scraperCriteria->location;
             })
             ->addColumn('action', function ($query) {
                 return view('scraper-jobs.datatable.action', ['scraperJob' => $query])->render();
             })
-            ->rawColumns(['status', 'action']);
+            ->rawColumns(['status', 'action', 'decision_makers_status']);
     }
 
     /**
@@ -97,6 +106,7 @@ class ScraperJobsDataTable extends DataTable
             'message',
             'last_index',
             'Scraper Criteria',
+            'decision_makers_status',
             'created_at',
             'end_at',
             'action' => [

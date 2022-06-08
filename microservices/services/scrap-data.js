@@ -12,8 +12,8 @@ var password = minimist(process.argv.slice(2), { string: "password" }).password;
 
 console.log('');
 console.error('');
-console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Scraping data from Google Businesses');
-console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Errors from Google Businesses');
+console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Scraping data from Google Businesses Table');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Errors while Scraping from Google Businesses Table');
 
 // connect to database
 var con = mysql.createConnection({
@@ -41,7 +41,7 @@ function randomInt() {
 
 async function bringData() {
     return new Promise(resolve => {
-        con.query('SELECT * FROM google_businesses WHERE url IS NOT NULL;', function (err, result) {
+        con.query('SELECT google_businesses.id AS id, google_businesses.company AS company ,google_businesses.url AS url, scraper_jobs.id AS jobId FROM google_businesses INNER JOIN scraper_jobs ON google_businesses.scraper_job_id = scraper_jobs.id WHERE scraper_jobs.decision_makers_status = 0 AND google_businesses.url IS NOT NULL ORDER BY scraper_jobs.id DESC LIMIT 1;', function (err, result) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
@@ -53,36 +53,35 @@ async function bringData() {
     });
 }
 
-async function getName(page) {
+async function getScrapData(page) {
+    let links = [], getHead = [];
+    
+    // Parsing Headings
     if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
         var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span');
     } else {
         var elements = await page.$$('#rso > div > div > div > div > a > h3');
     }
     if (elements && elements.length) {
-        let getHead = [];
         for (const el of elements) {
             const name = await el.evaluate(span => span.textContent);
-            getHead.push({ name });
+            getHead.push(name);
         }
-        return getHead;
     }
-}
 
-async function parseLinks(page) { //parse links
+    // Parsing Links
     if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
         var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a');
     } else {
-        var elements = await page.$$('#rso > div > div > div > div > a');
+        var elements = await page.$$('#rso > div > div > div:nth-child(1) > div > a');
     }
     if (elements && elements.length) {
-        let links = [];
         for (const el of elements) {
             const href = await el.evaluate(a => a.href);
             links.push(href);
         }
-        return links;
     }
+    return { links, getHead };
 }
 
 (async () => {
@@ -103,21 +102,17 @@ async function parseLinks(page) { //parse links
         for (let i = 0; i < getData.length; i++) {
             await page.goto(getData[i].url, { waitUntil: 'networkidle2' });
             await page.waitForTimeout(randomInt());
-            var googleNames = await getName(page);
-            var requiredNames = googleNames.slice(0, 5);
-            var names = requiredNames.map(function (item) {
-                return item.name;
-            });
+            var googleData = await getScrapData(page);
+            var requiredNames = googleData.getHead.slice(0, 5);
             await page.waitForTimeout(randomInt());
-            var link = await parseLinks(page);
-            var requiredLinks = link.slice(0, 5);
+            var requiredLinks = googleData.links.slice(0, 5);
             var sql = 'INSERT IGNORE INTO decision_makers (name, url, google_business_id, created_at, updated_at) VALUES ?';
             var values = [
-                [names[0], requiredLinks[0], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[1], requiredLinks[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[2], requiredLinks[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[3], requiredLinks[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [names[4], requiredLinks[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
+                [requiredNames[0], requiredLinks[0], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [requiredNames[1], requiredLinks[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [requiredNames[2], requiredLinks[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [requiredNames[3], requiredLinks[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
+                [requiredNames[4], requiredLinks[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
             ];
             con.query(sql, [values], function (err) {
                 if (err) {
@@ -126,11 +121,13 @@ async function parseLinks(page) { //parse links
                 }
             });
             console.log('Company Name: ' + getData[i].company);
-            console.log('Names: ' + names);
+            console.log('Names: ' + requiredNames);
         }
+        con.query(`UPDATE scraper_jobs SET decision_makers_status = 1 WHERE id = ${getData[0].jobId};`)
     } catch (error) {
         console.error(error);
         Sentry.captureException(error);
+        con.query(`UPDATE scraper_jobs SET decision_makers_status = 2 WHERE id = ${getData[0].jobId};`)
     }
 
     const pages = await browser.pages();

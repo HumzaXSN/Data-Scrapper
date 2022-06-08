@@ -55,7 +55,7 @@ async function getJob() {
 
 async function bringData(jobId) {
     return new Promise(resolve => {
-        con.query(`SELECT google_businesses.id AS id, google_businesses.company AS company ,google_businesses.url AS url FROM google_businesses WHERE scraper_job_id = ${jobId};`, function (err, result) {
+        con.query(`SELECT google_businesses.id, google_businesses.url, company, scraper_criterias.location AS location FROM google_businesses INNER JOIN scraper_jobs ON google_businesses.scraper_job_id = scraper_jobs.id INNER JOIN scraper_criterias ON scraper_jobs.scraper_criteria_id = scraper_criterias.id WHERE scraper_jobs.id = ${jobId};`, function (err, result) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
@@ -115,7 +115,14 @@ async function getScrapData(page) {
 
     try {
         for (let i = 0; i < getData.length; i++) {
-            await page.goto(getData[i].url, { waitUntil: 'networkidle2' });
+            if (getData[i].url == null) {
+                let query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + getData[i].company + ' in ' + getData[i].location + ' "@LinkedIn."com';
+                let makeQuery = query.replace(/\s/g, '%20');
+                con.query(`UPDATE google_businesses SET url = '${makeQuery}' WHERE id = ${getData[i].id};`);
+                await page.goto(makeQuery, { waitUntil: 'networkidle2' });
+            } else {
+                await page.goto(getData[i].url, { waitUntil: 'networkidle2' });
+            }
             await page.waitForTimeout(randomInt());
             var googleData = await getScrapData(page);
             var requiredNames = googleData.getHead.slice(0, 5);

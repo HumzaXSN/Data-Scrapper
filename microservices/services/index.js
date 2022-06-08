@@ -376,7 +376,7 @@ async function bringData() {
             await page.waitForTimeout(randomInt());
             await getData(page);
             let getLatestRecord = await bringData();
-            var query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + getLatestRecord[0].company + ' in ' + getLatestRecord[0].location + ' @LinkedIn.com';
+            var query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + getLatestRecord[0].company + ' in ' + getLatestRecord[0].location + ' "@LinkedIn."com';
             var makeQuery = query.replace(/\s/g, '%20');
             con.query(`UPDATE google_businesses SET url = '${makeQuery}' WHERE id = ${getLatestRecord[0].id};`);
         }

@@ -40,7 +40,6 @@ class Kernel extends ConsoleKernel
                 $getData[0]->id
             ])->everyMinute()->timezone('Asia/Karachi');
         }
-        $schedule->command('get:decision-makers-data')->everyMinute()->timezone('Asia/Karachi');
     }
 
     /**

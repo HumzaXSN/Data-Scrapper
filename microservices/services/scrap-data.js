@@ -39,9 +39,23 @@ function randomInt() {
     return Math.floor(Math.random() * (40 - 10) + 10) + '00';
 }
 
-async function bringData() {
+async function getJob() {
     return new Promise(resolve => {
-        con.query('SELECT google_businesses.id AS id, google_businesses.company AS company ,google_businesses.url AS url, scraper_jobs.id AS jobId FROM google_businesses INNER JOIN scraper_jobs ON google_businesses.scraper_job_id = scraper_jobs.id WHERE scraper_jobs.decision_makers_status = 0 AND google_businesses.url IS NOT NULL ORDER BY scraper_jobs.id DESC LIMIT 1;', function (err, result) {
+        con.query('SELECT scraper_jobs.id AS jobId FROM scraper_jobs WHERE scraper_jobs.decision_makers_status = 0 ORDER BY scraper_jobs.id DESC LIMIT 1;', function (err, result) {
+            if (err) {
+                console.error(err);
+                Sentry.captureException(err);
+                throw 'Error getting data from scraper_jobs table';
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+async function bringData(jobId) {
+    return new Promise(resolve => {
+        con.query(`SELECT google_businesses.id AS id, google_businesses.company AS company ,google_businesses.url AS url FROM google_businesses WHERE scraper_job_id = ${jobId};`, function (err, result) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
@@ -85,7 +99,8 @@ async function getScrapData(page) {
 }
 
 (async () => {
-    let getData = await bringData();
+    let jobId = await getJob();
+    let getData = await bringData(jobId[0].jobId);
 
     const browser = await puppeteer.launch({
         headless: true,
@@ -123,11 +138,11 @@ async function getScrapData(page) {
             console.log('Company Name: ' + getData[i].company);
             console.log('Names: ' + requiredNames);
         }
-        con.query(`UPDATE scraper_jobs SET decision_makers_status = 1 WHERE id = ${getData[0].jobId};`)
+        con.query(`UPDATE scraper_jobs SET decision_makers_status = 1 WHERE id = ${jobId[0].jobId};`)
     } catch (error) {
         console.error(error);
         Sentry.captureException(error);
-        con.query(`UPDATE scraper_jobs SET decision_makers_status = 2 WHERE id = ${getData[0].jobId};`)
+        con.query(`UPDATE scraper_jobs SET decision_makers_status = 2 WHERE id = ${jobId[0].jobId};`)
     }
 
     const pages = await browser.pages();

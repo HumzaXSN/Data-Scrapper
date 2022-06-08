@@ -64,7 +64,7 @@
                                                 <div class="form-group">
                                                     <div class="form-group">
                                                         <strong>URL:</strong>
-                                                        {{ $googleBusiness->url }}
+                                                        <a href="{{ $googleBusiness->url }}" target="_blank">{{ $googleBusiness->url }}</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -104,7 +104,7 @@
                                             <div class="form-group">
                                                 <div class="form-group">
                                                     <strong>URL:</strong>
-                                                    {{ $decisionMaker->url }}
+                                                    <a href="{{ $decisionMaker->url }}" target="_blank">{{ $decisionMaker->url }}</a>
                                                 </div>
                                             </div>
                                             @endif

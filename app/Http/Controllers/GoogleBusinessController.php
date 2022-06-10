@@ -112,29 +112,34 @@ class GoogleBusinessController extends Controller
     {
         $decisionMakers = DecisionMaker::with('googleBusiness')->where('validate', 1)->get();
         $contactData = [];
-        foreach ($decisionMakers as $decisionMaker) {
-            if(!Contact::where('first_name', $decisionMaker->name)->exists()) {
-                $email = str_replace(' ', '', $decisionMaker->name);
-                $industy = Industry::firstOrCreate(['name' => $decisionMaker->googleBusiness->industry]);
-                $scraperJob = ScraperJob::with('scraperCriteria')->findOrFail($decisionMaker->googleBusiness->scraper_job_id);
-                $contactData[] =  [
-                    'first_name' => $decisionMaker->name,
-                    'linkedIn_profile' => $decisionMaker->url,
-                    'phone' => $decisionMaker->googleBusiness->phone,
-                    'city' => $scraperJob->scraperCriteria->location,
-                    'company' => $decisionMaker->googleBusiness->company,
-                    'email' => $email . '@example.com',
-                    'unsub_link' => base64_encode($email . '@example.com'),
-                    'source' => 1,
-                    'status' => 1,
-                    'created_at' => now()->format('Y-m-d H:i:s'),
-                    'updated_at' => now()->format('Y-m-d H:i:s'),
-                    'industry_id' => $industy->id,
-                ];
-            } else {
-                return redirect()->back()->with('error', 'Business Already exists');
+        if(count($decisionMakers) > 0) {
+            foreach ($decisionMakers as $decisionMaker) {
+                if(!Contact::where('first_name', $decisionMaker->name)->exists()) {
+                    $email = str_replace(' ', '', $decisionMaker->name);
+                    $industy = Industry::firstOrCreate(['name' => $decisionMaker->googleBusiness->industry]);
+                    $scraperJob = ScraperJob::with('scraperCriteria')->findOrFail($decisionMaker->googleBusiness->scraper_job_id);
+                    $contactData[] =  [
+                        'first_name' => $decisionMaker->name,
+                        'linkedIn_profile' => $decisionMaker->url,
+                        'phone' => $decisionMaker->googleBusiness->phone,
+                        'city' => $scraperJob->scraperCriteria->location,
+                        'company' => $decisionMaker->googleBusiness->company,
+                        'email' => $email . '@example.com',
+                        'unsub_link' => base64_encode($email . '@example.com'),
+                        'source' => 1,
+                        'status' => 1,
+                        'created_at' => now()->format('Y-m-d H:i:s'),
+                        'updated_at' => now()->format('Y-m-d H:i:s'),
+                        'industry_id' => $industy->id,
+                    ];
+                } else {
+                    return redirect()->back()->with('error', 'Business Already exists');
+                }
             }
+        } else {
+            return redirect()->back()->with('error', 'Validated Data already entered');
         }
+        DecisionMaker::where('validate', 1)->update(['validate' => 2]);
         Contact::insert($contactData);
         return redirect()->back()->with('success', 'Business Decision Maker inserted successfully');
     }

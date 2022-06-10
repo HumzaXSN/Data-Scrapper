@@ -31,15 +31,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $getData = ScraperCriteria::where('status', 'Active')->get();
-         if ($getData->count() > 0) {
-             $schedule->command('run:google-businesses-scraper',[
-                 $getData[0]->keyword,
-                 $getData[0]->location,
-                 $getData[0]->limit,
-                 $getData[0]->id
-             ])->everyMinute()->timezone('Asia/Karachi');
-         }
+        $getData = ScraperCriteria::where('status', 'Active')->get();
+        if ($getData->count() > 0) {
+            $schedule->command('run:google-businesses-scraper',[
+                $getData[0]->keyword,
+                $getData[0]->location,
+                $getData[0]->limit,
+                $getData[0]->id
+            ])->everyMinute()->timezone('Asia/Karachi');
+        }
     }
 
     /**

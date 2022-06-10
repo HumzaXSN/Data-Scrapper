@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\DecisionMaker;
 use Illuminate\Console\Command;
 
 class DecisionMakerCommand extends Command
@@ -44,5 +45,6 @@ class DecisionMakerCommand extends Command
         $password = config('app.password');
         $path = base_path() . '/microservices/services/scrap-data.js >> ' . base_path() . '/microservices/services/data.log 2>> ' . base_path() . '/microservices/services/errors.log';
         exec("node " . $path . " --host=" . "\"{$host}\"" . " " . $port . " " . " --database=" . "\"{$database}\"" . " " . " --username=" . "\"{$username}\"" . " " . " --password=" . "\"{$password}\"");
+        DecisionMaker::where('name', null)->forceDelete();
     }
 }

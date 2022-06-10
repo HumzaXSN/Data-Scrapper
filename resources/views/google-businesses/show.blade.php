@@ -88,26 +88,26 @@
                                     <div class="row p-3">
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             @foreach ($googleBusiness->decisionMakers as $decisionMaker)
-                                            @if (isset($decisionMaker->name))
-                                            <div class="form-group">
-                                                <div class="form-group">
-                                                    <strong>Name:</strong>
-                                                    {{ $decisionMaker->name }}
-                                                </div>
-                                            </div>
-                                            @endif
+                                                @if (isset($decisionMaker->name))
+                                                    <div class="form-group">
+                                                        <div class="form-group">
+                                                            <strong>Name:</strong>
+                                                            {{ $decisionMaker->name }}
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             @foreach ($googleBusiness->decisionMakers as $decisionMaker)
-                                            @if (isset($decisionMaker->name))
-                                            <div class="form-group">
-                                                <div class="form-group">
-                                                    <strong>URL:</strong>
-                                                    <a href="{{ $decisionMaker->url }}" target="_blank">{{ $decisionMaker->url }}</a>
-                                                </div>
-                                            </div>
-                                            @endif
+                                                @if (isset($decisionMaker->name))
+                                                    <div class="form-group">
+                                                        <div class="form-group">
+                                                            <strong>URL:</strong>
+                                                            <a href="{{ $decisionMaker->url }}" target="_blank">{{ $decisionMaker->url }}</a>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </div>

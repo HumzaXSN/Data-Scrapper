@@ -4820,3 +4820,8 @@ custom chart style
 {
     margin-left: 120px;
 }
+
+.modal-dialog.modal-dialog-centered.validate-modal
+{
+    max-width: 1000px;
+}

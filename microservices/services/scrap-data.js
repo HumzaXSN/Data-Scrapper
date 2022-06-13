@@ -69,7 +69,7 @@ async function bringData(jobId) {
 
 async function getScrapData(page) {
     let links = [], getHead = [];
-    
+
     // Parsing Headings
     if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
         var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span');
@@ -117,7 +117,7 @@ async function getScrapData(page) {
         for (let i = 0; i < getData.length; i++) {
             if (getData[i].url == null) {
                 let company = getData[i].company.replace(/'/g, '%27');
-                let query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + company + ' in ' + getData[i].location + ' "@LinkedIn."com';
+                let query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER in ' + company + ' in ' + getData[i].location + ' "@LinkedIn."com';
                 let makeQuery = query.replace(/\s/g, '%20');
                 con.query(`UPDATE google_businesses SET url = '${makeQuery}' WHERE id = ${getData[i].id};`);
                 await page.goto(makeQuery, { waitUntil: 'networkidle2' });

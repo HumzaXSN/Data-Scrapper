@@ -4,7 +4,6 @@ var mysql = require('mysql');
 const { toArray } = require('lodash');
 const moment = require('moment');
 const minimist = require('minimist');
-const path = require('path');
 
 // getting the data from laravel command
 var args = minimist(process.argv.slice(2), { string: "url" });
@@ -325,7 +324,7 @@ async function bringData() {
     });
 
     try {
-        await page.goto(url);
+        await page.goto(url, { waitUntil: 'networkidle2' });
     } catch(err) {
         console.error('Error while going to the url')
         console.error(err);
@@ -351,6 +350,7 @@ async function bringData() {
                     await autoScroll(page, randomInt());
                     links.push(...await parseLinks(page));
                 } else {
+                    con.query(`UPDATE scraper_criterias SET status = "In-Active" WHERE id = ${criteriaId};`);
                     break;
                 }
             }
@@ -377,7 +377,7 @@ async function bringData() {
             await getData(page);
             let getLatestRecord = await bringData();
             var company = getLatestRecord[0].company.replace(/'/g, '%27');
-            var query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER @' + company + ' in ' + getLatestRecord[0].location + ' "@LinkedIn."com';
+            var query = 'https://www.google.com/search?q=CEO OR PRESIDENT OR FOUNDER OR CHAIRMAN OR Co-FOUNDER OR PARTNER in ' + company + ' in ' + getLatestRecord[0].location + ' "@LinkedIn."com';
             var makeQuery = query.replace(/\s/g, '%20');
             con.query(`UPDATE google_businesses SET url = '${makeQuery}' WHERE id = ${getLatestRecord[0].id};`);
         }

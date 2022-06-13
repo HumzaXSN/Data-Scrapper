@@ -36,7 +36,7 @@ con.connect(function (err) {
 
 // produce random number for the delay upto 3 digits
 function randomInt() {
-    return Math.floor(Math.random() * (40 - 10) + 10) + '00';
+    return Math.floor(Math.random() * (3 - 1) + 1) + '00';
 }
 
 async function getJob() {
@@ -70,19 +70,6 @@ async function bringData(jobId) {
 async function getScrapData(page) {
     let links = [], getHead = [];
 
-    // Parsing Headings
-    if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
-        var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span');
-    } else {
-        var elements = await page.$$('#rso > div > div > div > div > a > h3');
-    }
-    if (elements && elements.length) {
-        for (const el of elements) {
-            const name = await el.evaluate(span => span.textContent);
-            getHead.push(name);
-        }
-    }
-
     // Parsing Links
     if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
         var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a');
@@ -92,7 +79,18 @@ async function getScrapData(page) {
     if (elements && elements.length) {
         for (const el of elements) {
             const href = await el.evaluate(a => a.href);
-            links.push(href);
+            if (!href.includes('/company')) {
+                if (await el.$('#rso > div > div > div > div > a > h3') != null) {
+                    var headings = await el.$$('#rso > div > div > div > div > a > h3');
+                    if (headings && headings.length) {
+                        for (const heading of headings) {
+                            const text = await heading.evaluate(h => h.textContent);
+                            getHead.push(text);
+                        }
+                    }
+                }
+                links.push(href);
+            }
         }
     }
     return { links, getHead };
@@ -103,7 +101,7 @@ async function getScrapData(page) {
     let getData = await bringData(jobId[0].jobId);
 
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--no-sandbox']
     });
     const page = await browser.newPage();

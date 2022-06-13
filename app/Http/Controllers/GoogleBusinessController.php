@@ -20,9 +20,11 @@ class GoogleBusinessController extends Controller
      */
     public function index(GoogleBusinessesDataTable $dataTable)
     {
+        $getValidate = DecisionMaker::where('validate', 1)->get();
+        $getValidateCount = count($getValidate);
         $getJobBusinesses = request()->getJobBusinesses;
         $getBusiness = request()->showBusiness;
-        return $dataTable->with(['getBusiness' => $getBusiness, 'getJobBusinesses' => $getJobBusinesses])->render('google-businesses.index');
+        return $dataTable->with(['getBusiness' => $getBusiness, 'getJobBusinesses' => $getJobBusinesses, 'getValidateCount' => $getValidateCount])->render('google-businesses.index');
     }
 
     /**

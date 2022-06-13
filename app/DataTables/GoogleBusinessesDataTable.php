@@ -19,7 +19,7 @@ class GoogleBusinessesDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function($query){
-                return view('google-businesses.datatable.action', ['googleBusiness'=>$query])->render();
+                return view('google-businesses.datatable.action', ['googleBusiness' => $query, 'getValidateCount' => $this->getValidateCount])->render();
             })
             ->addColumn('Scraper_Criteria', function ($query) {
                 return $query->scraperJob->scraperCriteria->keyword . ' in ' . $query->scraperJob->scraperCriteria->location;

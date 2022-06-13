@@ -53,13 +53,13 @@
                                     </div>
                                     <div class="col-sm-1">
                                         <a href="#" onclick="deleteData({{ $decisionMaker->id }})"
-                                            class="pr-2 ti-close text-danger fa-2x"></a>
+                                            class="pr-2 icon-close text-danger fa-2x"></a>
                                     </div>
                                     @if ($decisionMaker->validate == 0)
                                         <div class="col-sm-1">
                                             <a href="#" onclick="validateContact({{ $decisionMaker->id }})"
-                                                class="pr-2 ti-check text-success-{{ $decisionMaker->id }} fa-2x"></a>
-                                        </div>    
+                                                class="pr-2 icon-check text-success-{{ $decisionMaker->id }} fa-2x"></a>
+                                        </div>
                                     @endif
                                 </div>
                             @endif
@@ -70,7 +70,7 @@
 
             <!-- Modal footer -->
             <div class="modal-footer">
-                <a href="{{ route('insert-business-contact') }}"  class="btn btn-primary">Save</a>
+                <a href="{{ route('insert-business-contact') }}"  class="btn btn-primary save-button {{ ($getValidateCount > 0) ? '' : 'd-none' }}">Save</a>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
 
@@ -134,6 +134,7 @@
             },
             success: function(data) {
                 $('.text-success-' + id).hide();
+                $('.save-button').removeClass('d-none');
             }
         });
     }

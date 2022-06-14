@@ -36,7 +36,7 @@ con.connect(function (err) {
 
 // produce random number for the delay upto 3 digits
 function randomInt() {
-    return Math.floor(Math.random() * (3 - 1) + 1) + '00';
+    return Math.floor(Math.random() * (40 - 10) + 10) + '00';
 }
 
 async function getJob() {
@@ -101,7 +101,7 @@ async function getScrapData(page) {
     let getData = await bringData(jobId[0].jobId);
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox']
     });
     const page = await browser.newPage();

@@ -79,8 +79,16 @@ async function getScrapData(page) {
     if (elements && elements.length) {
         for (const el of elements) {
             const href = await el.evaluate(a => a.href);
-            if (!href.includes('/company')) {
-                if (await el.$('#rso > div > div > div > div > a > h3') != null) {
+            if (!href.includes('/company/')) {
+                if (await el.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span') != null) {
+                    var headings = await el.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > span > span');
+                    if (headings && headings.length) {
+                        for (const heading of headings) {
+                            const text = await heading.evaluate(h => h.textContent);
+                            getHead.push(text);
+                        }
+                    }
+                } else {
                     var headings = await el.$$('#rso > div > div > div > div > a > h3');
                     if (headings && headings.length) {
                         for (const heading of headings) {

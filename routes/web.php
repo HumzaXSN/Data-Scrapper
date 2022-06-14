@@ -6,7 +6,7 @@ use App\Http\Controllers\ListController;
 use App\Http\Controllers\ScraperJobController;
 use App\Http\Controllers\GoogleBusinessController;
 use App\Http\Controllers\ScraperCriteriaController;
-use App\Models\ScraperCriteria;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +36,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('google-businesses', GoogleBusinessController::class)->only([
         'index', 'show', 'destroy'
     ]);
+
+    Route::post('/validate-business-contact', [GoogleBusinessController::class, 'validateBusinessContact'])
+        ->name('validate-business-contact');
+    
+    Route::post('/delete-business-name', [GoogleBusinessController::class, 'deleteBusinessName'])
+        ->name('delete-business-name');
+
+    Route::get('/insert-business-contact', [GoogleBusinessController::class, 'insertBusinessContact'])
+        ->name('insert-business-contact');
 
     Route::resource('scraper-criterias', ScraperCriteriaController::class);
 

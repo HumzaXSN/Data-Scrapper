@@ -13,7 +13,8 @@ class DecisionMaker extends Model
     protected $fillable = [
         'name',
         'google_business_id',
-        'url'
+        'url',
+        'validate'
     ];
 
     public function googleBusiness()

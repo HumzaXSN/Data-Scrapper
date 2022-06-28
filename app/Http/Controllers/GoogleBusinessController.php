@@ -9,6 +9,8 @@ use App\Models\ScraperJob;
 use Illuminate\Http\Request;
 use App\Models\DecisionMaker;
 use App\Models\GoogleBusiness;
+use Illuminate\Support\Facades\DB;
+use App\Models\DecisionMakersEmails;
 use App\DataTables\GoogleBusinessesDataTable;
 
 class GoogleBusinessController extends Controller
@@ -20,11 +22,9 @@ class GoogleBusinessController extends Controller
      */
     public function index(GoogleBusinessesDataTable $dataTable)
     {
-        $getValidate = DecisionMaker::where('validate', 1)->get();
-        $getValidateCount = count($getValidate);
         $getJobBusinesses = request()->getJobBusinesses;
         $getBusiness = request()->showBusiness;
-        return $dataTable->with(['getBusiness' => $getBusiness, 'getJobBusinesses' => $getJobBusinesses, 'getValidateCount' => $getValidateCount])->render('google-businesses.index');
+        return $dataTable->with(['getBusiness' => $getBusiness, 'getJobBusinesses' => $getJobBusinesses])->render('google-businesses.index');
     }
 
     /**
@@ -56,7 +56,7 @@ class GoogleBusinessController extends Controller
      */
     public function show(GoogleBusiness $googleBusiness)
     {
-        return view('google-businesses.show',compact('googleBusiness'));
+        return view('google-businesses.show', compact('googleBusiness'));
     }
 
     /**
@@ -90,50 +90,109 @@ class GoogleBusinessController extends Controller
      */
     public function destroy(GoogleBusiness $googleBusiness)
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        $getdata = $googleBusiness->decisionMakers;
+        foreach ($getdata as $data) {
+            $data->DecisionMakerEmails()->delete();
+        }
+        $googleBusiness->decisionMakers()->delete();
         $googleBusiness->delete();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
         return redirect()->back()->with('success', 'Business deleted successfully');
     }
 
     public function deleteBusinessName(Request $request)
     {
         $status = DecisionMaker::find($request->id)->delete();
-        if($status) {
+        DecisionMakersEmails::where('decision_maker_id', $request->id)->delete();
+        if ($status) {
             return response()->json(['success' => 'Business Decision Maker deleted successfully'], 200);
         }
     }
 
     public function validateBusinessContact(Request $request)
     {
-        $status = DecisionMaker::where('id', $request->id)->update(['validate' => 1]);
-        if($status) {
-            return response()->json(['success' => 'Business Decision Maker validated successfully'], 200);
+        $checkEmail = DecisionMakersEmails::where('decision_maker_id', $request->id)->exists();
+        if ($checkEmail) {
+            $status = DecisionMaker::where('id', $request->id)->update(['validate' => 1]);
+            if ($status) {
+                return response()->json(['success' => 'Business Decision Maker validated successfully'], 200);
+            }
+        } else {
+            return response()->json(['error' => 'Business Decision Maker not found'], 404);
+        }
+    }
+
+    public function deleteBusinessEmail(Request $request)
+    {
+        $status = DecisionMakersEmails::find($request->id)->delete();
+        if ($status) {
+            return response()->json(['success' => 'Business Decision Maker email deleted successfully'], 200);
+        }
+    }
+
+    public function successBusinessEmail(Request $request)
+    {
+        $status = DecisionMakersEmails::where('id', $request->id)->update(['email' => $request->email]);
+        if ($status) {
+            return response()->json(['success' => 'Decision Maker Email Updated successfully'], 200);
+        }
+    }
+
+    public function successNewBusinessEmail(Request $request)
+    {
+        $status = DecisionMakersEmails::create([
+            'decision_maker_id' => $request->id,
+            'email' => $request->email,
+        ]);
+        if ($status) {
+            return response()->json(['success' => 'Decision Maker Email Added successfully'], 200);
+        }
+    }
+
+    public function successEditBusinessEmail(Request $request)
+    {
+        $status = DecisionMakersEmails::where('id', $request->id)->update(['email' => $request->email]);
+        if ($status) {
+            return response()->json(['success' => 'Decision Maker Email Updated successfully'], 200);
         }
     }
 
     public function insertBusinessContact()
     {
-        $decisionMakers = DecisionMaker::with('googleBusiness')->where('validate', 1)->get();
+        $googleBusinessId = request()->googleBusinessId;
+        $decisionMakers = DecisionMaker::with('googleBusiness', 'decisionMakerEmails')->where([['validate', 1],['google_business_id', $googleBusinessId]])->get();
         $contactData = [];
-        if(count($decisionMakers) > 0) {
+        if (count($decisionMakers) > 0) {
             foreach ($decisionMakers as $decisionMaker) {
-                if(!Contact::where('first_name', $decisionMaker->name)->exists()) {
-                    $email = str_replace(' ', '', $decisionMaker->name);
-                    $industy = Industry::firstOrCreate(['name' => $decisionMaker->googleBusiness->industry]);
-                    $scraperJob = ScraperJob::with('scraperCriteria')->findOrFail($decisionMaker->googleBusiness->scraper_job_id);
-                    $contactData[] =  [
-                        'first_name' => $decisionMaker->name,
-                        'linkedIn_profile' => $decisionMaker->url,
-                        'phone' => $decisionMaker->googleBusiness->phone,
-                        'city' => $scraperJob->scraperCriteria->location,
-                        'company' => $decisionMaker->googleBusiness->company,
-                        'email' => $email . '@example.com',
-                        'unsub_link' => base64_encode($email . '@example.com'),
-                        'source' => 1,
-                        'status' => 1,
-                        'created_at' => now()->format('Y-m-d H:i:s'),
-                        'updated_at' => now()->format('Y-m-d H:i:s'),
-                        'industry_id' => $industy->id,
-                    ];
+                $name1 = $decisionMaker->name;
+                $name2 = explode('-', $name1);
+                $name3 = explode(' ', $name2[0]);
+                $getdata = sizeof($name3) - 2;
+                $lastName = $name3[$getdata];
+                $firstName = $name3[0];
+                if (!Contact::where('first_name', $decisionMaker->name)->exists()) {
+                    $emails = $decisionMaker->decisionMakerEmails->pluck('email')->toArray();
+                    foreach ($emails as $email) {
+                        $industy = Industry::firstOrCreate(['name' => $decisionMaker->googleBusiness->industry]);
+                        $scraperJob = ScraperJob::with('scraperCriteria')->findOrFail($decisionMaker->googleBusiness->scraper_job_id);
+                        $contactData[] =  [
+                            'first_name' => $firstName,
+                            'last_name' => $lastName,
+                            'linkedIn_profile' => $decisionMaker->url,
+                            'phone' => $decisionMaker->googleBusiness->phone,
+                            'city' => $scraperJob->scraperCriteria->location,
+                            'company' => $decisionMaker->googleBusiness->company,
+                            'email' => $email,
+                            'unsub_link' => base64_encode($email),
+                            'source' => 1,
+                            'status' => 1,
+                            'created_at' => now()->format('Y-m-d H:i:s'),
+                            'updated_at' => now()->format('Y-m-d H:i:s'),
+                            'industry_id' => $industy->id,
+                            'list_id' => $scraperJob->scraperCriteria->list_id,
+                        ];
+                    }
                 } else {
                     return redirect()->back()->with('error', 'Business Already exists');
                 }
@@ -141,9 +200,8 @@ class GoogleBusinessController extends Controller
         } else {
             return redirect()->back()->with('error', 'Validated Data already entered');
         }
-        DecisionMaker::where('validate', 1)->update(['validate' => 2]);
+        DecisionMaker::where([['validate', 1],['google_business_id', $googleBusinessId]])->update(['validate' => 2]);
         Contact::insert($contactData);
         return redirect()->back()->with('success', 'Business Decision Maker inserted successfully');
     }
-
 }

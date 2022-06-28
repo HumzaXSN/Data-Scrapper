@@ -21,4 +21,9 @@ class DecisionMaker extends Model
     {
         return $this->belongsTo(GoogleBusiness::class);
     }
+
+    public function decisionMakerEmails()
+    {
+        return $this->hasMany(DecisionMakersEmails::class);
+    }
 }

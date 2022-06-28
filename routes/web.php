@@ -43,8 +43,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/delete-business-name', [GoogleBusinessController::class, 'deleteBusinessName'])
         ->name('delete-business-name');
 
-    Route::get('/insert-business-contact', [GoogleBusinessController::class, 'insertBusinessContact'])
+    Route::post('/delete-business-email', [GoogleBusinessController::class, 'deleteBusinessEmail'])
+    ->name('delete-business-email');
+
+    Route::post('/success-business-email', [GoogleBusinessController::class, 'successBusinessEmail'])
+    ->name('success-business-email');
+
+    Route::post('/insert-business-contact', [GoogleBusinessController::class, 'insertBusinessContact'])
         ->name('insert-business-contact');
+
+    Route::post('/success-new-business-email', [GoogleBusinessController::class, 'successNewBusinessEmail'])
+    ->name('success-new-business-email');
 
     Route::resource('scraper-criterias', ScraperCriteriaController::class);
 

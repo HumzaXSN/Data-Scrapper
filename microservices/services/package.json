@@ -28,6 +28,8 @@
     "request-promise": "^4.2.6",
     "request-promise-native": "^1.0.9",
     "scraperapi-sdk": "^1.0.6",
+    "telnet-client": "^2.0.3",
+    "telnet-stream": "^1.1.0",
     "user-agents": "^1.0.738"
   }
 }

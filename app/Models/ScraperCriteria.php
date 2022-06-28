@@ -17,7 +17,8 @@ class ScraperCriteria extends Model
         'status',
         'keyword',
         'location',
-        'limit'
+        'limit',
+        'list_id'
     ];
 
     public function scraperJobs()
@@ -28,5 +29,10 @@ class ScraperCriteria extends Model
     public function googleBusinesses()
     {
         return $this->hasManyThrough(GoogleBusiness::class, ScraperJob::class);
+    }
+
+    public function list()
+    {
+        return $this->belongsTo(Lists::class);
     }
 }

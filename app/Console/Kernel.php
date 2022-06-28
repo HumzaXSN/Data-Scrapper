@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\DecisionMakerCommand;
+use App\Console\Commands\DecisionMakerEmailCommand;
 use App\Models\ScraperCriteria;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GoogleBusinessScraperCommand;
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         GoogleBusinessScraperCommand::class,
         RunScraperCommand::class,
         DecisionMakerCommand::class,
+        DecisionMakerEmailCommand::class,
     ];
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
+use App\Models\Lists;
 
 class ScraperCriteriaController extends Controller
 {
@@ -37,11 +38,18 @@ class ScraperCriteriaController extends Controller
      */
     public function store(Request $request)
     {
+        Lists::create([
+            'name' => $request->keyword,
+            'description' => $request->keyword . ' in ' . $request->location,
+            'list_type_id' => 2,
+            'user_id' => auth()->user()->id,
+        ]);
         ScraperCriteria::create([
             'status' => 'In-Active',
             'keyword' => $request->keyword,
             'location' => $request->location,
-            'limit' => $request->limit
+            'limit' => $request->limit,
+            'list_id' => Lists::latest()->first()->id,
         ]);
         return redirect()->route('scraper-criterias.index')->with('success', 'Criteria Created Successfully');
     }

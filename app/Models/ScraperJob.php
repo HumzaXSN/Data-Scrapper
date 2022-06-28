@@ -19,7 +19,8 @@ class ScraperJob extends Model
         'message',
         'last_index',
         'scraper_criteria_id',
-        'decision_makers_status'
+        'decision_makers_status',
+        'decision_makers_email_status',
     ];
 
     public function scraperCriteria()

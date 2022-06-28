@@ -5,7 +5,7 @@
 
 <div class="app-body">
     @include('partials.left_sidebar')
-    <main class="main-content">
+    <main class="main-content main_content_styling">
         <!--page title start-->
         <div class="page-title">
             <div class="p-0 container-fluid">

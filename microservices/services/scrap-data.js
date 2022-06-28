@@ -13,7 +13,7 @@ var password = minimist(process.argv.slice(2), { string: "password" }).password;
 console.log('');
 console.error('');
 console.log(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Scraping data from Google Businesses Table');
-console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Errors while Scraping from Google Businesses Table');
+console.error(moment().format('YYYY-MM-DD HH:mm:ss') + ' - Getting Errors for Scrap Data');
 
 // connect to database
 var con = mysql.createConnection({
@@ -71,15 +71,13 @@ async function getScrapData(page) {
     let links = [], getHead = [];
 
     // Parsing Links
-    if (await page.$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a') != null) {
-        var elements = await page.$$('#rso > div > block-component > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > div > a');
-    } else {
+    if (await page.$('#rso > div > div > div:nth-child(1) > div > a') != null) {
         var elements = await page.$$('#rso > div > div > div:nth-child(1) > div > a');
     }
     if (elements && elements.length) {
         for (const el of elements) {
             const href = await el.evaluate(a => a.href);
-            if (!href.includes('/company')) {
+            if (!href.includes('/company/')) {
                 if (await el.$('#rso > div > div > div > div > a > h3') != null) {
                     var headings = await el.$$('#rso > div > div > div > div > a > h3');
                     if (headings && headings.length) {
@@ -133,7 +131,6 @@ async function getScrapData(page) {
                 [requiredNames[1], requiredLinks[1], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
                 [requiredNames[2], requiredLinks[2], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
                 [requiredNames[3], requiredLinks[3], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')],
-                [requiredNames[4], requiredLinks[4], getData[i].id, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]
             ];
             con.query(sql, [values], function (err) {
                 if (err) {

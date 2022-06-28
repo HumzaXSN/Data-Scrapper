@@ -12,11 +12,11 @@ class GoogleBusiness extends Model
     protected $fillable = [
         'company',
         'phone',
-        'email',
         'address',
         'website',
         'scraper_job_id',
-        'url'
+        'url',
+        'industry'
     ];
 
     public function scraperJob()

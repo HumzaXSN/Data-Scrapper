@@ -7,6 +7,7 @@ use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Models\Lists;
+use App\Models\ScraperJob;
 
 class ScraperCriteriaController extends Controller
 {
@@ -17,7 +18,8 @@ class ScraperCriteriaController extends Controller
      */
     public function index(ScraperCriteriasDataTable $dataTable)
     {
-        return $dataTable->render('scraper-criterias.index');
+        $endDate = ScraperJob::latest()->first()->end_at;
+        return $dataTable->with(['endDate' => $endDate])->render('scraper-criterias.index');
     }
 
     /**

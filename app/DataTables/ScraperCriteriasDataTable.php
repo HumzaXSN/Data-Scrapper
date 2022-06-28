@@ -77,7 +77,10 @@ class ScraperCriteriasDataTable extends DataTable
             'location',
             'limit',
             'Updated At',
-            'action'
+            'action' => [
+                'searchable' => false,
+                'orderable' => false
+            ]
         ];
     }
 

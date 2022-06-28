@@ -80,7 +80,10 @@ class ListsDataTable extends DataTable
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
             'created_at',
-            'action'
+            'action' => [
+                'searchable' => false,
+                'orderable' => false
+            ]
         ];
     }
 

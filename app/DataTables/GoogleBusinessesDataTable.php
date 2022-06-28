@@ -18,7 +18,7 @@ class GoogleBusinessesDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($query){
+            ->addColumn('action', function ($query) {
                 return view('google-businesses.datatable.action', ['googleBusiness' => $query])->render();
             })
             ->addColumn('Scraper_Criteria', function ($query) {
@@ -43,7 +43,7 @@ class GoogleBusinessesDataTable extends DataTable
             return $model->newQuery()->whereHas('scraperJob', function ($query) use ($getBusiness) {
                 $query->where('scraper_criteria_id', $getBusiness);
             });
-        } elseif(isset($getJobBusinesses)) {
+        } elseif (isset($getJobBusinesses)) {
             return $model->newQuery()->where('scraper_job_id', $getJobBusinesses);
         } else {
             return $model->newQuery();
@@ -58,18 +58,18 @@ class GoogleBusinessesDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('googlebusinesses-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->orderBy(0)
-                    ->dom('Bfrtip')
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('googlebusinesses-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->orderBy(0)
+            ->dom('Bfrtip')
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**

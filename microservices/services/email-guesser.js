@@ -111,22 +111,21 @@ async function verifyEmail(mailServer, unique) {
     });
 
     for (var j = 0; j < getDecisionData.length; j++) {
-        let name = getDecisionData[j].name;
-        let url = getDecisionData[j].url;
-        let name1 = name.split('-');
-        let name2 = name1[0].split(' ');
-        let firstName = name2[0];
-        let firstChar = firstName.charAt(0);
-        let lastName = name2[name2.length - 2];
-        let lastChar = lastName.charAt(0);
         let website = getDecisionData[j].website;
+        let url = getDecisionData[j].url;
         let arr = [];
 
         if (website !== null && url.includes('linkedin.com')) {
+            let name = getDecisionData[j].name;
+            let name1 = name.split('-');
+            let name2 = name1[0].split(' ');
+            let firstName = name2[0];
+            let firstChar = firstName.charAt(0);
+            let lastName = name2[name2.length - 2];
+            let lastChar = lastName.charAt(0);
             let company1 = website.split(' ');
             let company = company1[7];
             let companyNameNoSpaces = company.replace(/\s/g, '');
-
             for (let i = 0; i < character.length; i++) {
                 let firstNameGuessLast = `${firstName.toLowerCase()}${character[i].toLowerCase()}@${companyNameNoSpaces.toLowerCase()}`;
                 let lastNameGuessLast = `${lastName.toLowerCase()}${character[i].toLowerCase()}@${companyNameNoSpaces.toLowerCase()}`;

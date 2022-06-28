@@ -23,7 +23,7 @@ class ScraperCriteriasDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($query) {
-                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query])->render();
+                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query, 'endDate' => $this->endDate])->render();
             })
             ->addColumn('Updated At', function ($query) {
                 return $query->updated_at;

@@ -21,6 +21,7 @@ class ScraperJob extends Model
         'scraper_criteria_id',
         'decision_makers_status',
         'decision_makers_email_status',
+        'end_at'
     ];
 
     public function scraperCriteria()

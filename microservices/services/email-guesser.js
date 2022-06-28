@@ -35,6 +35,7 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
+            console.log(mailServer);
             if (mailServer[3].includes('MX preference')) {
                 let mailServer1 = mailServer[3].split(" ");
                 resolve(mailServer1[7].split("\r")[0]);
@@ -54,8 +55,10 @@ async function verifyEmail(mailServer, unique) {
 
         conn.on('connect', () => {
             console.log('connected to ' + mailServer);
-            conn.write('HELO ' + mailServer + '\r\n');
-            conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n');
+            new Promise((resolve) => {
+                conn.write('HELO ' + mailServer + '\r\n');
+                resolve(conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n'));
+            });
             for (let i = 0; i < unique.length; i++) {
                 setTimeout(() => {
                     email = unique[i];

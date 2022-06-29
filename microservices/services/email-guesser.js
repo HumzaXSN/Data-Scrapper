@@ -53,7 +53,7 @@ async function verifyEmail(mailServer, unique) {
     return new Promise((resolve) => {
         socket = net.createConnection(25, mailServer);
         conn = new TelnetSocket(socket);
-        let email;
+        var email;
         var arr = [];
 
         conn.setEncoding('ascii');

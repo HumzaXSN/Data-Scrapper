@@ -35,10 +35,10 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
-            console.log(mailServer);
-            if (mailServer[3].includes('MX preference')) {
+            if (mailServer[3].includes('mail exchanger')) {
                 let mailServer1 = mailServer[3].split(" ");
-                resolve(mailServer1[7].split("\r")[0]);
+                let mailServer2 = mailServer1[mailServer1.length - 1];
+                resolve(mailServer2.split("\r")[0]);
             } else {
                 reject('No mail server found');
             }
@@ -53,12 +53,22 @@ async function verifyEmail(mailServer, unique) {
         var email;
         var arr = [];
 
+        conn.setEncoding('ascii');
+        conn.setTimeout(10000);
+
+        conn.on('error', function (err) {
+            conn.emit('false', err);
+        });
+
+        conn.on('false', function (data) {
+            callback(false, data);
+            conn.end();
+        });
+
         conn.on('connect', () => {
             console.log('connected to ' + mailServer);
-            new Promise((resolve) => {
-                conn.write('HELO ' + mailServer + '\r\n');
-                resolve(conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n'));
-            });
+            conn.write('HELO ' + mailServer + '\r\n');
+            conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n');
             for (let i = 0; i < unique.length; i++) {
                 setTimeout(() => {
                     email = unique[i];
@@ -71,14 +81,21 @@ async function verifyEmail(mailServer, unique) {
         });
 
         conn.on('data', function (data) {
-            if (data.toString().includes('250')) {
+            if ((data.toString().includes('250') || data.toString().includes('450'))) {
                 arr.push(email);
             }
+            console.log(email, data.toString());
         });
 
         conn.on('close', function () {
             console.log('disconnected from ' + mailServer);
             resolve(arr.slice(2));
+        });
+
+        conn.on('timeout', function () {
+            console.log('timeout from ' + mailServer);
+            conn.end();
+            conn.destroy();
         });
     });
 }
@@ -149,7 +166,6 @@ async function verifyEmail(mailServer, unique) {
                     break;
                 }
                 let verified = await verifyEmail(mailServer, unique);
-
                 for (let p = 0; p < verified.length; p++) {
                     console.log('Emails Caught ' + verified[p]);
                     con.query(`INSERT IGNORE INTO decision_makers_emails SET email = '${verified[p]}', decision_maker_id = ${getDecisionData[j].id}, created_at = '${moment().format('YYYY-MM-DD HH:mm:ss')}', updated_at = '${moment().format('YYYY-MM-DD HH:mm:ss')}';`, function (err) {

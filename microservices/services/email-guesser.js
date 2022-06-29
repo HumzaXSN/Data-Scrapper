@@ -37,7 +37,7 @@ async function runCommand(companyNameNoSpaces) {
             let mailServer = stdout.split("\n");
             console.log(mailServer);
             if (mailServer[4].includes('mail exchanger')) {
-                let mailServer1 = mailServer[3].split(" ");
+                let mailServer1 = mailServer[4].split(" ");
                 console.log(mailServer1);
                 let mailServer2 = mailServer1[mailServer1.length - 1];
                 console.log(mailServer2.split("\r")[0]);

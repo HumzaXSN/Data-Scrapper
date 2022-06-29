@@ -35,9 +35,12 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
-            if (mailServer[3].includes('mail exchanger')) {
+            console.log(mailServer);
+            if (mailServer[4].includes('mail exchanger')) {
                 let mailServer1 = mailServer[3].split(" ");
+                console.log(mailServer1);
                 let mailServer2 = mailServer1[mailServer1.length - 1];
+                console.log(mailServer2.split("\r")[0]);
                 resolve(mailServer2.split("\r")[0]);
             } else {
                 reject('No mail server found');
@@ -50,7 +53,7 @@ async function verifyEmail(mailServer, unique) {
     return new Promise((resolve) => {
         socket = net.createConnection(25, mailServer);
         conn = new TelnetSocket(socket);
-        var email;
+        let email;
         var arr = [];
 
         conn.setEncoding('ascii');

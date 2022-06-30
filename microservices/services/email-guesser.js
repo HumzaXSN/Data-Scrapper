@@ -63,7 +63,7 @@ async function verifyEmail(mailServer, unique) {
         conn.on('connect', () => {
             console.log('connected to ' + mailServer);
             conn.write('HELO ' + mailServer + '\r\n');
-            conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n');
+            conn.write('MAIL FROM: <info@ashlarglobal.net>\r\n');
             for (let i = 0; i < unique.length; i++) {
                 setTimeout(() => {
                     email = unique[i];

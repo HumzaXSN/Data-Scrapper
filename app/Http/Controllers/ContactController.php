@@ -162,6 +162,10 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'listId' => 'required',
+        ]);
+
         $industry = Industry::all();
         // $request->file('csv_file')->storeAs('import', 'contacts.csv');
         $file = $request->file('csv_file');

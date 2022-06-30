@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AddContactsToListCommand;
 use App\Console\Commands\DecisionMakerCommand;
 use App\Console\Commands\DecisionMakerEmailCommand;
 use App\Models\ScraperCriteria;
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         RunScraperCommand::class,
         DecisionMakerCommand::class,
         DecisionMakerEmailCommand::class,
+        AddContactsToListCommand::class,
     ];
 
     /**

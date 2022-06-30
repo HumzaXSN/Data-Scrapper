@@ -59,11 +59,11 @@
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label col-form-label-sm">Choose List</label>
                                             <div class="col-sm-4">
-                                                <select class="form-control" name="listId">
-                                                    <option value="" selected>Select List</option>
+                                                <select class="form-control selectpicker" name="listId">
+                                                    <option selected disabled>Select List</option>
                                                     @foreach($lists as $list)
                                                         @if ($list->id != 1)
-                                                            <option value="{{ $list->id }}">{{ $list->name }}</option>
+                                                            <option data-tokens="{{ $list->name }}" value="{{ $list->id }}">{{ $list->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>

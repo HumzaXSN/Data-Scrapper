@@ -50,7 +50,7 @@ async function runCommand(companyNameNoSpaces) {
 }
 
 async function verifyEmail(mailServer, unique) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         socket = net.createConnection(25, mailServer);
         conn = new TelnetSocket(socket);
         var email;
@@ -60,12 +60,7 @@ async function verifyEmail(mailServer, unique) {
         conn.setTimeout(10000);
 
         conn.on('error', function (err) {
-            conn.emit('false', err);
-        });
-
-        conn.on('false', function (data) {
-            callback(false, data);
-            conn.end();
+            reject(err);
         });
 
         conn.on('connect', () => {

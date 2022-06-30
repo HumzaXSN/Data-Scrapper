@@ -69,7 +69,7 @@
                                                     placeholder="Enter Reached Platform">
                                                 <strong class="mt-2">LinkedIn Profile:</strong>
                                                 <input class="form-control mt-2" type="text" name="linkedin_profile"
-                                                    placeholder="Enter Reached Platform">
+                                                    placeholder="Place linkedIn Profile">
                                                 <strong class="mt-2">Industry:</strong>
                                                 <select class="form-control" name="industry_id">
                                                     <option selected disabled>Select Industry</option>
@@ -270,6 +270,11 @@
                                                 class="form-control"
                                                 name="reached_count" id="timesreached"
                                                 placeholder="Times Reached">
+                                            <strong>Business Platform:</strong>
+                                            <input type="text"
+                                                class="form-control"
+                                                name="business_platform" id="businessPlatform"
+                                                placeholder="Business Platform">
                                         </div>
 
                                         <!-- Modal footer -->
@@ -395,7 +400,11 @@
                                     data-column="12" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <select class="form-control filter-select" data-column="13">
+                                <input type="text" class="form-control filter-input" placeholder="Business Platform"
+                                    data-column="13" />
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <select class="form-control filter-select" data-column="14">
                                     <option value="">Lead Status</option>
                                     @foreach ($leadstatuses as $contact )
                                     <option value="{{ $contact->status }}">{{ $contact->status }}</option>
@@ -403,7 +412,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="14">
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="15">
                                     <option value="">Industries</option>
                                     @foreach ($industries as $industry )
                                     <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
@@ -495,6 +504,7 @@
                                             <th class="d-none">Phone</th>
                                             <th>Platform & Times Reached</th>
                                             <th class="d-none">Times Reached</th>
+                                            <th class="d-none">Business Platform</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
                                             <th>Created At</th>

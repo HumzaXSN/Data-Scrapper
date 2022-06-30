@@ -54,7 +54,7 @@ class ScraperCriteriasDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(0)
                     ->buttons(
                         Button::make('create'),
                         Button::make('export'),
@@ -72,6 +72,7 @@ class ScraperCriteriasDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'id',
             'status',
             'keyword',
             'location',

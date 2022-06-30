@@ -35,12 +35,9 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
-            console.log(mailServer);
             if (mailServer[4].includes('mail exchanger')) {
                 let mailServer1 = mailServer[4].split(" ");
-                console.log(mailServer1);
                 let mailServer2 = mailServer1[mailServer1.length - 1];
-                console.log(mailServer2.split("\r")[0]);
                 resolve(mailServer2.split("\r")[0]);
             } else {
                 reject('No mail server found');
@@ -66,7 +63,7 @@ async function verifyEmail(mailServer, unique) {
         conn.on('connect', () => {
             console.log('connected to ' + mailServer);
             conn.write('HELO ' + mailServer + '\r\n');
-            conn.write('MAIL FROM: <hr@ashlarglobal.com>\r\n');
+            conn.write('MAIL FROM: <info@ashlarglobal.net>\r\n');
             for (let i = 0; i < unique.length; i++) {
                 setTimeout(() => {
                     email = unique[i];

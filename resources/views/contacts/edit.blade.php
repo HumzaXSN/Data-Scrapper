@@ -142,6 +142,13 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
+                                            <strong>Business Platform:</strong>
+                                            <input type="text" class="form-control" name="business_platform"
+                                                value="{{ $contact->business_platform }}" placeholder="Platform through which business is collected">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
                                             <strong>Lead Status:</strong>
                                             <select class="form-control" name="lead_status_id">
                                                 <option selected disabled>@if($contact->lead_status!=null){{ $contact->lead_status->status }}@endif</option>

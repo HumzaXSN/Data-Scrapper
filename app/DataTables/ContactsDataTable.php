@@ -47,10 +47,10 @@ class ContactsDataTable extends DataTable
             // Count & Platform
             ->addColumn('pc_name', function($query){
                 if($query->reached_platform == null) {
-                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count.'</a>';
+                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count. ' | '. $query->business_platform .'</a>';
                 }
                 else {
-                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
+                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count. ' | ' . $query->business_platform . '</a>';
                 }
             })
             ->addColumn('industry', function($query) {

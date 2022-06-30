@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Models\Lists;
 use App\Models\ScraperJob;
+use Carbon\Carbon;
 
 class ScraperCriteriaController extends Controller
 {
@@ -41,8 +42,8 @@ class ScraperCriteriaController extends Controller
     public function store(Request $request)
     {
         Lists::create([
-            'name' => $request->keyword,
-            'description' => $request->keyword . ' in ' . $request->location,
+            'name' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
+            'description' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
             'list_type_id' => 2,
             'user_id' => auth()->user()->id,
         ]);

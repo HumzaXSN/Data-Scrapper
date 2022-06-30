@@ -137,6 +137,14 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <div class="form-group">
+                                            <strong>Business Platform:</strong>
+                                            {{ $contact->business_platform }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
                                             <strong>Status of the Lead:</strong>
                                             @if(@isset($contact->lead_status_id))
                                             {{ $contact->lead_status->status }}

@@ -57,6 +57,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'city' => $row['city'] ?? NULL,
                 'state' => $row['state'] ?? NULL,
                 'industry_id' => $industy->id ?? 1,
+                'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source' => $this->source,
                 'list_id' => $this->listId,
@@ -74,6 +75,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'city' => $row['city'] ?? NULL,
                 'state' => $row['state'] ?? NULL,
                 'industry_id' => $industy->id ?? 1,
+                'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source' => $this->source,
                 'list_id' => $this->listId

@@ -43,14 +43,14 @@ class AddContactsToListCommand extends Command
             $this->error('Sales Force Old Data list already exists and contacts are added to it');
         } else {
             $this->info('PLease wait while the contacts are being added');
-            Lists::Create([
+            $list = Lists::Create([
                 'name' => 'Sales Force Old Data',
                 'description' => 'All the contacts which were not associated to any list are stored here.',
                 'list_type_id' => 2,
                 'user_id' => 1,
             ]);
 
-            Contact::where('list_id', null)->update(['list_id' => Lists::latest()->first()->id]);
+            Contact::where('list_id', null)->update(['list_id' => $list->id]);
             $this->info('Sales Force Old Data list created and contacts are added to it');
         }
     }

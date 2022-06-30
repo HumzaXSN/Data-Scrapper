@@ -42,14 +42,14 @@ class AddCriteriasToListCommand extends Command
         if (Lists::where('name', 'Default criteria list')->exists()) {
             $this->error('Default criteria list already exists and criterias are added to it');
         } else {
-            Lists::Create([
+            $list = Lists::Create([
                 'name' => 'Default criteria list',
                 'description' => 'All the criterias contact which were not associated to any list are stored here.',
                 'list_type_id' => 2,
                 'user_id' => 1,
             ]);
 
-            ScraperCriteria::where('list_id', null)->update(['list_id' => Lists::latest()->first()->id]);
+            ScraperCriteria::where('list_id', null)->update(['list_id' => $list->id]);
             $this->info('Default criteria list created and criterias are added to it');
         }
     }

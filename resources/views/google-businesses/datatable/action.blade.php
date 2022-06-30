@@ -59,6 +59,9 @@
                                                 <a class="fa-2x ti-email text-warning" data-toggle="collapse"
                                                     href="#collapseExample-{{ $decisionMaker->id }}" role="button" aria-expanded="false"
                                                     aria-controls="collapseExample"></a>
+                                            @else
+                                                <a href="#" onclick="showEmailInput({{ $decisionMaker->id }})"
+                                                    class="fa-2x ti-email text-warning showEmail-{{ $decisionMaker->id }} fa-2x"></a>
                                             @endif
                                         </div>
                                         <div class="col-sm-1">
@@ -184,6 +187,16 @@
                 $('.showData-' + id).removeClass('d-none');
             }
         });
+    }
+
+    function showEmailInput(id) {
+        if ($('.showData-'+ id).hasClass('d-none')){
+            $('#collapseExample-' + id).show();
+            $('.showData-' + id).removeClass('d-none');
+        } else {
+            $('#collapseExample-' + id).hide();
+            $('.showData-' + id).addClass('d-none');
+        }
     }
 
     function deleteEmailData(id) {

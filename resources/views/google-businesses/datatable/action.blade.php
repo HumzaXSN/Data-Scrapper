@@ -73,6 +73,10 @@
                                                 <a href="#" onclick="validateContact({{ $decisionMaker->id }})"
                                                     class="fa-2x icon-check text-success-{{ $decisionMaker->id }} fa-2x"></a>
                                             </div>
+                                        @else
+                                            <div class="col-sm-1">
+                                                <a href="#" class="fa-2x icon-check text-muted fa-2x"></a>
+                                            </div>
                                         @endif
                                         <div class="collapse col-6 mx-auto" id="collapseExample-{{ $decisionMaker->id }}">
                                             <div class="card card-body">
@@ -81,7 +85,7 @@
                                                         class="col-12 text-center d-flex justify-content-between align-items-center mb-2 removeData-{{ $decisionMaker->id }}">
                                                         <div class="d-flex align-items-center">
                                                             <strong class="form-control-label mr-2">Email:</strong>
-                                                            <input type="text" name="email" class="form-control edit-email-{{ $decisionMaker->id }}">
+                                                            <input type="email" name="email" class="form-control edit-email-{{ $decisionMaker->id }}">
                                                         </div>
                                                         <div>
                                                             <a href="#" onclick="successShownEmailData({{ $decisionMaker->id }})"
@@ -94,7 +98,7 @@
                                                         <div class="col-12 text-center d-flex justify-content-between align-items-center mb-2 removeData-{{ $decisionEmail->id }}">
                                                             <div class="d-flex align-items-center">
                                                                 <strong class="form-control-label mr-2">Email:</strong>
-                                                                <input type="text" name="email" class="form-control edit-email-{{ $decisionEmail->id }}"
+                                                                <input type="email" name="email" class="form-control edit-email-{{ $decisionEmail->id }}"
                                                                     value="{{ $decisionEmail->email }}" readonly>
                                                             </div>
                                                             <div>
@@ -180,7 +184,10 @@
                     _token: "{{ csrf_token() }}"
             },
             success: function(data) {
-                $('.text-success-' + id).hide();
+                if ($('.text-success-' + id).hasClass('fa-2x')) {
+                    $('.text-success-' + id).addClass('fa-2x text-muted');
+                    $('.text-success-' + id).removeAttr('onClick');
+                }
             },
             error: function(data) {
                 $('#collapseExample-' + id).show();

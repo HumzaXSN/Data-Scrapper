@@ -350,7 +350,7 @@ async function bringData() {
                     await autoScroll(page, randomInt());
                     links.push(...await parseLinks(page));
                 } else {
-                    con.query(`UPDATE scraper_criterias SET status = "In-Active" WHERE id = ${criteriaId};`);
+                    con.query(`UPDATE scraper_criterias SET status = "Completed" WHERE id = ${criteriaId};`);
                     break;
                 }
             }

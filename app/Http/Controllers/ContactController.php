@@ -195,7 +195,7 @@ class ContactController extends Controller
             }
         }
         if (count($importFailures) > 0) {
-            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId]);
+            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId, 'sourceId' => $request->sourceId]);
         } else {
             return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
         }
@@ -203,7 +203,7 @@ class ContactController extends Controller
 
     public function provisionalPage(Request $request)
     {
-        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $source = $request->source; $listId = $request->listId;
+        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $sourceId = $request->source_id; $listId = $request->listId;
         $arr = [];
         for ($i = 0; $i < count($fname); $i++) {
             if (!is_numeric($industry_id[$i])) {
@@ -224,7 +224,7 @@ class ContactController extends Controller
                 'phone' => isset($phone[$i]) ? $phone[$i] : null,
                 'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
                 'industry_id' => isset($industry_id[$i]) ? $industry->id : 1,
-                'source' => $source[0],
+                'source_id' => $sourceId,
                 'list_id' => $listId
             ];
             $getContact = Contact::where('email', $email[$i])->first();
@@ -246,7 +246,7 @@ class ContactController extends Controller
         if($arr == null) {
             return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
         } else {
-            return view('contacts.provisional', compact('arr', 'listId'));
+            return view('contacts.provisional', compact('arr', 'listId', 'sourceId'));
         }
     }
 

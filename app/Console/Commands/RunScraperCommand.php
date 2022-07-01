@@ -39,14 +39,16 @@ class RunScraperCommand extends Command
      */
     public function handle()
     {
-        $getData = ScraperCriteria::where('status', 'Active')->get();
-        if ($getData->count() > 0) {
-            Artisan::call('run:google-businesses-scraper', [
-                'keyword' => $getData[0]->keyword,
-                'city' => $getData[0]->location,
-                'limit' => $getData[0]->limit,
-                'criteriaId' => $getData[0]->id
-            ]);
+        $getDatas = ScraperCriteria::where([['status', 'Active'], ['daily_running', 0]])->get();
+        if ($getDatas->count() > 0) {
+            foreach ($getDatas as $getData) {
+                Artisan::call('run:google-businesses-scraper', [
+                    'keyword' => $getData->keyword,
+                    'city' => $getData->location,
+                    'limit' => $getData->limit,
+                    'criteriaId' => $getData->id
+                ]);
+            }
         }
     }
 }

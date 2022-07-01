@@ -19,8 +19,7 @@ class ScraperCriteriaController extends Controller
      */
     public function index(ScraperCriteriasDataTable $dataTable)
     {
-        $endDate = ScraperJob::latest()->first()->end_at;
-        return $dataTable->with(['endDate' => $endDate])->render('scraper-criterias.index');
+        return $dataTable->render('scraper-criterias.index');
     }
 
     /**
@@ -106,22 +105,25 @@ class ScraperCriteriaController extends Controller
 
     public function runScraper(Request $request)
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
         ScraperCriteria::where('id', $request->id)->update(['status' => 'Active']);
-        return redirect()->back()->with('success', 'Scraper Job Started Successfully');
+        return redirect()->back()->with('success', 'Scraper Job Activated Successfully');
     }
 
     public function stopScraper(Request $request)
     {
         ScraperCriteria::where('id', $request->id)->update(['status' => 'In-Active']);
-        return redirect()->back()->with('success', 'Scraper Job Stopped Successfully');
+        return redirect()->back()->with('success', 'Scraper Job In-Activated Successfully');
     }
 
     public function startScraper()
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
-        ScraperCriteria::where('id', request()->id)->update(['status' => 'Active']);
-        Artisan::call('run:spider-scraper');
+        $getData = ScraperCriteria::where('id', request()->id)->get();
+        Artisan::call('run:google-businesses-scraper', [
+            'keyword' => $getData[0]->keyword,
+            'city' => $getData[0]->location,
+            'limit' => $getData[0]->limit,
+            'criteriaId' => $getData[0]->id
+        ]);
         return redirect()->back()->with('success', 'Scraper Completed');
     }
 }

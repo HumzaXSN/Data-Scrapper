@@ -35,8 +35,8 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
-            if (mailServer[4].includes('mail exchanger')) {
-                let mailServer1 = mailServer[4].split(" ");
+            if (mailServer[3].includes('mail exchanger')) {
+                let mailServer1 = mailServer[3].split(" ");
                 let mailServer2 = mailServer1[mailServer1.length - 1];
                 resolve(mailServer2.split("\r")[0]);
             } else {
@@ -84,13 +84,17 @@ async function verifyEmail(mailServer, unique) {
 
         conn.on('close', function () {
             console.log('disconnected from ' + mailServer);
-            resolve(arr.slice(2));
+            if (arr.slice(2).length > 15) {
+                reject('Server is Catch-all');
+            } else {
+                resolve(arr.slice(2));
+            }
         });
 
         conn.on('timeout', function () {
-            console.log('timeout from ' + mailServer);
             conn.end();
             conn.destroy();
+            reject('timeout from ' + mailServer);
         });
     });
 }

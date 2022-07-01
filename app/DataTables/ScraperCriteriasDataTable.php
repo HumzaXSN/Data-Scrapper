@@ -23,7 +23,7 @@ class ScraperCriteriasDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($query) {
-                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query, 'endDate' => $this->endDate])->render();
+                return view('scraper-criterias.datatable.action', ['scraperCriteria' => $query])->render();
             })
             ->addColumn('Updated At', function ($query) {
                 return $query->updated_at;
@@ -50,18 +50,18 @@ class ScraperCriteriasDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('scrapercriterias-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(0)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('scrapercriterias-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(0)
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**

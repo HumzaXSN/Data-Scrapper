@@ -37,6 +37,19 @@
                                 </div>
                                 @if (isset($list))
                                     <input type="hidden" value={{ $list }} name="listId"/>
+                                    <center>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label col-form-label-sm">Choose Source</label>
+                                            <div class="col-sm-4">
+                                                <select class="form-control selectpicker" data-live-search="true" name="sourceId">
+                                                    <option selected disabled>Select Source</option>
+                                                    @foreach($sources as $source)
+                                                    <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </center>
                                 @else
                                     <center>
                                         <div class="form-group row">

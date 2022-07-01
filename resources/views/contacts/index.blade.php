@@ -71,10 +71,10 @@
                                                 <input class="form-control mt-2" type="text" name="linkedin_profile"
                                                     placeholder="Place linkedIn Profile">
                                                 <strong class="mt-2">Industry:</strong>
-                                                <select class="form-control" name="industry_id">
+                                                <select class="form-control selectpicker" data-live-search="true" name="industry_id">
                                                     <option selected disabled>Select Industry</option>
                                                     @foreach($industries as $industry)
-                                                    <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                                    <option data-tokens="{{ $industry->name }}" value="{{$industry->id}}">{{$industry->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 <strong class="mt-2">Lead Status:</strong>
@@ -85,17 +85,18 @@
                                                     @endforeach
                                                 </select>
                                                 <strong class="mt-2">Source:</strong>
-                                                <select class="form-control" name="source">
-                                                    <option selected disabled>Source</option>
-                                                    <option value="1">Internal</option>
-                                                    <option value="2">External</option>
+                                                <select class="form-control selectpicker" data-live-search="true" name="source_id">
+                                                    <option selected disabled> Select Source </option>
+                                                    @foreach($sources as $source)
+                                                        <option data-tokens="{{ $source->name }}" value="{{$source->id}}">{{$source->name}}</option>
+                                                    @endforeach
                                                 </select>
                                                 @if (empty($getList))
                                                 <strong class="mt-2">Select List:</strong>
-                                                <select class="form-control" name="listId">
-                                                    <option value=""> Select List </option>
+                                                <select class="form-control selectpicker" data-live-search="true" name="listId">
+                                                    <option selected disabled> Select List </option>
                                                     @foreach($lists as $list)
-                                                    <option value="{{$list->id}}">{{$list->name}}</option>
+                                                    <option data-tokens="{{ $list->name }}" value="{{$list->id}}">{{$list->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 @endif
@@ -270,11 +271,13 @@
                                                 class="form-control"
                                                 name="reached_count" id="timesreached"
                                                 placeholder="Times Reached">
-                                            <strong>Business Platform:</strong>
-                                            <input type="text"
-                                                class="form-control"
-                                                name="business_platform" id="businessPlatform"
-                                                placeholder="Business Platform">
+                                            <strong>Source:</strong>
+                                            <select name="source_id" data-live-search="true" class="form-control selectpicker">
+                                                <option id="industry" selected disabled>Select Source</option>
+                                                    @foreach ($sources as $source )
+                                                        <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                                    @endforeach
+                                            </select>
                                         </div>
 
                                         <!-- Modal footer -->
@@ -400,23 +403,27 @@
                                     data-column="12" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <input type="text" class="form-control filter-input" placeholder="Business Platform"
-                                    data-column="13" />
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="13">
+                                    <option value="">Source</option>
+                                        @foreach ($sources as $source )
+                                            <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                        @endforeach
+                                </select>
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <select class="form-control filter-select" data-column="14">
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="14">
                                     <option value="">Lead Status</option>
-                                    @foreach ($leadstatuses as $contact )
-                                    <option value="{{ $contact->status }}">{{ $contact->status }}</option>
-                                    @endforeach
+                                        @foreach ($leadstatuses as $contact )
+                                            <option data-tokens="{{ $contact->status }}" value="{{ $contact->status }}">{{ $contact->status }}</option>
+                                        @endforeach
                                 </select>
                             </div>
                             <div class="col-sm-3 mt-2">
                                 <select class="form-control filter-select selectpicker" data-live-search="true" data-column="15">
                                     <option value="">Industries</option>
-                                    @foreach ($industries as $industry )
-                                    <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
-                                    @endforeach
+                                        @foreach ($industries as $industry )
+                                            <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
+                                        @endforeach
                                 </select>
                             </div>
                         </div>
@@ -504,7 +511,7 @@
                                             <th class="d-none">Phone</th>
                                             <th>Platform & Times Reached</th>
                                             <th class="d-none">Times Reached</th>
-                                            <th class="d-none">Business Platform</th>
+                                            <th class="d-none">Source</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
                                             <th>Created At</th>

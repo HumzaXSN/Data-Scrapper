@@ -47,14 +47,17 @@ class ContactsDataTable extends DataTable
             // Count & Platform
             ->addColumn('pc_name', function($query){
                 if($query->reached_platform == null) {
-                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count. ' | '. $query->business_platform .'</a>';
+                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count. ' | '. $query->source->name .'</a>';
                 }
                 else {
-                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count. ' | ' . $query->business_platform . '</a>';
+                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count. ' | ' . $query->source->name .'</a>';
                 }
             })
             ->addColumn('industry', function($query) {
                 return '<a class="editindsutry">' . $query->industry->name . '</a>';
+            })
+            ->addColumn('source', function ($query) {
+                return $query->source->name;
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
@@ -72,7 +75,7 @@ class ContactsDataTable extends DataTable
                     return '';
             })
             ->escapeColumns([])
-            ->rawColumns(['flp_name','ctl_name','emailLink','csc_name','pc_name','industry','action','checkbox']);
+            ->rawColumns(['flp_name','ctl_name','emailLink','csc_name','pc_name','industry','source','action','checkbox']);
     }
 
     /**

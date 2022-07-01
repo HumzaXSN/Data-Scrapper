@@ -137,8 +137,8 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <strong>Business Platform:</strong>
-                                            {{ $contact->business_platform }}
+                                            <strong>Source:</strong>
+                                            {{ $contact->source->name }}
                                         </div>
                                     </div>
                                 </div>

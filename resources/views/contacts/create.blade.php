@@ -35,31 +35,25 @@
                                         <input type="file" class="form-control" name="csv_file" required>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label col-form-label-sm">Source</label>
-                                    <div class="col-sm-4">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" id="internal" name="source" value="1" required>
-                                                Internal
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" id="external" name="source" value="0" required>
-                                                External
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
                                 @if (isset($list))
                                     <input type="hidden" value={{ $list }} name="listId"/>
                                 @else
                                     <center>
                                         <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label col-form-label-sm">Choose Source</label>
+                                            <div class="col-sm-4">
+                                                <select class="form-control selectpicker" data-live-search="true" name="sourceId">
+                                                    <option selected disabled>Select Source</option>
+                                                        @foreach($sources as $source)
+                                                            <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                                        @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-sm-4 col-form-label col-form-label-sm">Choose List</label>
                                             <div class="col-sm-4">
-                                                <select class="form-control selectpicker" name="listId">
+                                                <select class="form-control selectpicker" data-live-search="true" name="listId">
                                                     <option selected disabled>Select List</option>
                                                     @foreach($lists as $list)
                                                         @if ($list->id != 1)

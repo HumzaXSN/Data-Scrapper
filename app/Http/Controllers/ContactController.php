@@ -10,6 +10,7 @@ use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use App\DataTables\ContactsDataTable;
+use App\Models\Source;
 
 class ContactController extends Controller
 {
@@ -26,7 +27,8 @@ class ContactController extends Controller
         $lists = Lists::all();
         $industries = Industry::all();
         $leadstatuses = LeadStatus::all();
-        return $dataTable->with(['getList' => $getList, 'startDate' => $startDate, 'endDate' => $endDate])->render('contacts.index', compact('leadstatuses', 'industries', 'contact', 'lists', 'getList', 'startDate', 'endDate'));
+        $sources = Source::all();
+        return $dataTable->with(['getList' => $getList, 'startDate' => $startDate, 'endDate' => $endDate])->render('contacts.index', compact('leadstatuses', 'industries', 'contact', 'lists', 'getList', 'startDate', 'endDate', 'sources'));
     }
 
     public function bulkupdate(Request $request)
@@ -114,8 +116,9 @@ class ContactController extends Controller
     public function create()
     {
         $lists = Lists::all();
+        $sources = Source::all();
         $list = request()->list;
-        return view('contacts.create', compact('list', 'lists'));
+        return view('contacts.create', compact('list', 'lists', 'sources'));
     }
 
     public function addContact(Request $request)
@@ -124,7 +127,8 @@ class ContactController extends Controller
             'fname' => 'required',
             'lname' => 'required',
             'email' => 'required',
-            'source' => 'required'
+            'source_id' => 'required',
+            'list_id' => 'required',
         ]);
 
         $findcontact = Contact::where('email', $request->email)->first();
@@ -145,7 +149,7 @@ class ContactController extends Controller
                 'linkedIn_profile' => $request->linkedin_profile,
                 'industry_id' => $request->industry_id,
                 'lead_status_id' => $request->lead_status_id,
-                'source' => $request->source,
+                'source_id' => $request->source_id,
                 'list_id' => $request->listId,
             ]);
             return back()->with('success', 'Contact Added Successfully');
@@ -164,12 +168,13 @@ class ContactController extends Controller
     {
         $this->validate($request, [
             'listId' => 'required',
+            'sourceId' => 'required',
         ]);
 
         $industry = Industry::all();
         // $request->file('csv_file')->storeAs('import', 'contacts.csv');
         $file = $request->file('csv_file');
-        $import = new ContactsImport($request->source, $request->listId);
+        $import = new ContactsImport($request->sourceId, $request->listId);
         ini_set('max_execution_time', '600');
         try {
             $import->import($file);
@@ -266,7 +271,8 @@ class ContactController extends Controller
     {
         $leadstatuses = LeadStatus::all();
         $industries = Industry::all();
-        return view('contacts.edit', compact('contact', 'industries', 'leadstatuses'));
+        $sources = Source::all();
+        return view('contacts.edit', compact('contact', 'industries', 'leadstatuses', 'sources'));
     }
 
     /**

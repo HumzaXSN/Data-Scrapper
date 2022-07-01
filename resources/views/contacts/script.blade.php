@@ -121,9 +121,9 @@
                     name: 'reached_count'
                 },
                 {
-                    data: 'business_platform',
+                    data: 'source',
                     className: 'd-none',
-                    name: 'business_platform'
+                    name: 'source_id'
                 },
                 {
                     data: 'lead_status.status',
@@ -227,7 +227,7 @@
 
             $('#platfrom').val(data['reached_platform']);
             $('#timesreached').val(data['reached_count']);
-            $('#businessPlatform').val(data['business_platform'])
+            $('#businessPlatform').val(data['source']['name']);
 
             $('#editmodalplatform').attr('action', '/contacts/' + data['id']);
             $('#platform_showmore').attr('href', '/contacts/' + data['id'] + '/edit');

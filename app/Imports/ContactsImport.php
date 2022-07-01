@@ -20,10 +20,10 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
     private $success_rows = 0;
     use Importable, SkipsFailures, SkipsErrors;
     protected $source, $listId;
-    public function  __construct($source, $listId)
+    public function  __construct($sourceId, $listId)
     {
         $this->listId = $listId;
-        $this->source= $source;
+        $this->sourceId= $sourceId;
     }
 
     /**
@@ -59,7 +59,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'industry_id' => $industy->id ?? 1,
                 'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                'source' => $this->source,
+                'source_id' => $this->sourceId,
                 'list_id' => $this->listId,
             ]);
         } else {
@@ -77,7 +77,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'industry_id' => $industy->id ?? 1,
                 'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
-                'source' => $this->source,
+                'source_id' => $this->sourceId,
                 'list_id' => $this->listId
             ]);
         }

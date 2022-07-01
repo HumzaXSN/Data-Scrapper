@@ -22,12 +22,20 @@ class ListsDataTable extends DataTable
             ->addColumn('Type', function ($query) {
                 return $query->listType->name;
             })
-            ->addColumn('action', function($query){
+            ->addColumn('action', function ($query) {
                 $list_type = ListType::all();
-                return view('lists.datatable.action', ['list_type'=> $list_type,'list'=>$query])->render();
+                return view('lists.datatable.action', ['list_type' => $list_type, 'list' => $query])->render();
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
+            })
+            ->addColumn('List From', function ($query) {
+                foreach ($query->scraperCriterias as $scraperCriteria) {
+                    if (isset($scraperCriteria->lists_id)) {
+                        return 'Scraper';
+                    }
+                }
+                return 'User';
             })
             ->escapeColumns([])
             ->rawColumns(['action']);
@@ -52,18 +60,18 @@ class ListsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('lists-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(0)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('lists-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(0)
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**
@@ -79,6 +87,7 @@ class ListsDataTable extends DataTable
             'description',
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
+            'List From',
             'created_at',
             'action' => [
                 'searchable' => false,

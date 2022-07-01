@@ -32,8 +32,8 @@ class Lists extends Model
         return $this->hasMany(Contact::class);
     }
 
-    public function scraperCriteria()
+    public function scraperCriterias()
     {
-        return $this->belongsTo(ScraperCriteria::class);
+        return $this->hasMany(ScraperCriteria::class);
     }
 }

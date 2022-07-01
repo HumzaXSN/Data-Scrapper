@@ -18,7 +18,7 @@ class ScraperCriteria extends Model
         'keyword',
         'location',
         'limit',
-        'list_id'
+        'lists_id'
     ];
 
     public function scraperJobs()

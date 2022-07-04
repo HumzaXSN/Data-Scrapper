@@ -35,8 +35,8 @@ async function runCommand(companyNameNoSpaces) {
                 reject(error);
             }
             let mailServer = stdout.split("\n");
-            if (mailServer[3].includes('mail exchanger')) {
-                let mailServer1 = mailServer[3].split(" ");
+            if (mailServer[4].includes('mail exchanger')) {
+                let mailServer1 = mailServer[4].split(" ");
                 let mailServer2 = mailServer1[mailServer1.length - 1];
                 resolve(mailServer2.split("\r")[0]);
             } else {

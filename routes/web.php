@@ -55,6 +55,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/success-new-business-email', [GoogleBusinessController::class, 'successNewBusinessEmail'])
     ->name('success-new-business-email');
 
+    Route::post('/add-decision-maker', [GoogleBusinessController::class, 'addDecisionMaker'])
+    ->name('add-decision-maker');
+
     Route::resource('scraper-criterias', ScraperCriteriaController::class);
 
     Route::get('/run-scraper', [ScraperCriteriaController::class, 'runScraper'])

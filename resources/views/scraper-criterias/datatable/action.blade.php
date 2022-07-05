@@ -16,13 +16,20 @@
                         <i class="pr-2 ti-pencil-alt text-warning"></i>
                         Edit
                     </a>
-                    @if ($endDate != null)
-                        <a onclick="disableButton()" class="dropdown-item btnForce"
-                            href="{{ route('scraper-criterias.startScraper', ['id' => $scraperCriteria->id]) }}">
-                            <i class="pr-2 ti-reload"></i>
-                            Force Start Scrapper
-                        </a>
-                    @endif
+                        @if ($scraperCriteria->status == 'Completed')
+                            <a class="dropdown-item" href="#" disabled>
+                                <i class="pr-2 ti-alert"></i>
+                                Scraper Completed
+                        @else
+                            {{-- @if ($endDate != null) --}}
+                                <a onclick="disableButton()" class="dropdown-item btnForce"
+                                    href="{{ route('scraper-criterias.startScraper', ['id' => $scraperCriteria->id]) }}">
+                                    <i class="pr-2 ti-reload"></i>
+                                    Force Start Scrapper
+                                </a>
+                            {{-- @endif --}}
+                        @endif
+
                     @if ($scraperCriteria->status == 'In-Active')
                         <a class="dropdown-item" href="{{ route('scraper-criterias.runScraper', ['id' => $scraperCriteria->id]) }}">
                             <i class="pr-2 ti-loop text-secondary"></i>

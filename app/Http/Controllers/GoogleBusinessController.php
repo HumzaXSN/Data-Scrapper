@@ -103,11 +103,9 @@ class GoogleBusinessController extends Controller
 
     public function deleteBusinessName(Request $request)
     {
-        $status = DecisionMaker::find($request->id)->delete();
+        DecisionMaker::find($request->id)->delete();
         DecisionMakersEmails::where('decision_maker_id', $request->id)->delete();
-        if ($status) {
-            return response()->json(['success' => 'Business Decision Maker deleted successfully'], 200);
-        }
+        return redirect()->back()->with('success', 'Decision Maker deleted successfully');
     }
 
     public function validateBusinessContact(Request $request)
@@ -141,12 +139,19 @@ class GoogleBusinessController extends Controller
 
     public function successNewBusinessEmail(Request $request)
     {
-        $status = DecisionMakersEmails::create([
-            'decision_maker_id' => $request->id,
-            'email' => $request->email,
+        $this->validate($request, [
+            'email' => 'required|email',
         ]);
-        if ($status) {
-            return response()->json(['success' => 'Decision Maker Email Added successfully'], 200);
+        if ($request->email != null) {
+            $status = DecisionMakersEmails::create([
+                'decision_maker_id' => $request->id,
+                'email' => $request->email,
+            ]);
+            if ($status) {
+                return response()->json(['success' => 'Decision Maker Email Added successfully'], 200);
+            }
+        } else {
+            return response()->json(['error' => 'Email is required'], 404);
         }
     }
 
@@ -155,6 +160,32 @@ class GoogleBusinessController extends Controller
         $status = DecisionMakersEmails::where('id', $request->id)->update(['email' => $request->email]);
         if ($status) {
             return response()->json(['success' => 'Decision Maker Email Updated successfully'], 200);
+        }
+    }
+
+    public function addDecisionMaker(Request $request) {
+            $this->validate($request, [
+            'name' => 'required',
+            'url' => 'required',
+            'email' => 'required|email',
+        ]);
+        if ($request->name != null || $request->url != null) {
+            $status = DecisionMaker::create([
+                'name' => $request->name,
+                'url' => $request->url,
+                'validate' => 0,
+                'google_business_id' => $request->id,
+            ]);
+            DecisionMakersEmails::create([
+                'email' => $request->email,
+                'decision_maker_id' => $status->id,
+            ]);
+            if ($status) {
+                return response()->json(['success' => 'Decision Maker Added successfully',
+                    'decision_maker_id' => $status->id ], 200);
+            }
+        } else {
+            return response()->json(['error' => 'Name, URL and Email are required'], 404);
         }
     }
 

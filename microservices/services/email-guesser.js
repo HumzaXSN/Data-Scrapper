@@ -84,13 +84,17 @@ async function verifyEmail(mailServer, unique) {
 
         conn.on('close', function () {
             console.log('disconnected from ' + mailServer);
-            resolve(arr.slice(2));
+            if (arr.slice(2).length > 15) {
+                reject('Server is Catch-all');
+            } else {
+                resolve(arr.slice(2));
+            }
         });
 
         conn.on('timeout', function () {
-            console.log('timeout from ' + mailServer);
             conn.end();
             conn.destroy();
+            reject('timeout from ' + mailServer);
         });
     });
 }

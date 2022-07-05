@@ -19,8 +19,7 @@ class ScraperCriteriaController extends Controller
      */
     public function index(ScraperCriteriasDataTable $dataTable)
     {
-        $endDate = ScraperJob::latest()->first()->end_at;
-        return $dataTable->with(['endDate' => $endDate])->render('scraper-criterias.index');
+        return $dataTable->render('scraper-criterias.index');
     }
 
     /**
@@ -41,7 +40,7 @@ class ScraperCriteriaController extends Controller
      */
     public function store(Request $request)
     {
-        Lists::create([
+        $list = Lists::create([
             'name' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
             'description' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
             'list_type_id' => 2,
@@ -52,7 +51,7 @@ class ScraperCriteriaController extends Controller
             'keyword' => $request->keyword,
             'location' => $request->location,
             'limit' => $request->limit,
-            'list_id' => Lists::latest()->first()->id,
+            'lists_id' => $list->id,
         ]);
         return redirect()->route('scraper-criterias.index')->with('success', 'Criteria Created Successfully');
     }
@@ -106,22 +105,25 @@ class ScraperCriteriaController extends Controller
 
     public function runScraper(Request $request)
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
         ScraperCriteria::where('id', $request->id)->update(['status' => 'Active']);
-        return redirect()->back()->with('success', 'Scraper Job Started Successfully');
+        return redirect()->back()->with('success', 'Scraper Job Activated Successfully');
     }
 
     public function stopScraper(Request $request)
     {
         ScraperCriteria::where('id', $request->id)->update(['status' => 'In-Active']);
-        return redirect()->back()->with('success', 'Scraper Job Stopped Successfully');
+        return redirect()->back()->with('success', 'Scraper Job In-Activated Successfully');
     }
 
     public function startScraper()
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
-        ScraperCriteria::where('id', request()->id)->update(['status' => 'Active']);
-        Artisan::call('run:spider-scraper');
+        $getData = ScraperCriteria::where('id', request()->id)->first();
+        Artisan::call('run:google-businesses-scraper', [
+            'keyword' => $getData->keyword,
+            'city' => $getData->location,
+            'limit' => $getData->limit,
+            'criteriaId' => $getData->id
+        ]);
         return redirect()->back()->with('success', 'Scraper Completed');
     }
 }

@@ -37,16 +37,33 @@ class RunScraperCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(ScraperCriteria $scraperCriteria)
     {
-        $getData = ScraperCriteria::where('status', 'Active')->get();
-        if ($getData->count() > 0) {
-            Artisan::call('run:google-businesses-scraper', [
-                'keyword' => $getData[0]->keyword,
-                'city' => $getData[0]->location,
-                'limit' => $getData[0]->limit,
-                'criteriaId' => $getData[0]->id
-            ]);
+        $criterias = $scraperCriteria->where('status', 'Active')->get();
+        if ($criterias->count() > 0) {
+            $completedCriterias = $scraperCriteria->where([['status', 'Active'], ['daily_running', 2]])->count();
+            if ($completedCriterias == $criterias->count()) {
+                $scraperCriteria->where('status', 'Active')->update(['daily_running' => 0]);
+                $this->info('Scraper has been reset');
+            } else {
+                if ($scraperCriteria->where([['status', 'Active'], ['daily_running', 1]])->count() > 0) {
+                    $this->info('Google Maps Scraper is running');
+                } else {
+                    $getData = $scraperCriteria->where([['status', 'Active'], ['daily_running', 0]])->first();
+                    $scraperCriteria->where('id', $getData->id)->update(['daily_running' => 1]);
+                    if ($getData->count() > 0) {
+                        Artisan::call('run:google-businesses-scraper', [
+                            'keyword' => $getData->keyword,
+                            'city' => $getData->location,
+                            'limit' => $getData->limit,
+                            'criteriaId' => $getData->id
+                        ]);
+                    }
+                    $scraperCriteria->where('id', $getData->id)->update(['daily_running' => 2]);
+                }
+            }
+        } else {
+            $this->info('No active criteria found');
         }
     }
 }

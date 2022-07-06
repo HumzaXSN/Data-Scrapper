@@ -216,12 +216,12 @@ class GoogleBusinessController extends Controller
                             'company' => $decisionMaker->googleBusiness->company,
                             'email' => $email,
                             'unsub_link' => base64_encode($email),
-                            'source' => 1,
+                            'source_id' => 3,
                             'status' => 1,
                             'created_at' => now()->format('Y-m-d H:i:s'),
                             'updated_at' => now()->format('Y-m-d H:i:s'),
                             'industry_id' => $industy->id,
-                            'list_id' => $scraperJob->scraperCriteria->list_id,
+                            'list_id' => $scraperJob->scraperCriteria->lists_id,
                         ];
                     } else {
                         return redirect()->back()->with('error', 'Email Already exists');

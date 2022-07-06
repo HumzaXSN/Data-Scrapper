@@ -12,6 +12,10 @@
                     <i class="pr-2 ti-more text-muted"></i>
                     Show Businesses
                 </a>
+                <a class="dropdown-item" href="{{ route('scraper-criteria.exportBusiness', ['getJobBusinessesId' => $scraperJob->id, 'getScraperCriteriaDetail' => $scraperJob->scraperCriteria->keyword . ' in ' . $scraperJob->scraperCriteria->location]) }}">
+                    <i class="pr-2 ti-export text-danger"></i>
+                    Export Businesses
+                </a>
             </div>
         </div>
     </div>

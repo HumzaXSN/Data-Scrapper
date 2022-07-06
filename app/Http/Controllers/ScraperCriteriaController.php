@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
+use App\Exports\ExportBusiness;
 use App\Models\Lists;
 use App\Models\ScraperJob;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ScraperCriteriaController extends Controller
 {
@@ -125,5 +127,22 @@ class ScraperCriteriaController extends Controller
             'criteriaId' => $getData->id
         ]);
         return redirect()->back()->with('success', 'Scraper Completed');
+    }
+
+    public function exportBusiness(Request $request)
+    {
+        $getJobBusinessesId = $request->getJobBusinessesId;
+        $getScraperCriteriaDetail = $request->getScraperCriteriaDetail;
+        $getScraperCriteriaDetail = ucwords($getScraperCriteriaDetail);
+        $getCriteriaId = $request->getCriteriaId;
+        $getCriteriaDetail = $request->getCriteriaDetail;
+        $getCriteriaDetail = ucwords($getCriteriaDetail);
+        if (isset($getCriteriaId)) {
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId))->download('Criteria: ' . $getCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+        } else if (isset($getJobBusinessesId)) {
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId))->download('Job: ' . $getScraperCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+        } else {
+            return redirect()->back()->with('error', 'No Data Found');
+        }
     }
 }

@@ -23,7 +23,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
     public function  __construct($sourceId, $listId)
     {
         $this->listId = $listId;
-        $this->sourceId= $sourceId;
+        $this->sourceId = $sourceId;
     }
 
     /**

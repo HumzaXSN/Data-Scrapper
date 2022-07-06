@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lists;
 use App\Models\ListType;
 use App\DataTables\ListsDataTable;
+use App\Exports\ExportContacts;
 use Illuminate\Http\Request;
 
 class ListController extends Controller
@@ -93,5 +94,13 @@ class ListController extends Controller
     {
         $list->delete();
         return redirect()->route('lists.index')->with('success', 'List deleted successfully');
+    }
+
+    public function exportContacts(Request $request)
+    {
+        $listId = $request->listId;
+        $listName = $request->listName;
+        $listName = ucwords($listName);
+        return (new ExportContacts($listId))->download('List: ' . $listName . '.xlsx');
     }
 }

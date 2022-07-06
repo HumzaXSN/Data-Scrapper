@@ -29,7 +29,7 @@ class ContactFactory extends Factory
             'phone' => $this->faker->PhoneNumber(),
             'email' => $this->faker->unique()->safeEmail(),
             'unsub_link' => base64_encode($this->faker->unique()->safeEmail()),
-            'source' => $this->faker->randomElement([0, 1]),
+            'source_id' => $this->faker->numberBetween(1, 4),
             'status' => $this->faker->randomElement([0, 1]),
             'country' => $this->faker->country(),
             'city' => $this->faker->city(),
@@ -40,7 +40,6 @@ class ContactFactory extends Factory
             'lead_status_id' => $this->faker->randomElement([1, 2, 3, 4, 5]),
             'industry_id' => $this->faker->randomElement([1, 2, 3]),
             'list_id' => $this->faker->numberBetween(2, 10),
-            'business_platform' => $this->faker->name(),
         ];
     }
 }

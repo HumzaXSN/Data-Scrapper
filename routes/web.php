@@ -33,6 +33,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('lists', ListController::class);
 
+    Route::get('/export-contacts', [ListController::class, 'exportContacts'])
+    ->name('lists.exportContacts');
+
     Route::resource('google-businesses', GoogleBusinessController::class)->only([
         'index', 'show', 'destroy'
     ]);
@@ -68,6 +71,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/start-scraper', [ScraperCriteriaController::class, 'startScraper'])
         ->name('scraper-criterias.startScraper');
+
+    Route::get('/export-business', [ScraperCriteriaController::class, 'exportBusiness'])
+        ->name('scraper-criteria.exportBusiness');
 
     Route::post('/bulk-update-record', [ContactController::class, 'bulkupdate'])
         ->name('bulk-update');

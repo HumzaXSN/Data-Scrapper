@@ -25,6 +25,17 @@
                     <i class="ti-export text-secondary"></i>
                     Export Business
                 </a>
+                @if($googleBusiness->validated == 0)
+                    <a class="dropdown-item" href="{{ route('google-businesses.validateBusiness', ['businessId[]' => $googleBusiness->id]) }}">
+                        <i class="ti-check text-success"></i>
+                        Validate Business
+                    </a>
+                @else
+                    <a class="dropdown-item" href="{{ route('google-businesses.validateBusiness', ['businessIdUnvalidated[]' => $googleBusiness->id]) }}">
+                        <i class="ti-close text-danger"></i>
+                        Unvalidate Business
+                    </a>
+                @endif
             </div>
         </div>
     </div>
@@ -86,24 +97,24 @@
                                             @if (isset($decisionMaker->decisionMakerEmails->first()->email))
                                                 <a class="fa-2x ti-email text-warning" data-toggle="collapse"
                                                     href="#collapseExample-{{ $decisionMaker->id }}" role="button" aria-expanded="false"
-                                                    aria-controls="collapseExample"></a>
+                                                    aria-controls="collapseExample" title="Show Emails"></a>
                                             @else
                                                 <a href="#" onclick="showEmailInput({{ $decisionMaker->id }})"
-                                                    class="fa-2x ti-email text-warning showEmail-{{ $decisionMaker->id }} fa-2x"></a>
+                                                    class="fa-2x ti-email text-warning showEmail-{{ $decisionMaker->id }} fa-2x" title="Enter Email"></a>
                                             @endif
                                         </div>
                                         <div class="col-sm-1">
                                             <a href="#" onclick="deleteData({{ $decisionMaker->id }})"
-                                                class="fa-2x icon-close text-danger fa-2x"></a>
+                                                class="fa-2x icon-close text-danger fa-2x" title="Delete Data"></a>
                                         </div>
                                         @if ($decisionMaker->validate == 0)
                                             <div class="col-sm-1">
                                                 <a href="#" onclick="validateContact({{ $decisionMaker->id }})"
-                                                    class="fa-2x icon-check text-success-{{ $decisionMaker->id }} fa-2x"></a>
+                                                    class="fa-2x icon-check text-success-{{ $decisionMaker->id }} fa-2x" title="Validate Business"></a>
                                             </div>
                                         @else
                                             <div class="col-sm-1">
-                                                <a href="#" class="fa-2x icon-check text-muted fa-2x"></a>
+                                                <a href="#" class="fa-2x icon-check text-muted fa-2x" title="Business Validated"></a>
                                             </div>
                                         @endif
                                         <div class="collapse col-6 mx-auto" id="collapseExample-{{ $decisionMaker->id }}">
@@ -117,7 +128,7 @@
                                                         </div>
                                                         <div>
                                                             <a href="#" onclick="successShownEmailData({{ $decisionMaker->id }})"
-                                                                class="pr-2 icon-check text-success fa-2x getSuccess-{{ $decisionMaker->id }}"></a>
+                                                                class="pr-2 icon-check text-success fa-2x getSuccess-{{ $decisionMaker->id }}" title="Insert Email"></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -130,9 +141,9 @@
                                                                     value="{{ $decisionEmail->email }}" readonly>
                                                             </div>
                                                             <div>
-                                                                <a href="#" onclick="successEmailData({{ $decisionEmail->id }})" class="pr-2 icon-check text-success fa-2x success-{{ $decisionEmail->id }}" hidden></a>
-                                                                <a href="#" onclick="editEmailData({{ $decisionEmail->id }})" class="pr-2 ti-write text-primary edit-{{ $decisionEmail->id }} fa-2x"></a>
-                                                                <a href="#" onclick="deleteEmailData({{ $decisionEmail->id }})" class="pr-2 icon-close text-danger fa-2x"></a>
+                                                                <a href="#" onclick="successEmailData({{ $decisionEmail->id }})" class="pr-2 icon-check text-success fa-2x success-{{ $decisionEmail->id }}" hidden title="Verify Edited Email"></a>
+                                                                <a href="#" onclick="editEmailData({{ $decisionEmail->id }})" class="pr-2 ti-write text-primary edit-{{ $decisionEmail->id }} fa-2x" title="Edit Email"></a>
+                                                                <a href="#" onclick="deleteEmailData({{ $decisionEmail->id }})" class="pr-2 icon-close text-danger fa-2x" title="Delete Email"></a>
                                                             </div>
                                                         </div>
                                                     </div>

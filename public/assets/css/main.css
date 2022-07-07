@@ -4825,3 +4825,8 @@ custom chart style
 {
     max-width: 1000px;
 }
+
+.showButtons {
+    display: flex;
+    justify-content: space-between;
+}

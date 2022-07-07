@@ -16,7 +16,8 @@ class GoogleBusiness extends Model
         'website',
         'scraper_job_id',
         'url',
-        'industry'
+        'industry',
+        'validated',
     ];
 
     public function scraperJob()

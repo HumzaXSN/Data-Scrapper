@@ -28,6 +28,9 @@ class GoogleBusinessesDataTable extends DataTable
                 return $query->created_at->format('d-m-Y H:i:s');
             })
             ->addColumn('checkbox', '<input type="checkbox" name="getGoogleBusinessId[]" value="{{$id}}">')
+            ->setRowClass(function ($query) {
+                return $query->validated == 1 ? 'alert-danger' : '';
+            })
             ->rawColumns(['action', 'checkbox']);
     }
 

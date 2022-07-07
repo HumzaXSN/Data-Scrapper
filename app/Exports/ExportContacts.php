@@ -39,12 +39,12 @@ class ExportContacts implements FromCollection, ShouldAutoSize, WithMapping, Wit
             $contact->phone,
             $contact->email,
             URL::to('unsubscribe-email') . '/' . $contact->unsub_link,
-            $contact->source->name,
+            $contact->source->name ?? NULL,
             $contact->country,
             $contact->city,
             $contact->state,
             $contact->linkedIn_profile,
-            $contact->industry->name
+            $contact->industry->name ?? NULL
         ];
     }
 

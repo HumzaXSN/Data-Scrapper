@@ -33,7 +33,8 @@
                                 </div>
                                 <div>
                                     <button type="submit" class="btn btn-success">Export Selected Business</button>
-                                    {{-- <button type="submit" onclick="pickValue()" class="btn btn-primary">Validate Selected Business</button> --}}
+                                    <button type="submit" onclick="pickValue()" class="btn btn-primary">Validate Selected Business</button>
+                                    <button type="submit" onclick="getValue()" class="btn btn-danger">Un-Validate Selected Business</button>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -60,6 +61,11 @@
         function pickValue() {
             var input = $('input[name="getVal"]');
             input.val('1');
+        }
+
+        function getValue() {
+            var input = $('input[name="getVal"]');
+            input.val('2');
         }
     </script>
 @endpush

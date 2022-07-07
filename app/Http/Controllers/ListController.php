@@ -98,6 +98,7 @@ class ListController extends Controller
 
     public function exportContacts(Request $request)
     {
+        ini_set('memory_limit', '256M');
         $listId = $request->listId;
         $listName = $request->listName;
         $listName = ucwords($listName);

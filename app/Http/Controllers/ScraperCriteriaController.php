@@ -7,6 +7,7 @@ use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Exports\ExportBusiness;
+use App\Models\GoogleBusiness;
 use App\Models\Lists;
 use App\Models\ScraperJob;
 use Carbon\Carbon;
@@ -131,6 +132,10 @@ class ScraperCriteriaController extends Controller
 
     public function exportBusiness(Request $request)
     {
+        ini_set('memory_limit', '256M');
+        $getGoogleBusinessId = $request->getGoogleBusinessId;
+        $googleBusinessId = $request->googleBusinessId;
+        $googleBusinessCompany = $request->googleBusinessCompany;
         $getJobBusinessesId = $request->getJobBusinessesId;
         $getScraperCriteriaDetail = $request->getScraperCriteriaDetail;
         $getScraperCriteriaDetail = ucwords($getScraperCriteriaDetail);
@@ -138,11 +143,15 @@ class ScraperCriteriaController extends Controller
         $getCriteriaDetail = $request->getCriteriaDetail;
         $getCriteriaDetail = ucwords($getCriteriaDetail);
         if (isset($getCriteriaId)) {
-            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId))->download('Criteria: ' . $getCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Criteria: ' . $getCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
         } else if (isset($getJobBusinessesId)) {
-            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId))->download('Job: ' . $getScraperCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Job: ' . $getScraperCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+        } else if (isset($googleBusinessId)) {
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Business: ' . $googleBusinessCompany . ' ' . Carbon::now() . '.xlsx');
+        } else if (isset($getGoogleBusinessId)) {
+            return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Multiple Business Data ' . Carbon::now() . '.xlsx');
         } else {
-            return redirect()->back()->with('error', 'No Data Found');
+            return redirect()->back()->with('error', 'No Business was Selected');
         }
     }
 }

@@ -13,11 +13,6 @@
                     <div class="col-8">
                         <h4 class="mb-0">Businesses</h4>
                     </div>
-                    {{-- <div class="col-4">
-                        <div class="float-right ml-2 btn-group">
-                            <a class="btn btn-success" href="{{ route('contacts.create') }}"> Import Contacts</a>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -36,9 +31,13 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                {{ $dataTable->table() }}
-                            </div>
+                            <form action="{{ route('scraper-criteria.exportBusiness') }}" method="GET" >
+                                @csrf
+                                {{-- <button type="submit" class="btn btn-success">Export Selected Business</button> --}}
+                                <div class="table-responsive">
+                                    {{ $dataTable->table() }}
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

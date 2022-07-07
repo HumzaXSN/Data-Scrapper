@@ -25,20 +25,24 @@
             <div class="row">
                 <div class=" col-sm-12">
                     <div class="mb-4 card card-shadow">
-                        <div class="card-header">
-                            <div class="card-title">
-                                Businesses
+                        <form action="{{ route('scraper-criteria.exportBusiness') }}" method="GET">
+                            @csrf
+                            <div class="card-header showButtons">
+                                <div class="card-title">
+                                    Businesses
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-success">Export Selected Business</button>
+                                    {{-- <button type="submit" onclick="pickValue()" class="btn btn-primary">Validate Selected Business</button> --}}
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{ route('scraper-criteria.exportBusiness') }}" method="GET" >
-                                @csrf
-                                <button type="submit" class="btn btn-success">Export Selected Business</button>
+                            <div class="card-body">
                                 <div class="table-responsive">
                                     {{ $dataTable->table() }}
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                            <input type="hidden" name="getVal" value=""/>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -52,4 +56,10 @@
 @endsection
 @push('scripts')
     {{ $dataTable->scripts() }}
+    <script>
+        function pickValue() {
+            var input = $('input[name="getVal"]');
+            input.val('1');
+        }
+    </script>
 @endpush

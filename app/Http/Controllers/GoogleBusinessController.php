@@ -237,4 +237,21 @@ class GoogleBusinessController extends Controller
         Contact::insert($contactData);
         return redirect()->back()->with('success', 'Business Decision Maker inserted successfully');
     }
+
+    public function validateBusiness(GoogleBusiness $business)
+    {
+        $businessId = request()->businessId;
+        $businessIdUnvalidated = request()->businessIdUnvalidated;
+        if (isset($businessId)) {
+            foreach ($businessId as $key => $value) {
+                $business->where('id', $value)->update(['validated' => 1]);
+            }
+            return redirect()->back()->with('success', 'Business Validated successfully');
+        } else {
+            foreach ($businessIdUnvalidated as $key => $value) {
+                $business->where('id', $value)->update(['validated' => 0]);
+            }
+            return redirect()->back()->with('success', 'Business Un-Validated successfully');
+        }
+    }
 }

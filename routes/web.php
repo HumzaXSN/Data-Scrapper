@@ -40,9 +40,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'index', 'show', 'destroy'
     ]);
 
+    Route::get('/validate-businesses', [GoogleBusinessController::class, 'validateBusiness'])
+        ->name('google-businesses.validateBusiness');
+
     Route::post('/validate-business-contact', [GoogleBusinessController::class, 'validateBusinessContact'])
         ->name('validate-business-contact');
-    
+
     Route::post('/delete-business-name', [GoogleBusinessController::class, 'deleteBusinessName'])
         ->name('delete-business-name');
 

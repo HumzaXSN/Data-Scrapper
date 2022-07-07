@@ -26,7 +26,9 @@ class GoogleBusinessesDataTable extends DataTable
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
-            });
+            })
+            ->addColumn('checkbox', '<input type="checkbox" name="getGoogleBusinessId[]" value="{{$id}}">')
+            ->rawColumns(['action', 'checkbox']);
     }
 
     /**
@@ -61,7 +63,7 @@ class GoogleBusinessesDataTable extends DataTable
             ->setTableId('googlebusinesses-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->orderBy(0)
+            ->orderBy(1)
             ->dom('Bfrtip')
             ->buttons(
                 Button::make('create'),
@@ -80,6 +82,17 @@ class GoogleBusinessesDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'checkbox' => [
+                'title' => '',
+                'data' => 'checkbox',
+                'name' => 'checkbox',
+                'orderable' => false,
+                'searchable' => false,
+                'exportable' => false,
+                'printable' => false,
+                'width' => '10px',
+                'className' => 'dt-body-center',
+            ],
             'id',
             'company',
             'phone',

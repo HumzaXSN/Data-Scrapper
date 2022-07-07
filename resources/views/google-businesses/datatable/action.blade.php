@@ -21,6 +21,10 @@
                     <i class="ti-layers-alt text-warning"></i>
                     Validate Data
                 </a>
+                <a class="dropdown-item" href="{{ route('scraper-criteria.exportBusiness', ['googleBusinessId' => $googleBusiness->id, 'googleBusinessCompany' => $googleBusiness->company]) }}" >
+                    <i class="ti-export text-secondary"></i>
+                    Export Business
+                </a>
             </div>
         </div>
     </div>
@@ -303,7 +307,7 @@
                     $('.getSuccess-' + id).removeAttr('onClick');
                     $('.readAddEmail-' + id).attr('readonly', 'true');
                 }
-            }, 
+            },
             error: function(data) {
                 alert('Email is Required');
             }

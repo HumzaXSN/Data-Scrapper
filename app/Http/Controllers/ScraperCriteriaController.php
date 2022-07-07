@@ -7,11 +7,8 @@ use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Exports\ExportBusiness;
-use App\Models\GoogleBusiness;
 use App\Models\Lists;
-use App\Models\ScraperJob;
 use Carbon\Carbon;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ScraperCriteriaController extends Controller
 {

@@ -202,6 +202,7 @@ class GoogleBusinessController extends Controller
                 $getdata = sizeof($name3) - 2;
                 $lastName = $name3[$getdata];
                 $firstName = $name3[0];
+                $title = $name2[1];
                 $emails = $decisionMaker->decisionMakerEmails->pluck('email')->toArray();
                 foreach ($emails as $email) {
                     if (!Contact::where('email', $email)->exists()) {
@@ -210,6 +211,7 @@ class GoogleBusinessController extends Controller
                         $contactData[] =  [
                             'first_name' => $firstName,
                             'last_name' => $lastName,
+                            'title' => $title,
                             'linkedIn_profile' => $decisionMaker->url,
                             'phone' => $decisionMaker->googleBusiness->phone,
                             'city' => $scraperJob->scraperCriteria->location,

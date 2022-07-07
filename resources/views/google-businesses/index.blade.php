@@ -33,7 +33,7 @@
                         <div class="card-body">
                             <form action="{{ route('scraper-criteria.exportBusiness') }}" method="GET" >
                                 @csrf
-                                {{-- <button type="submit" class="btn btn-success">Export Selected Business</button> --}}
+                                <button type="submit" class="btn btn-success">Export Selected Business</button>
                                 <div class="table-responsive">
                                     {{ $dataTable->table() }}
                                 </div>

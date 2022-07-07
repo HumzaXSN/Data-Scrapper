@@ -7,6 +7,7 @@ use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
 use App\Exports\ExportBusiness;
+use App\Models\GoogleBusiness;
 use App\Models\Lists;
 use Carbon\Carbon;
 
@@ -127,11 +128,11 @@ class ScraperCriteriaController extends Controller
         return redirect()->back()->with('success', 'Scraper Completed');
     }
 
-    public function exportBusiness(Request $request)
+    public function exportBusiness(Request $request, GoogleBusiness $business)
     {
+        $getGoogleBusinessId = $request->getGoogleBusinessId;
         if ($request->getVal == null) {
             ini_set('memory_limit', '256M');
-            $getGoogleBusinessId = $request->getGoogleBusinessId;
             $googleBusinessId = $request->googleBusinessId;
             $googleBusinessCompany = $request->googleBusinessCompany;
             $getJobBusinessesId = $request->getJobBusinessesId;
@@ -149,12 +150,26 @@ class ScraperCriteriaController extends Controller
             } else if (isset($getGoogleBusinessId)) {
                 return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Multiple Business Data ' . Carbon::now() . '.xlsx');
             } else {
-                return redirect()->back()->with('error', 'No Business was Selected');
+                return redirect()->back()->with('error', 'No Business was Selected to Export');
             }
-        } else {
-            $getGoogleBusinessId = $request->getGoogleBusinessId;
-            dd($getGoogleBusinessId);
-            return (new GoogleBusinessController)->validateBusiness($getGoogleBusinessId);
+        } else if ($request->getVal == '1') {
+            if ($getGoogleBusinessId != null) {
+                foreach ($getGoogleBusinessId as $key => $value) {
+                    $business->where('id', $value)->update(['validated' => 1]);
+                }
+                return redirect()->back()->with('success', 'Business Validated successfully');
+            } else {
+                return redirect()->back()->with('error', 'No Business was Selected to Validate');
+            }
+        } else if ($request->getVal == '2') {
+            if ($getGoogleBusinessId != null) {
+                foreach ($getGoogleBusinessId as $key => $value) {
+                    $business->where('id', $value)->update(['validated' => 0]);
+                }
+                return redirect()->back()->with('success', 'Business Un-Validated successfully');
+            } else {
+                return redirect()->back()->with('error', 'No Business was Selected to Un-Validate');
+            }
         }
     }
 }

@@ -413,8 +413,8 @@
                             <div class="col-sm-3 mt-2">
                                 <select class="form-control filter-select selectpicker" data-live-search="true" data-column="14">
                                     <option value="">Lead Status</option>
-                                        @foreach ($leadstatuses as $contact )
-                                            <option data-tokens="{{ $contact->status }}" value="{{ $contact->status }}">{{ $contact->status }}</option>
+                                        @foreach ($leadstatuses as $leadstatus )
+                                            <option data-tokens="{{ $leadstatus->status }}" value="{{ $leadstatus->id }}">{{ $leadstatus->status }}</option>
                                         @endforeach
                                 </select>
                             </div>
@@ -422,7 +422,7 @@
                                 <select class="form-control filter-select selectpicker" data-live-search="true" data-column="15">
                                     <option value="">Industries</option>
                                         @foreach ($industries as $industry )
-                                            <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
+                                            <option data-tokens="{{ $industry->name }}" value="{{ $industry->id }}">{{ $industry->name }}</option>
                                         @endforeach
                                 </select>
                             </div>

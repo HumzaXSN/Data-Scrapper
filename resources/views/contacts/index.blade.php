@@ -78,7 +78,7 @@
                                                     @endforeach
                                                 </select>
                                                 <strong class="mt-2">Lead Status:</strong>
-                                                <select class="form-control" name="lead_status_id">
+                                                <select class="form-control selectpicker" name="lead_status_id">
                                                     <option selected disabled>Select Lead Status</option>
                                                     @foreach($leadstatuses as $leadstatus)
                                                     <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
@@ -339,7 +339,7 @@
                 <div class=" col-sm-12">
                     <div class="mb-4 card card-shadow">
                         <div class="card-header mb-3">
-                            <div class="card-header showButtons">
+                            <div class="showButtons">
                                 <div class="card-title">
                                     Filters
                                 </div>
@@ -439,7 +439,7 @@
                             @csrf
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4 mb-2 mb-md-0">
-                                    <select class="form-control" id="bulk_update_column" name="bulk_update_column">
+                                    <select class="form-control selectpicker" id="bulk_update_column" name="bulk_update_column">
                                         <option selected hidden> Select Option </option>
                                         <option value="country"> Country </option>
                                         <option value="state"> State </option>

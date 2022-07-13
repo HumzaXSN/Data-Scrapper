@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Lists;
 use App\Models\ListType;
-use App\DataTables\ListsDataTable;
-use App\Exports\ExportContacts;
 use Illuminate\Http\Request;
+use App\Exports\ExportContacts;
+use App\DataTables\ListsDataTable;
 
 class ListController extends Controller
 {
@@ -102,6 +103,6 @@ class ListController extends Controller
         $listId = $request->listId;
         $listName = $request->listName;
         $listName = ucwords($listName);
-        return (new ExportContacts($listId))->download('List: ' . $listName . '.xlsx');
+        return (new ExportContacts($listId))->download('List: ' . $listName . ' ' . Carbon::now() . '.csv');
     }
 }

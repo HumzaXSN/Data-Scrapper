@@ -128,7 +128,7 @@ class ContactController extends Controller
             'lname' => 'required',
             'email' => 'required',
             'source_id' => 'required',
-            'list_id' => 'required',
+            'listId' => 'required',
         ]);
 
         $findcontact = Contact::where('email', $request->email)->first();

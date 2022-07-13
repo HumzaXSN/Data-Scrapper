@@ -51,6 +51,13 @@
                     <i class="pr-2 ti-export text-danger"></i>
                     Export Businesses
                 </a>
+                @if ($scraperCriteria->lists_id != null)
+                    <a class="dropdown-item"
+                        href="{{ route('contacts.index', ['list' => $scraperCriteria->lists_id]) }}">
+                        <i class="pr-2 ti-layout-grid2-thumb text-success"></i>
+                        Show List
+                    </a>
+                @endif
             </div>
         </div>
     </div>

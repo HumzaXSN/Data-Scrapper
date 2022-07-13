@@ -144,7 +144,9 @@
                                         <div class="form-group">
                                             <strong>Source:</strong>
                                             <select class="form-control selectpicker" data-live-search="true" name="source_id">
-                                                <option selected disabled value="{{ $contact->source->id }}">@if ($contact->source!=null){{ $contact->source->name }}@endif</option>
+                                                <option selected disabled @if ($contact->source != null)
+                                                    value="{{ $contact->source->id }}" @else value="" @endif>
+                                                    @if ($contact->source != null){{ $contact->source->name }}@endif</option>
                                                 @foreach ($sources as $source )
                                                     <option data-token="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
                                                 @endforeach
@@ -167,7 +169,9 @@
                                         <div class="form-group">
                                             <strong>Industry:</strong>
                                             <select class="form-control selectpicker" data-live-search="true" name="industry_id">
-                                                <option selected disabled value="{{ $contact->industry->id }}">@if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
+                                                <option selected disabled @if ($contact->industry != null)
+                                                    value="{{ $contact->industry->id }}" @else value="" @endif>
+                                                    @if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
                                                 @foreach($industries as $industry)
                                                 <option data-token="{{ $industry->name }}" value="{{$industry->id}}">{{$industry->name}}</option>
                                                 @endforeach

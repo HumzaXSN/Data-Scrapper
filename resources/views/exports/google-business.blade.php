@@ -1,6 +1,8 @@
 <table>
     <thead>
         <tr>
+            <th> Name </th>
+            <th> Last Name </th>
             <th> Company </th>
             <th> Phone </th>
             <th> Address </th>
@@ -26,8 +28,25 @@
                     </tr>
                 @endif
                 @foreach ($googleBusiness->decisionMakers as $decisionMaker)
+                    @php
+                        $name1 = $decisionMaker->name;
+                        $name2 = explode('-', $name1);
+                        if (count($name2) > 1) {
+                            $name3 = explode(' ', $name2[0]);
+                            $getdata = sizeof($name3) - 2;
+                            $lastName = $name3[$getdata];
+                            $firstName = $name3[0];
+                        }
+                    @endphp
                     @if ($decisionMaker->decisionMakerEmails->count() <= 0)
                         <tr>
+                            @if (count($name2) > 1)
+                                <td> {{ $firstName }} </td>
+                                <td> {{ $lastName }} </td>
+                            @else
+                                <td> {{ $decisionMaker->name }} </td>
+                                <td> </td>
+                            @endif
                             <td> {{ $googleBusiness->company }} </td>
                             <td> {{ $googleBusiness->phone }} </td>
                             <td> {{ $googleBusiness->address }} </td>
@@ -38,6 +57,13 @@
                     @endif
                     @foreach ($decisionMaker->decisionMakerEmails as $decisionMakerEmail)
                         <tr>
+                            @if (count($name2) > 1)
+                                <td> {{ $firstName }} </td>
+                                <td> {{ $lastName }} </td>
+                            @else
+                                <td> {{ $decisionMaker->name }} </td>
+                                <td> </td>
+                            @endif
                             <td> {{ $googleBusiness->company }} </td>
                             <td> {{ $googleBusiness->phone }} </td>
                             <td> {{ $googleBusiness->address }} </td>
@@ -61,8 +87,25 @@
                     </tr>
                 @endif
                 @foreach ($googleBusiness->decisionMakers as $decisionMaker)
+                    @php
+                        $name1 = $decisionMaker->name;
+                        $name2 = explode('-', $name1);
+                        if (count($name2) > 1) {
+                            $name3 = explode(' ', $name2[0]);
+                            $getdata = sizeof($name3) - 2;
+                            $lastName = $name3[$getdata];
+                            $firstName = $name3[0];
+                        }
+                    @endphp
                     @if ($decisionMaker->decisionMakerEmails->count() <= 0)
-                    <tr>
+                        <tr>
+                            @if (count($name2) > 1)
+                                <td> {{ $firstName }} </td>
+                                <td> {{ $lastName }} </td>
+                            @else
+                                <td> {{ $decisionMaker->name }} </td>
+                                <td> </td>
+                            @endif
                             <td> {{ $googleBusiness->company }} </td>
                             <td> {{ $googleBusiness->phone }} </td>
                             <td> {{ $googleBusiness->address }} </td>
@@ -73,6 +116,13 @@
                     @endif
                     @foreach ($decisionMaker->decisionMakerEmails as $decisionMakerEmail)
                         <tr>
+                            @if (count($name2) > 1)
+                                <td> {{ $firstName }} </td>
+                                <td> {{ $lastName }} </td>
+                            @else
+                                <td> {{ $decisionMaker->name }} </td>
+                                <td> </td>
+                            @endif
                             <td> {{ $googleBusiness->company }} </td>
                             <td> {{ $googleBusiness->phone }} </td>
                             <td> {{ $googleBusiness->address }} </td>

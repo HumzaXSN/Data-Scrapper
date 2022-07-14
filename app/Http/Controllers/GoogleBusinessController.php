@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use DateTime;
+use App\Models\Source;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\ScraperJob;
@@ -202,23 +202,23 @@ class GoogleBusinessController extends Controller
                 $getdata = sizeof($name3) - 2;
                 $lastName = $name3[$getdata];
                 $firstName = $name3[0];
-                $title = $name2[1];
                 $emails = $decisionMaker->decisionMakerEmails->pluck('email')->toArray();
                 foreach ($emails as $email) {
                     if (!Contact::where('email', $email)->exists()) {
                         $industy = Industry::firstOrCreate(['name' => $decisionMaker->googleBusiness->industry]);
                         $scraperJob = ScraperJob::with('scraperCriteria')->findOrFail($decisionMaker->googleBusiness->scraper_job_id);
+                        $source = Source::firstOrCreate(['name' => $scraperJob->platform]);
                         $contactData[] =  [
                             'first_name' => $firstName,
                             'last_name' => $lastName,
-                            'title' => $title,
+                            'title' => $decisionMaker->name,
                             'linkedIn_profile' => $decisionMaker->url,
                             'phone' => $decisionMaker->googleBusiness->phone,
                             'city' => $scraperJob->scraperCriteria->location,
                             'company' => $decisionMaker->googleBusiness->company,
                             'email' => $email,
                             'unsub_link' => base64_encode($email),
-                            'source_id' => 3,
+                            'source_id' => $source->id,
                             'status' => 1,
                             'created_at' => now()->format('Y-m-d H:i:s'),
                             'updated_at' => now()->format('Y-m-d H:i:s'),

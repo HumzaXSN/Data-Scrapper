@@ -20,6 +20,8 @@
                 @endphp
                 @if ($googleBusiness->decisionMakers->count() <= 0)
                     <tr>
+                        <td> </td>
+                        <td> </td>
                         <td> {{ $googleBusiness->company }} </td>
                         <td> {{ $googleBusiness->phone }} </td>
                         <td> {{ $googleBusiness->address }} </td>
@@ -79,6 +81,8 @@
             @foreach ($googleBusinesses as  $googleBusiness)
                 @if ($googleBusiness->decisionMakers->count() <= 0)
                     <tr>
+                        <td> </td>
+                        <td> </td>
                         <td> {{ $googleBusiness->company }} </td>
                         <td> {{ $googleBusiness->phone }} </td>
                         <td> {{ $googleBusiness->address }} </td>

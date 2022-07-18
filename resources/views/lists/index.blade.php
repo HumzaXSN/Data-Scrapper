@@ -32,9 +32,18 @@
 
                                         <!-- Modal body -->
                                         <div class="modal-body">
-                                            <strong>Name:</strong>
-                                            <input class="form-control" type="text" name="name"
-                                                placeholder="Enter Name" required>
+                                            <strong>Region:</strong>
+                                            <input class="form-control" type="text" name="region"
+                                                placeholder="Enter Title" required>
+                                            <strong>Industry:</strong>
+                                            <input class="form-control" type="text" name="industry"
+                                                placeholder="Enter Industry" required>
+                                            <strong>Title:</strong>
+                                            <input class="form-control" type="text" name="title"
+                                                placeholder="Enter Title" required>
+                                            <strong>Created By:</strong>
+                                            <input class="form-control" type="text" name="createdBy"
+                                                placeholder="Created By" required>
                                             <strong>Description:</strong>
                                             <textarea class="form-control" type="text" name="description"
                                                 placeholder="Enter description" required></textarea>

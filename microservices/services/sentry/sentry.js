@@ -4,7 +4,7 @@ const Sentry = require("@sentry/node");
 const SentryTracing = require("@sentry/tracing");
 
 Sentry.init({
-    dsn: 'https://315560bcaad9402ea8af6b2e4163b193@o366275.ingest.sentry.io/6194959',
+    dsn: 'https://aebc4144b9104ebb8c3fcafc1094e34a@o1218657.ingest.sentry.io/6360655',
 
     // We recommend adjusting this value in production, or using tracesSampler
     // for finer control

@@ -34,13 +34,19 @@
                                         <div class="modal-body">
                                             <strong>Region:</strong>
                                             <input class="form-control" type="text" name="region"
-                                                placeholder="Enter Title" required>
+                                                placeholder="Enter Region" required>
                                             <strong>Industry:</strong>
                                             <input class="form-control" type="text" name="industry"
                                                 placeholder="Enter Industry" required>
                                             <strong>Title:</strong>
                                             <input class="form-control" type="text" name="title"
                                                 placeholder="Enter Title" required>
+                                            <strong>Month:</strong>
+                                            <input class="form-control" type="text" name="month"
+                                                placeholder="Enter Month" required>
+                                            <strong>Year:</strong>
+                                            <input class="form-control" type="text" name="year"
+                                                placeholder="Enter Year" required>
                                             <strong>Created By:</strong>
                                             <input class="form-control" type="text" name="createdBy"
                                                 placeholder="Created By" required>

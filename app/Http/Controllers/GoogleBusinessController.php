@@ -231,7 +231,7 @@ class GoogleBusinessController extends Controller
                 }
             }
         } else {
-            return redirect()->back()->with('error', 'Validated Data already entered');
+            return redirect()->back()->with('error', 'Please Select the Business Decision Maker');
         }
         DecisionMaker::where([['validate', 1], ['google_business_id', $googleBusinessId]])->update(['validate' => 2]);
         Contact::insert($contactData);

@@ -45,6 +45,7 @@ async function getJob() {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
+                con.query(`UPDATE scraper_jobs SET decision_makers_email_status = 2 WHERE id = ${emailJobId};`);
                 throw 'Error getting data from scraper_jobs table';
             } else {
                 resolve(result);
@@ -59,6 +60,7 @@ async function bringData(jobId) {
             if (err) {
                 console.error(err);
                 Sentry.captureException(err);
+                con.query(`UPDATE scraper_jobs SET decision_makers_email_status = 2 WHERE id = ${emailJobId};`);
                 throw 'Error getting data from google_businesses table';
             } else {
                 resolve(result);
@@ -145,7 +147,6 @@ async function getScrapData(page) {
     } catch (error) {
         console.error(error);
         Sentry.captureException(error);
-        con.query(`UPDATE scraper_jobs SET decision_makers_status = 2 WHERE id = ${jobId[0].jobId};`)
     }
 
     const pages = await browser.pages();

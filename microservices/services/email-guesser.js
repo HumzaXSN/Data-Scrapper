@@ -54,7 +54,7 @@ async function verifyEmail(mailServer, unique) {
         var arr = [];
 
         conn.setEncoding('ascii');
-        conn.setTimeout(10000);
+        conn.setTimeout(15000);
 
         conn.on('error', function (err) {
             reject(err);
@@ -177,9 +177,7 @@ async function verifyEmail(mailServer, unique) {
                 con.query(`UPDATE scraper_jobs SET decision_makers_email_status = 1 WHERE id = ${emailJobId};`);
             } catch (err) {
                 console.error(err);
-                Sentry.captureException(err);
-                con.query(`UPDATE scraper_jobs SET decision_makers_email_status = 2 WHERE id = ${emailJobId};`);
-            }
+                Sentry.captureException(err);            }
         }
     }
 

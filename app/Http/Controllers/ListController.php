@@ -41,7 +41,7 @@ class ListController extends Controller
     public function store(Request $request)
     {
         Lists::create([
-            'name' => $request->input('name'),
+            'name' => $request->region . '-' . $request->industry . '-' . $request->title . '-' . $request->createdBy,
             'description' => $request->input('description'),
             'list_type_id' => 2,
             'user_id' => auth()->user()->id,

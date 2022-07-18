@@ -27,11 +27,16 @@ class GoogleBusinessesDataTable extends DataTable
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
             })
+            ->addColumn('company', function ($query) {
+                $target = '#myModal-sm-'. $query->id;
+                return '<a class="text-dark" href="javascript:void(0)" data-toggle="modal"
+                    data-target="'. $target .'">' . $query->company . '</a>';
+            })
             ->addColumn('checkbox', '<input type="checkbox" name="getGoogleBusinessId[]" value="{{$id}}">')
             ->setRowClass(function ($query) {
                 return $query->validated == 1 ? 'alert-danger' : '';
             })
-            ->rawColumns(['action', 'checkbox']);
+            ->rawColumns(['action', 'checkbox', 'company']);
     }
 
     /**

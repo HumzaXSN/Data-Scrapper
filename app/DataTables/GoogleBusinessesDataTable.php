@@ -29,7 +29,7 @@ class GoogleBusinessesDataTable extends DataTable
             })
             ->addColumn('company', function ($query) {
                 $target = '#myModal-sm-'. $query->id;
-                return '<a href="javascript:void(0)" data-toggle="modal"
+                return '<a class="text-dark" href="javascript:void(0)" data-toggle="modal"
                     data-target="'. $target .'">' . $query->company . '</a>';
             })
             ->addColumn('checkbox', '<input type="checkbox" name="getGoogleBusinessId[]" value="{{$id}}">')

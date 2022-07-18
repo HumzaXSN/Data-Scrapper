@@ -42,10 +42,6 @@ class ListController extends Controller
     {
         Lists::create([
             'name' => $request->region . '-' . $request->industry . '-' . $request->title . '-' . $request->createdBy,
-            'region' => $request->region,
-            'industry' => $request->industry,
-            'title' => $request->title,
-            'created_by' => $request->createdBy,
             'description' => $request->input('description'),
             'list_type_id' => 2,
             'user_id' => auth()->user()->id,
@@ -85,7 +81,6 @@ class ListController extends Controller
     public function update(Request $request, Lists $list)
     {
         $input = $request->except(['_token', '_method']);
-        $list->update(['name' => $request->region . '-' . $request->industry . '-' . $request->title . '-' . $request->created_by]);
         $list->update($input);
         return redirect()->route('lists.index')->with('success', 'List updated successfully');
     }

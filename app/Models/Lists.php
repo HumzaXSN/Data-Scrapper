@@ -13,10 +13,6 @@ class Lists extends Model
     protected $fillable = [
         'name',
         'description',
-        'region',
-        'industry',
-        'title',
-        'created_by',
         'list_type_id',
         'user_id',
     ];

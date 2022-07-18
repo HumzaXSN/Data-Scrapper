@@ -85,7 +85,7 @@ class ListsDataTable extends DataTable
             'id',
             'name',
             'description',
-            'created_by',
+            'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
             'List From',
             'created_at',

@@ -48,21 +48,12 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <strong>Region:</strong>
-                    <input class="form-control" type="text" name="region"
-                        placeholder="Enter Title" value="{{ $list->region }}" required>
-                    <strong>Industry:</strong>
-                    <input class="form-control" type="text" name="industry"
-                        placeholder="Enter Industry" value="{{ $list->industry }}" required>
-                    <strong>Title:</strong>
-                    <input class="form-control" type="text" name="title"
-                        placeholder="Enter Title" value="{{ $list->title }}" required>
-                    <strong>Created By:</strong>
-                    <input class="form-control" type="text" name="created_by"
-                        placeholder="Created By" value="{{ $list->created_by }}" required>
+                    <strong>Name:</strong>
+                    <input class="form-control" type="text" name="name" placeholder="Enter Name"
+                        value="{{ $list->name }}" required>
                     <strong>Description:</strong>
-                    <textarea class="form-control" type="text" name="description"
-                        placeholder="Enter description" required>{{ $list->description }}</textarea>
+                    <textarea class="form-control" type="text" name="description" placeholder="Enter description"
+                        required>{{ $list->description }}</textarea>
                 </div>
 
                 <!-- Modal footer -->

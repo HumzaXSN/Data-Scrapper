@@ -197,11 +197,22 @@ class GoogleBusinessController extends Controller
         if (count($decisionMakers) > 0) {
             foreach ($decisionMakers as $decisionMaker) {
                 $name1 = $decisionMaker->name;
-                $name2 = explode('-', $name1);
-                $name3 = explode(' ', $name2[0]);
-                $getdata = sizeof($name3) - 2;
-                $lastName = $name3[$getdata];
-                $firstName = $name3[0];
+                if (strpos($name1, '-')) {
+                    $name2 = explode('-', $name1);
+                    $name3 = explode(' ', $name2[0]);
+                    $getdata = sizeof($name3) - 2;
+                    $lastName = $name3[$getdata];
+                    $firstName = $name3[0];
+                } else {
+                    if (strpos($name1, ' ')) {
+                        $name2 = explode(' ', $name1);
+                        $getdata = sizeof($name2) - 1;
+                        $lastName = $name2[$getdata];
+                        $firstName = $name2[0];
+                    } else {
+                        $firstName = $name1;
+                    }
+                }
                 $emails = $decisionMaker->decisionMakerEmails->pluck('email')->toArray();
                 foreach ($emails as $email) {
                     if (!Contact::where('email', $email)->exists()) {
@@ -210,7 +221,7 @@ class GoogleBusinessController extends Controller
                         $source = Source::firstOrCreate(['name' => $scraperJob->platform]);
                         $contactData[] =  [
                             'first_name' => $firstName,
-                            'last_name' => $lastName,
+                            'last_name' => $lastName ?? NULL,
                             'title' => $decisionMaker->name,
                             'linkedIn_profile' => $decisionMaker->url,
                             'phone' => $decisionMaker->googleBusiness->phone,
@@ -234,6 +245,7 @@ class GoogleBusinessController extends Controller
             return redirect()->back()->with('error', 'Please Select the Business Decision Maker');
         }
         DecisionMaker::where([['validate', 1], ['google_business_id', $googleBusinessId]])->update(['validate' => 2]);
+        GoogleBusiness::find($googleBusinessId)->update(['validated' => 1]);
         Contact::insert($contactData);
         return redirect()->back()->with('success', 'Business Decision Maker inserted successfully');
     }

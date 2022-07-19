@@ -56,12 +56,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>First Name</th>
-                                                    @if (isset($failures[array_key_first($failures)][0]['last_name']))
-                                                    <th>Last Name</th>
-                                                    @endif
-                                                    @if (isset($failures[array_key_first($failures)][0]['company']))
-                                                        <th>Company</th>
-                                                    @endif
                                                     <th>Email</th>
                                                 </tr>
                                             </thead>
@@ -73,26 +67,22 @@
                                                              type="text" name="fname[]" placeholder="Enter Firstname"
                                                              value="{{ $failure[0]['first_name'] }}">
                                                         </td>
+                                                        <td>
+                                                            <input class="form-control  @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
+                                                                type="email" name="email[]" placeholder="Enter E-mail" value="{{ $failure[0]['email'] }}">
+                                                        </td>
                                                         @if (isset($failure[0]['last_name']))
-                                                            <td> <input
-                                                                 class="form-control"
-                                                                 type="text" name="lname[]" placeholder="Enter Lastname"
+                                                            <td class="d-none"> <input
+                                                                 type="hidden" name="lname[]"
                                                                  value="{{ $failure[0]['last_name'] }}">
                                                             </td>
                                                         @endif
                                                         @if (isset($failure[0]['company']))
-                                                            <td> <input
-                                                                 class="form-control"
-                                                                 type="text" name="company[]" placeholder="Enter Company"
+                                                            <td class="d-none"> <input
+                                                                 type="hidden" name="company[]"
                                                                  value="{{ $failure[0]['company'] }}">
                                                             </td>
                                                         @endif
-                                                        <td>
-                                                             <input
-                                                                class="form-control  @if($failure[0]['first_name'] != null || isset($failure[1])) is-invalid @endif"
-                                                                type="email" name="email[]" placeholder="Enter E-mail"
-                                                                value="{{ $failure[0]['email'] }}">
-                                                        </td>
                                                         @if (isset($failure[0]['title']))
                                                             <td class="d-none"> <input
                                                                 type="text" name="title[]" placeholder="Enter Title"
@@ -143,12 +133,6 @@
                                             <thead>
                                                 <tr>
                                                     <th>First Name</th>
-                                                    @if (isset($arr[0]['last_name']))
-                                                        <th>Last Name</th>
-                                                    @endif
-                                                    @if (isset($arr[0]['company']))
-                                                        <th>Company</th>
-                                                    @endif
                                                     <th>Email</th>
                                                 </tr>
                                             </thead>
@@ -159,22 +143,22 @@
                                                             <input placeholder="Enter Firstname" class="form-control @if($data['first_name'] == null) is-invalid @endif" type="text" name="fname[]"
                                                             value="{{ $data['first_name'] }}">
                                                         </td>
+                                                        <td>
+                                                            <input placeholder="Enter Email" class="form-control @if($data['email'] == null) is-invalid @endif" type="text"
+                                                                name="email[]" value="{{ $data['email'] }}">
+                                                        </td>
                                                         @if (isset($data['last_name']))
-                                                            <td>
-                                                                <input placeholder="Enter Lastname" class="form-control" type="text" name="lname[]"
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="lname[]"
                                                                 value="{{ $data['last_name'] }}">
                                                             </td>
                                                         @endif
                                                         @if (isset($data['company']))
-                                                            <td>
-                                                                <input placeholder="Enter Company" class="form-control" type="text" name="company[]"
+                                                            <td class="d-none">
+                                                                <input type="hidden" name="company[]"
                                                                 value="{{ $data['company'] }}">
                                                             </td>
                                                         @endif
-                                                        <td>
-                                                            <input placeholder="Enter Email" class="form-control @if($data['email'] == null) is-invalid @endif" type="text" name="email[]"
-                                                            value="{{ $data['email'] }}">
-                                                        </td>
                                                         @if (isset($data['title']))
                                                             <td class="d-none">
                                                                 <input type="hidden" name="title[]"

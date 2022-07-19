@@ -71,7 +71,7 @@ class GoogleBusinessesDataTable extends DataTable
             ->setTableId('googlebusinesses-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->orderBy(1)
+            ->orderBy(9, 'asc')
             ->dom('Bfrtip')
             ->buttons(
                 Button::make('create'),
@@ -109,6 +109,9 @@ class GoogleBusinessesDataTable extends DataTable
             'industry',
             'Scraper_Criteria',
             'created_at',
+            'validated' => [
+                'className' => 'd-none',
+            ],
             'action' => [
                 'searchable' => false,
                 'orderable' => false

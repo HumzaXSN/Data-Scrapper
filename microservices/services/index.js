@@ -157,90 +157,47 @@ async function getData(page) { // get data from url
     // get the value of website
     var getWebsite;
     for (let i = 2; i < 6; i++) {
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child('+ i +') > button > div > div > div.fontBodyMedium'[0]) != null) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexWebsite.test(getWebsite)) {
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+            getWebsite = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+            if (regexWebsite.test(getWebsite)) {
+                break;
+            } else {
+                if (i === 5) {
+                    getWebsite = null;
+                    console.log('No website available');
                     break;
                 } else {
-                    if (i === 5) {
-                        getWebsite = null;
-                        console.log('No website available');
-                        break;
-                    } else {
-                        continue;
-                    }
+                    continue;
                 }
-            } else {
-                getWebsite = null;
-                console.log('No website available');
-                break;
             }
         } else {
-            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getWebsite = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexWebsite.test(getWebsite)) {
-                    break;
-                } else {
-                    if (i === 5) {
-                        getWebsite = null;
-                        console.log('No website available');
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                getWebsite = null;
-                console.log('No website available');
-                break;
-            }
+            getWebsite = null;
+            console.log('No website available');
+            break;
         }
     }
 
     // get the value of phone
     var getPhone;
-    for (let i = 2; i < 8; i++) {
-        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) != null) {
-            if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexPhone.test(getPhone)) {
-                    break;
-                }
-                else {
-                    if (i === 7) {
-                        getPhone = null;
-                        console.log('No Phone available');
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                getPhone = null;
-                console.log('No Phone available');
+    for (let i = 3; i < 8; i++) {
+        if (await page.$('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
+            getPhone = await page.$eval('#QA0Szd > div > div > div > div > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
+            if (regexPhone.test(getPhone)) {
                 break;
+            }
+            else {
+                if (i === 7) {
+                    getPhone = null;
+                    console.log('No Phone available');
+                    break;
+                } else {
+                    continue;
+                }
             }
         } else {
-            if (await page.$('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0]) !== null) {
-                getPhone = await page.$eval('#pane > div > div > div > div > div:nth-child(7) > div:nth-child(' + i + ') > button > div > div > div.fontBodyMedium'[0], el => el.textContent);
-                if (regexPhone.test(getPhone)) {
-                    break;
-                }
-                else {
-                    if (i === 7) {
-                        getPhone = null;
-                        console.log('No Phone available');
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                getPhone = null;
-                console.log('No Phone available');
-                break;
-            }
+            getPhone = null;
+            console.log('No Phone available');
+            break;
         }
     }
 

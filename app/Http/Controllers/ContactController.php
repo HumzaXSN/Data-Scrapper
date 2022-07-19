@@ -206,10 +206,12 @@ class ContactController extends Controller
         $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $sourceId = $request->source_id; $listId = $request->listId;
         $arr = [];
         for ($i = 0; $i < count($fname); $i++) {
-            if (!is_numeric($industry_id[$i])) {
-                $industry = Industry::where('name', $industry_id[$i])->first();
-            } else {
-                $industry = Industry::find($industry_id[$i]);
+            if (isset($industry_id[$i])) {
+                if (!is_numeric($industry_id[$i])) {
+                    $industry = Industry::where('name', $industry_id[$i])->first();
+                } else {
+                    $industry = Industry::find($industry_id[$i]);
+                }
             }
             $bulk_contact_insert = [
                 'first_name' => $fname[$i],

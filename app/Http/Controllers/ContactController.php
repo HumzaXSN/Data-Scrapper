@@ -150,7 +150,7 @@ class ContactController extends Controller
                 'industry_id' => $request->industry_id,
                 'lead_status_id' => $request->lead_status_id,
                 'source_id' => $request->source_id,
-                'list_id' => $request->listId,
+                'lists_id' => $request->listId,
             ]);
             return back()->with('success', 'Contact Added Successfully');
         } else {
@@ -227,14 +227,14 @@ class ContactController extends Controller
                 'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
                 'industry_id' => isset($industry_id[$i]) ? $industry->id : 1,
                 'source_id' => $sourceId,
-                'list_id' => $listId
+                'lists_id' => $listId
             ];
             $getContact = Contact::where('email', $email[$i])->first();
             if(isset($fname[$i]) && isset($email[$i])) {
                 if ($getContact == NULL) {
                     Contact::create($bulk_contact_insert);
                 } else {
-                    $getList = Contact::where([['list_id', 1], ['email', $email[$i]]])->first();
+                    $getList = Contact::where([['lists_id', 1], ['email', $email[$i]]])->first();
                     if($getList == null) {
                         $getContact->update($bulk_contact_insert);
                     } else {
@@ -307,7 +307,7 @@ class ContactController extends Controller
     {
         $decoded_email = base64_decode($unsubLink);
         $contacts = Contact::where('email', $decoded_email)->first();
-        $contacts->list_id = 1;
+        $contacts->lists_id = 1;
         $contacts->update();
         return redirect()->back()->with('success', 'Contact shifted to MBL successfully');
     }

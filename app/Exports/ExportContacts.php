@@ -26,7 +26,7 @@ class ExportContacts implements FromCollection, ShouldAutoSize, WithMapping, Wit
     */
     public function collection()
     {
-        return Contact::where('list_id', $this->listId)->get();
+        return Contact::where('lists_id', $this->listId)->get();
     }
 
     public function map($contact): array

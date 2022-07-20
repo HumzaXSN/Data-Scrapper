@@ -49,7 +49,7 @@ class AddCriteriasToListCommand extends Command
                 'user_id' => 1,
             ]);
 
-            ScraperCriteria::where('list_id', null)->update(['list_id' => $list->id]);
+            ScraperCriteria::where('lists_id', null)->update(['lists_id' => $list->id]);
             $this->info('Default criteria list created and criterias are added to it');
         }
     }

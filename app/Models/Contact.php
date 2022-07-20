@@ -32,7 +32,7 @@ class Contact extends Model
         'reached_platform',
         'lead_status_id',
         'industry_id',
-        'list_id',
+        'lists_id',
     ];
 
     public function industry()

@@ -28,6 +28,10 @@
                     <i class="pr-2 ti-export text-danger"></i>
                     Export Contacts
                 </a>
+                <a class="dropdown-item"href="{{ route('contacts.create', ['list' => $list->id]) }}" >
+                    <i class="pr-2 ti-import text-danger"></i>
+                    Import Contacts
+                </a>
             </div>
         </div>
     </div>

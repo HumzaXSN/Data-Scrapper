@@ -103,6 +103,9 @@ class ListController extends Controller
         $listId = $request->listId;
         $listName = $request->listName;
         $listName = ucwords($listName);
+        $updatecount = Lists::find($request->listId);
+        $updatecount->export_count = $updatecount->export_count+1;
+        $updatecount->update();
         return (new ExportContacts($listId))->download('List: ' . $listName . ' ' . Carbon::now() . '.csv');
     }
 }

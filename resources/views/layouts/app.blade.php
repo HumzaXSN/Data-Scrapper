@@ -7,7 +7,14 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-         <!-- Scripts -->
+         <style>
+            .truncate {
+                width: 100px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                }
+            </style><!-- Scripts -->
 
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
     <!-- Place favicon.ico in the root directory -->
@@ -23,7 +30,7 @@
      <link href="{{ asset('assets/vendor/weather-icons/css/weather-icons.min.css') }}" rel="stylesheet">
      <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
      <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
      <!--custom css-->
      <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
@@ -66,6 +73,7 @@
     <!--init scripts-->
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     @include('partials.messages')
+    
     <script>
         $(document).ready(function(){
             var input = $('.dataTables_filter input').attr({"placeholder":"Search"});

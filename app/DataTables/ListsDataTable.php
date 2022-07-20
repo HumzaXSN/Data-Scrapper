@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Lists;
+use App\Models\Contact;
 use App\Models\ListType;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Services\DataTable;
@@ -25,6 +26,18 @@ class ListsDataTable extends DataTable
             ->addColumn('action', function ($query) {
                 $list_type = ListType::all();
                 return view('lists.datatable.action', ['list_type' => $list_type, 'list' => $query])->render();
+            })
+            ->addColumn('description', function ($query) {
+
+                return '<div class="truncate">'.$query->description.'</div>';
+            })
+            ->addColumn('contact_count', function ($query) {
+                return $query->contacts->count();;
+
+            })
+            ->addColumn('export_count', function ($query) {
+                return $query->export_count;
+
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
@@ -87,6 +100,8 @@ class ListsDataTable extends DataTable
             'description',
             'Created By' => ['data' => 'user.name', 'name' => 'user.name'],
             'Type',
+            'export_count',
+            'contact_count',
             'List From',
             'created_at',
             'action' => [

@@ -75,8 +75,8 @@ class ContactsDataTable extends DataTable
                 return '<input type="checkbox" name="contact_checkbox" data-id="' . $query['id'] . '">';
             })
             ->setRowClass(function ($query) {
-                if (isset($query->list_id))
-                    return $query->list_id == 1 ? 'alert-danger' : '';
+                if (isset($query->lists_id))
+                    return $query->lists_id == 1 ? 'alert-danger' : '';
                 else
                     return '';
             })
@@ -98,11 +98,11 @@ class ContactsDataTable extends DataTable
         if (empty($startDate) && $getList == null) {
             return $model->newQuery()->with('lead_status', 'industry');
         } elseif (empty($startDate) && $getList != null) {
-            return $model->newQuery()->with('lead_status', 'industry')->where('list_id', $getList);
+            return $model->newQuery()->with('lead_status', 'industry')->where('lists_id', $getList);
         } elseif (!empty($startDate) && $getList == null) {
             return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"]);
         } elseif (!empty($startDate) && $getList != null) {
-            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"])->where('list_id', $getList);
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"])->where('lists_id', $getList);
         }
     }
 

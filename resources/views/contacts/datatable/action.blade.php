@@ -22,7 +22,7 @@
                         <i class="pr-2 icon-close text-danger"></i>
                         Delete
                     </a>
-                    @if (isset($contact->unsub_link) && $contact->list_id != 1)
+                    @if (isset($contact->unsub_link) && $contact->lists_id != 1)
                         <a class="dropdown-item" href="{{ route('contacts.mbl',['unsubLink' => $contact->unsub_link]) }}">
                             <i class="pr-2 ti-export text-success"></i>
                             Shift to MBL

@@ -50,7 +50,7 @@ class AddContactsToListCommand extends Command
                 'user_id' => 1,
             ]);
 
-            Contact::where('list_id', null)->update(['list_id' => $list->id]);
+            Contact::where('lists_id', null)->update(['lists_id' => $list->id]);
             $this->info('Sales Force Old Data list created and contacts are added to it');
         }
     }

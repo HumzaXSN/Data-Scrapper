@@ -234,7 +234,7 @@ class GoogleBusinessController extends Controller
                             'created_at' => now()->format('Y-m-d H:i:s'),
                             'updated_at' => now()->format('Y-m-d H:i:s'),
                             'industry_id' => $industy->id,
-                            'list_id' => $scraperJob->scraperCriteria->lists_id,
+                            'lists_id' => $scraperJob->scraperCriteria->lists_id,
                         ];
                     } else {
                         return redirect()->back()->with('error', 'Email Already exists');

@@ -13,11 +13,6 @@
                     <div class="col-8">
                         <h4 class="mb-0">Businesses</h4>
                     </div>
-                    {{-- <div class="col-4">
-                        <div class="float-right ml-2 btn-group">
-                            <a class="btn btn-success" href="{{ route('contacts.create') }}"> Import Contacts</a>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -30,16 +25,25 @@
             <div class="row">
                 <div class=" col-sm-12">
                     <div class="mb-4 card card-shadow">
-                        <div class="card-header">
-                            <div class="card-title">
-                                Businesses
+                        <form action="{{ route('scraper-criteria.exportBusiness') }}" method="GET">
+                            @csrf
+                            <div class="card-header showButtons">
+                                <div class="card-title">
+                                    Businesses
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-success">Export Selected Business</button>
+                                    <button type="submit" onclick="pickValue()" class="btn btn-primary">Validate Selected Business</button>
+                                    <button type="submit" onclick="getValue()" class="btn btn-danger">Un-Validate Selected Business</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                {{ $dataTable->table() }}
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    {{ $dataTable->table() }}
+                                </div>
                             </div>
-                        </div>
+                            <input type="hidden" name="getVal" value=""/>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -53,4 +57,15 @@
 @endsection
 @push('scripts')
     {{ $dataTable->scripts() }}
+    <script>
+        function pickValue() {
+            var input = $('input[name="getVal"]');
+            input.val('1');
+        }
+
+        function getValue() {
+            var input = $('input[name="getVal"]');
+            input.val('2');
+        }
+    </script>
 @endpush

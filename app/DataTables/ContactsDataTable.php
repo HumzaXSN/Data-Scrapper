@@ -19,60 +19,69 @@ class ContactsDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             // First Name, Last Name, LinkedIn Profile
-            ->addColumn('flp_name', function($query){
-                if($query->linkedIn_profile != null) {
-                    return '<a class="editname">'.$query->first_name. ' ' .$query->last_name.'</a>'.
-                    '<a href="'. $query->linkedIn_profile .'" target="_blank"> <img src="'.asset('assets/img/LinkedIn.png') .'" class="contact-linkedin-image"></a>';
+            ->addColumn('flp_name', function ($query) {
+                if ($query->linkedIn_profile != null) {
+                    return '<a class="editname">' . $query->first_name . ' ' . $query->last_name . '</a>' .
+                        '<a href="' . $query->linkedIn_profile . '" target="_blank"> <img src="' . asset('assets/img/LinkedIn.png') . '" class="contact-linkedin-image"></a>';
                 } else {
-                    return '<a class="editname">'.$query->first_name. ' ' .$query->last_name.'</a>';
+                    return '<a class="editname">' . $query->first_name . ' ' . $query->last_name . '</a>';
                 }
             })
             // Company, Title, Lead Status
-            ->addColumn('ctl_name', function($query){
-                return '<a class="editcompany">'. $query->company . ' | <label class="badge bg-success"> '.$query->title.' </label> | ' .$query->lead_status->status .'</a>';
+            ->addColumn('ctl_name', function ($query) {
+                return '<a class="editcompany">' . $query->company . ' | <label class="badge bg-success"> ' . $query->title . ' </label> | ' . $query->lead_status->status . '</a>';
             })
             // Email
-            ->addColumn('emailLink', function($query){
-                return '<a href="mailto:'.$query->email.'">'.$query->email.'</a>';
+            ->addColumn('emailLink', function ($query) {
+                return '<a href="mailto:' . $query->email . '">' . $query->email . '</a>';
             })
             // Lead Country
-            ->addColumn('csc_name', function($query){
-                if($query->country || $query->state || $query->city || $query->phone != NULL) {
-                    return '<a class="editcountry">'. $query->country . ' | ' . $query->state . ' | ' . $query->city. ' | ' . $query->phone . '</a>';
-                }
-                else {
-                    return '<a class="editcountry">'.'No Location'.'</a>';
+            ->addColumn('csc_name', function ($query) {
+                if ($query->country || $query->state || $query->city || $query->phone != NULL) {
+                    return '<a class="editcountry">' . $query->country . ' | ' . $query->state . ' | ' . $query->city . ' | ' . $query->phone . '</a>';
+                } else {
+                    return '<a class="editcountry">' . 'No Location' . '</a>';
                 }
             })
             // Count & Platform
-            ->addColumn('pc_name', function($query){
-                if($query->reached_platform == null) {
-                    return '<a class="editplatform">'.'No Platfrom' .' | '.$query->reached_count.'</a>';
-                }
-                else {
-                    return '<a class="editplatform">' .$query->reached_platform .' | '.$query->reached_count.'</a>';
+            ->addColumn('pc_name', function ($query) {
+                if ($query->reached_platform == null && empty($query->source->name)) {
+                    return '<a class="editplatform">' . 'No Platfrom' . ' | ' . $query->reached_count . ' | ' . 'No Source' . '</a>';
+                } else if ($query->reached_platform == null && isset($query->source->name)) {
+                    return '<a class="editplatform">' . 'No Platfrom' . ' | ' . $query->reached_count . ' | ' . $query->source->name . '</a>';
+                } else if ($query->reached_platform != null && empty($query->source->name)) {
+                    return '<a class="editplatform">' . $query->reached_platform . ' | ' . $query->reached_count . ' | ' . 'No Source' . '</a>';
+                } else {
+                    return '<a class="editplatform">' . $query->reached_platform . ' | ' . $query->reached_count . ' | ' . $query->source->name . '</a>';
                 }
             })
-            ->addColumn('industry', function($query) {
+            ->addColumn('industry', function ($query) {
                 return '<a class="editindsutry">' . $query->industry->name . '</a>';
+            })
+            ->addColumn('source', function ($query) {
+                if (isset($query->source->name)) {
+                    return $query->source->name;
+                } else {
+                    return 'No Source' . '</a>';
+                }
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
             })
-            ->addColumn('action', function($query){
-                return view('contacts.datatable.action', ['contact'=>$query])->render();
+            ->addColumn('action', function ($query) {
+                return view('contacts.datatable.action', ['contact' => $query])->render();
             })
-            ->addColumn('checkbox', function($query){
-                return '<input type="checkbox" name="contact_checkbox" data-id="'.$query['id'].'">';
+            ->addColumn('checkbox', function ($query) {
+                return '<input type="checkbox" name="contact_checkbox" data-id="' . $query['id'] . '">';
             })
             ->setRowClass(function ($query) {
-                if(isset($query->list_id))
-                    return $query->list_id == 1 ? 'alert-danger' : '';
+                if (isset($query->lists_id))
+                    return $query->lists_id == 1 ? 'alert-danger' : '';
                 else
                     return '';
             })
             ->escapeColumns([])
-            ->rawColumns(['flp_name','ctl_name','emailLink','csc_name','pc_name','industry','action','checkbox']);
+            ->rawColumns(['flp_name', 'ctl_name', 'emailLink', 'csc_name', 'pc_name', 'industry', 'source', 'action', 'checkbox']);
     }
 
     /**
@@ -86,14 +95,14 @@ class ContactsDataTable extends DataTable
         $startDate = $this->startDate;
         $endDate = $this->endDate;
         $getList = $this->getList;
-        if(empty($startDate) && $getList == null) {
+        if (empty($startDate) && $getList == null) {
             return $model->newQuery()->with('lead_status', 'industry');
-        } elseif(empty($startDate) && $getList != null) {
-            return $model->newQuery()->with('lead_status', 'industry')->where('list_id', $getList);
-        } elseif(!empty($startDate) && $getList == null) {
+        } elseif (empty($startDate) && $getList != null) {
+            return $model->newQuery()->with('lead_status', 'industry')->where('lists_id', $getList);
+        } elseif (!empty($startDate) && $getList == null) {
             return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"]);
-        } elseif(!empty($startDate) && $getList != null) {
-            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"])->where('list_id', $getList);
+        } elseif (!empty($startDate) && $getList != null) {
+            return $model->newQuery()->with('lead_status', 'industry')->whereBetween('created_at', [$startDate . " 00:00:00", $endDate . " 23:59:59"])->where('lists_id', $getList);
         }
     }
 
@@ -105,16 +114,16 @@ class ContactsDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('contacts-table')
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('contacts-table')
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**

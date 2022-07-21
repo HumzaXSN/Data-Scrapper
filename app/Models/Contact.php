@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Note;
+use App\Models\Source;
 use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ class Contact extends Model
         'phone',
         'email',
         'unsub_link',
-        'source',
+        'source_id',
         'status',
         'country',
         'city',
@@ -31,7 +32,7 @@ class Contact extends Model
         'reached_platform',
         'lead_status_id',
         'industry_id',
-        'list_id',
+        'lists_id',
     ];
 
     public function industry()
@@ -52,5 +53,10 @@ class Contact extends Model
     public function list()
     {
         return $this->belongsTo(Lists::class);
+    }
+
+    public function source()
+    {
+        return $this->belongsTo(Source::class);
     }
 }

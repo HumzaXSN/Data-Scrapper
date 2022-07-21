@@ -18,15 +18,25 @@ class GoogleBusinessesDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($query){
-                return view('google-businesses.datatable.action', ['googleBusiness'=>$query])->render();
+            ->addColumn('action', function ($query) {
+                return view('google-businesses.datatable.action', ['googleBusiness' => $query])->render();
             })
             ->addColumn('Scraper_Criteria', function ($query) {
                 return $query->scraperJob->scraperCriteria->keyword . ' in ' . $query->scraperJob->scraperCriteria->location;
             })
             ->addColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-Y H:i:s');
-            });
+            })
+            ->addColumn('company', function ($query) {
+                $target = '#myModal-sm-'. $query->id;
+                return '<a class="text-dark" href="javascript:void(0)" data-toggle="modal"
+                    data-target="'. $target .'">' . $query->company . '</a>';
+            })
+            ->addColumn('checkbox', '<input type="checkbox" name="getGoogleBusinessId[]" value="{{$id}}">')
+            ->setRowClass(function ($query) {
+                return $query->validated == 1 ? 'alert-danger' : '';
+            })
+            ->rawColumns(['action', 'checkbox', 'company']);
     }
 
     /**
@@ -43,7 +53,7 @@ class GoogleBusinessesDataTable extends DataTable
             return $model->newQuery()->whereHas('scraperJob', function ($query) use ($getBusiness) {
                 $query->where('scraper_criteria_id', $getBusiness);
             });
-        } elseif(isset($getJobBusinesses)) {
+        } elseif (isset($getJobBusinesses)) {
             return $model->newQuery()->where('scraper_job_id', $getJobBusinesses);
         } else {
             return $model->newQuery();
@@ -58,17 +68,18 @@ class GoogleBusinessesDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('googlebusinesses-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('googlebusinesses-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->orderBy(9, 'asc')
+            ->dom('Bfrtip')
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**
@@ -79,6 +90,18 @@ class GoogleBusinessesDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'checkbox' => [
+                'title' => '',
+                'data' => 'checkbox',
+                'name' => 'checkbox',
+                'orderable' => false,
+                'searchable' => false,
+                'exportable' => false,
+                'printable' => false,
+                'width' => '10px',
+                'className' => 'dt-body-center',
+            ],
+            'id',
             'company',
             'phone',
             'address',
@@ -86,6 +109,9 @@ class GoogleBusinessesDataTable extends DataTable
             'industry',
             'Scraper_Criteria',
             'created_at',
+            'validated' => [
+                'className' => 'd-none',
+            ],
             'action' => [
                 'searchable' => false,
                 'orderable' => false

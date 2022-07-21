@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\ScraperCriteria;
 use Illuminate\Support\Facades\Artisan;
 use App\DataTables\ScraperCriteriasDataTable;
+use App\Exports\ExportBusiness;
+use App\Models\GoogleBusiness;
+use App\Models\Lists;
+use Carbon\Carbon;
 
 class ScraperCriteriaController extends Controller
 {
@@ -37,11 +41,18 @@ class ScraperCriteriaController extends Controller
      */
     public function store(Request $request)
     {
+        $list = Lists::create([
+            'name' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
+            'description' => $request->keyword . ' in ' . $request->location . ' ' . Carbon::now()->format('d-m-Y H:i:s'),
+            'list_type_id' => 2,
+            'user_id' => auth()->user()->id,
+        ]);
         ScraperCriteria::create([
             'status' => 'In-Active',
             'keyword' => $request->keyword,
             'location' => $request->location,
-            'limit' => $request->limit
+            'limit' => $request->limit,
+            'lists_id' => $list->id,
         ]);
         return redirect()->route('scraper-criterias.index')->with('success', 'Criteria Created Successfully');
     }
@@ -95,22 +106,70 @@ class ScraperCriteriaController extends Controller
 
     public function runScraper(Request $request)
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
         ScraperCriteria::where('id', $request->id)->update(['status' => 'Active']);
-        return redirect()->back()->with('success', 'Scraper Job Started Successfully');
+        return redirect()->back()->with('success', 'Scraper Job Activated Successfully');
     }
 
     public function stopScraper(Request $request)
     {
         ScraperCriteria::where('id', $request->id)->update(['status' => 'In-Active']);
-        return redirect()->back()->with('success', 'Scraper Job Stopped Successfully');
+        return redirect()->back()->with('success', 'Scraper Job In-Activated Successfully');
     }
 
     public function startScraper()
     {
-        ScraperCriteria::where('status', 'Active')->update(['status' => 'In-Active']);
-        ScraperCriteria::where('id', request()->id)->update(['status' => 'Active']);
-        Artisan::call('run:spider-scraper');
+        $getData = ScraperCriteria::where('id', request()->id)->first();
+        Artisan::call('run:google-businesses-scraper', [
+            'keyword' => $getData->keyword,
+            'city' => $getData->location,
+            'limit' => $getData->limit,
+            'criteriaId' => $getData->id
+        ]);
         return redirect()->back()->with('success', 'Scraper Completed');
+    }
+
+    public function exportBusiness(Request $request, GoogleBusiness $business)
+    {
+        $getGoogleBusinessId = $request->getGoogleBusinessId;
+        if ($request->getVal == null) {
+            ini_set('memory_limit', '256M');
+            $googleBusinessId = $request->googleBusinessId;
+            $googleBusinessCompany = $request->googleBusinessCompany;
+            $getJobBusinessesId = $request->getJobBusinessesId;
+            $getScraperCriteriaDetail = $request->getScraperCriteriaDetail;
+            $getScraperCriteriaDetail = ucwords($getScraperCriteriaDetail);
+            $getCriteriaId = $request->getCriteriaId;
+            $getCriteriaDetail = $request->getCriteriaDetail;
+            $getCriteriaDetail = ucwords($getCriteriaDetail);
+            if (isset($getCriteriaId)) {
+                return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Criteria: ' . $getCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+            } else if (isset($getJobBusinessesId)) {
+                return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Job: ' . $getScraperCriteriaDetail . ' ' . Carbon::now() . '.xlsx');
+            } else if (isset($googleBusinessId)) {
+                return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Business: ' . $googleBusinessCompany . ' ' . Carbon::now() . '.xlsx');
+            } else if (isset($getGoogleBusinessId)) {
+                return (new ExportBusiness($getCriteriaId, $getJobBusinessesId, $googleBusinessId, $getGoogleBusinessId))->download('Multiple Business Data ' . Carbon::now() . '.xlsx');
+            } else {
+                return redirect()->back()->with('error', 'No Business was Selected to Export');
+            }
+        } else if ($request->getVal == '1') {
+            if ($getGoogleBusinessId != null) {
+                foreach ($getGoogleBusinessId as $key => $value) {
+                    $business->where('id', $value)->update(['validated' => 1]);
+                }
+                return redirect()->back()->with('success', 'Business Validated successfully');
+            } else {
+                return redirect()->back()->with('error', 'No Business was Selected to Validate');
+            }
+        } else if ($request->getVal == '2') {
+            if ($getGoogleBusinessId != null) {
+                foreach ($getGoogleBusinessId as $key => $value) {
+                    $business->where('id', $value)->update(['validated' => 0]);
+                }
+                return redirect()->back()->with('success', 'Business Un-Validated successfully');
+            } else {
+                return redirect()->back()->with('error', 'No Business was Selected to Un-Validate');
+            }
+        }
     }
 }

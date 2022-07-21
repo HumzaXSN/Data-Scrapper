@@ -26,20 +26,20 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <form action="{{ route('map-headings') }}" method="POST">
+                                    <form action="{{ route('contacts.mapHeadings') }}" method="POST">
                                         @csrf
                                         <table class="table">
                                             <tbody>
-                                                @foreach ($get_contact_heading as $key => $contact_heading)
+                                                @foreach ($check_columns as $key => $contact_heading)
                                                     @if(!is_null($contact_heading))
                                                         <tr>
                                                             <th scope="row">{{ strtolower(str_replace(' ','', str_replace('_','', $contact_heading))) }}</th>
                                                             <td>
                                                                 <select class="form-control columns" id="column_{{$key}}" name="columns[]" required>
                                                                     <option value="">Please Select</option>
-                                                                    @foreach ($check_columns as $index => $columns)
+                                                                    @foreach ($get_contact_heading as $index => $columns)
                                                                         @if($loop->first)
-                                                                            <option value="NULL" selected>Ignore This Row</option>
+                                                                            <option value="NULL" selected>Ignore This Column</option>
                                                                         @endif
                                                                         @if (!$loop->last)
                                                                             <option value="{{ $columns }}"
@@ -47,12 +47,6 @@
                                                                                 selected
                                                                             @endif
                                                                             >{{ ucfirst($columns) }}</option>
-                                                                        @else
-                                                                            <option value="{{ $columns }}"
-                                                                            @if(strtolower(str_replace(' ','', str_replace('_','', $contact_heading))) == strtolower(str_replace(' ','', str_replace('_','', 'linkedin_profile'))))
-                                                                                selected
-                                                                            @endif
-                                                                            >LinkedIn Profile</option>
                                                                         @endif
                                                                     @endforeach
                                                                 </select>
@@ -71,7 +65,8 @@
                                                 <tr>
                                                     <td>
                                                         <input type="hidden" value="{{ $file }}" name="file">
-                                                        <input type="hidden" value="{{ $source }}" name="source">
+                                                        <input type="hidden" value="{{ $sourceId }}" name="sourceId">
+                                                        <input type="hidden" value="{{ $listId }}" name="listId">
                                                     </td>
                                                 </tr>
                                             </tbody>

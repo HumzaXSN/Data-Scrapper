@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use ReflectionClass;
 use App\Models\Lists;
+use App\Models\Source;
 use App\Models\Contact;
 use App\Models\Industry;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
+use App\Imports\ContactExcelImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\DataTables\ContactsDataTable;
-use App\Models\Source;
 
 class ContactController extends Controller
 {
@@ -170,85 +173,55 @@ class ContactController extends Controller
             'listId' => 'required',
             'sourceId' => 'required',
         ]);
-
-        $industry = Industry::all();
-        // $request->file('csv_file')->storeAs('import', 'contacts.csv');
-        $file = $request->file('csv_file');
-        $import = new ContactsImport($request->sourceId, $request->listId);
-        ini_set('max_execution_time', '600');
+        $listId = $request->listId;
+        $sourceId = $request->sourceId;
+        $file = $request->file('csv_file')->store('import');
         try {
-            $import->import($file);
+            $collection = Excel::toCollection(new ContactExcelImport, $file);
         } catch (Exception $e) {
-            return back()->with('error', 'Please make sure the file is correct.');
+            return back()->with('error', 'Please make sure the file is correct');
         }
-        $importFailures = $import->failures();
-        $errorsMsgs = [];
-        $failureRows = [];
-        foreach ($import->failures() as $failure) {
-            array_push($errorsMsgs, $failure->attribute());
-        }
-        foreach($importFailures as $failure) {
-            if(array_key_exists($failure->row(), $failureRows)) {
-                $failureRows[$failure->row()] = [$failure->values(),'yes'];
-            } else {
-                $failureRows[$failure->row()] = [$failure->values()];
-            }
-        }
-        if (count($importFailures) > 0) {
-            return view('contacts.provisional')->with(['failures' => $failureRows, 'source' => $request->source, 'industry' => $industry, 'success_row' => $import->getRowCount(), 'errorsMsgs' => $errorsMsgs, 'listId' => $request->listId, 'sourceId' => $request->sourceId]);
-        } else {
-            return redirect()->back()->with('success', $import->getRowCount() . ' Contacts Added Successfully');
-        }
+        $get_contact_heading = $collection[0][0]->toArray();
+        $check_columns = [
+            'first_name',
+            'last_name',
+            'title',
+            'company',
+            'email',
+            'phone',
+            'country',
+            'state',
+            'city',
+            'industry',
+            'linkedin_profile'
+        ];
+        return view('contacts.check-columns', compact('get_contact_heading', 'check_columns', 'file', 'listId', 'sourceId'));
     }
 
-    public function provisionalPage(Request $request)
+    public function mapHeadings(Request $request)
     {
-        $fname = $request->fname; $lname = $request->lname; $email = $request->email; $title = $request->title; $company = $request->company; $country = $request->country; $state = $request->state; $city = $request->city; $phone = $request->phone; $linkedIn_profile = $request->linkedIn_profile; $industry_id = $request->industry_id; $sourceId = $request->source_id; $listId = $request->listId;
-        $arr = [];
-        for ($i = 0; $i < count($fname); $i++) {
-            if (isset($industry_id[$i])) {
-                if (!is_numeric($industry_id[$i])) {
-                    $industry = Industry::where('name', $industry_id[$i])->first();
-                } else {
-                    $industry = Industry::find($industry_id[$i]);
-                }
-            }
-            $bulk_contact_insert = [
-                'first_name' => $fname[$i],
-                'last_name' => isset($lname[$i]) ? $lname[$i] : null,
-                'title' => isset($title[$i]) ? $title[$i] : null,
-                'company' => isset($company[$i]) ? $company[$i] : null,
-                'email' => $email[$i],
-                'unsub_link' => base64_encode($email[$i]),
-                'country' => isset($country[$i]) ? $country[$i] : null,
-                'state' => isset($state[$i]) ? $state[$i] : null,
-                'city' => isset($city[$i]) ? $city[$i] : null,
-                'phone' => isset($phone[$i]) ? $phone[$i] : null,
-                'linkedIn_profile' => isset($linkedIn_profile[$i]) ? $linkedIn_profile[$i] : null,
-                'industry_id' => isset($industry_id[$i]) ? $industry->id : 1,
-                'source_id' => $sourceId,
-                'lists_id' => $listId
-            ];
-            $getContact = Contact::where('email', $email[$i])->first();
-            if(isset($fname[$i]) && isset($email[$i])) {
-                if ($getContact == NULL) {
-                    Contact::create($bulk_contact_insert);
-                } else {
-                    $getList = Contact::where([['lists_id', 1], ['email', $email[$i]]])->first();
-                    if($getList == null) {
-                        $getContact->update($bulk_contact_insert);
-                    } else {
-                        continue;
-                    }
-                }
-            } else {
-                array_push($arr, $bulk_contact_insert);
-            }
-        }
-        if($arr == null) {
-            return redirect()->route('contacts.index')->with('success', 'Contact added successfully');
+        $removeNull = array_filter($request->columns, function ($value) {
+            return $value !== 'NULL';
+        });
+        $checkDuplicate = array_unique($removeNull);
+        $file = storage_path('app/' . $request->file);
+        if (count($checkDuplicate) != count($removeNull)) {
+            return back()->with('error', 'Please make sure the mapped columns are not used more than once');
         } else {
-            return view('contacts.provisional', compact('arr', 'listId', 'sourceId'));
+            $import = new ContactsImport($request->sourceId, $request->listId, $request->columns[0], $request->columns[1], $request->columns[2], $request->columns[3], $request->columns[4], $request->columns[5], $request->columns[6], $request->columns[7], $request->columns[8], $request->columns[9], $request->columns[10]);
+            ini_set('max_execution_time', '600');
+            try {
+                $import->import($file);
+            } catch (Exception $e) {
+                return back()->with('error', 'Please make sure the file is correct');
+            }
+            $importFailures = $import->failures();
+            $getRow = $import->getRowCount();
+            if ($importFailures->count() > 0) {
+                return view('contacts.import-failuers', compact('importFailures', 'getRow'));
+            } else {
+                return redirect()->back()->with('success', $getRow . ' Contacts Added Successfully');
+            }
         }
     }
 

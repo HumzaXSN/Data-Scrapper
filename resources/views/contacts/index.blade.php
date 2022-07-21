@@ -18,6 +18,11 @@
 
                     </div>
                     <div class="col-12">
+                        @if (isset($getCount))
+                            <div class="alert alert-success">
+                                {{ $getCount }} row were successfully imported.
+                            </div>
+                        @endif
                         <div class="float-right ml-2 btn-group">
                             <a class="btn btn-success" href="{{ route('contacts.create', ['list' => $getList]) }}"> Import Contacts</a>
                         </div>

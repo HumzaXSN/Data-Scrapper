@@ -32,7 +32,7 @@ class ListsDataTable extends DataTable
                 return '<div class="truncate">'.$query->description.'</div>';
             })
             ->addColumn('contact_count', function ($query) {
-                return $query->contacts->count();;
+                return $query->contacts_count;
 
             })
             ->addColumn('export_count', function ($query) {
@@ -62,7 +62,7 @@ class ListsDataTable extends DataTable
      */
     public function query(Lists $model)
     {
-        return $model->newQuery()->with('user')->where('list_type_id', 2);
+        return $model->newQuery()->with('user')->withCount('contacts')->where('list_type_id', 2);
     }
 
     /**

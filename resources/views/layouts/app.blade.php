@@ -7,15 +7,6 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-         <style>
-            .truncate {
-                width: 100px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                }
-            </style><!-- Scripts -->
-
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
     <!-- Place favicon.ico in the root directory -->
 
@@ -73,7 +64,7 @@
     <!--init scripts-->
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     @include('partials.messages')
-    
+
     <script>
         $(document).ready(function(){
             var input = $('.dataTables_filter input').attr({"placeholder":"Search"});

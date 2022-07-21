@@ -43,7 +43,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
     {
         ++$this->success_rows;
         $industy = Industry::firstOrCreate(['name' => $row['industry']]);
-        $getContact = Contact::where([['list_id', 1], ['email', $row['email']]])->get();
+        $getContact = Contact::where([['lists_id', 1], ['email', $row['email']]])->get();
         if(count($getContact) > 0) {
             return new Contact([
                 'first_name' => $row['first_name'],
@@ -60,7 +60,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source_id' => $this->sourceId,
-                'list_id' => $this->listId,
+                'lists_id' => $this->listId,
             ]);
         } else {
             return new Contact([
@@ -78,7 +78,7 @@ class ContactsImport implements ToModel, WithHeadingRow, SkipsOnError, SkipsOnFa
                 'business_platform' => $row['business_platform'] ?? NULL,
                 'linkedIn_profile' => $row['linkedin_profile'] ?? NULL,
                 'source_id' => $this->sourceId,
-                'list_id' => $this->listId
+                'lists_id' => $this->listId
             ]);
         }
     }

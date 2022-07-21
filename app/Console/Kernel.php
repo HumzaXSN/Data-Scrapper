@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AddContactsToListCommand;
+use App\Console\Commands\DecisionMakerCommand;
+use App\Console\Commands\DecisionMakerEmailCommand;
 use App\Models\ScraperCriteria;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GoogleBusinessScraperCommand;
@@ -18,6 +21,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         GoogleBusinessScraperCommand::class,
         RunScraperCommand::class,
+        DecisionMakerCommand::class,
+        DecisionMakerEmailCommand::class,
+        AddContactsToListCommand::class,
     ];
 
     /**
@@ -29,15 +35,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $getData = ScraperCriteria::where('status', 'Active')->get();
-         if ($getData->count() > 0) {
-             $schedule->command('run:google-businesses-scraper',[
-                 $getData[0]->keyword,
-                 $getData[0]->location,
-                 $getData[0]->limit,
-                 $getData[0]->id
-             ])->everyMinute()->timezone('Asia/Karachi');
-         }
+        $getData = ScraperCriteria::where('status', 'Active')->get();
+        if ($getData->count() > 0) {
+            $schedule->command('run:google-businesses-scraper',[
+                $getData[0]->keyword,
+                $getData[0]->location,
+                $getData[0]->limit,
+                $getData[0]->id
+            ])->everyMinute()->timezone('Asia/Karachi');
+        }
     }
 
     /**

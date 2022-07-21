@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Lists;
 use App\Models\ListType;
-use App\DataTables\ListsDataTable;
 use Illuminate\Http\Request;
+use App\Exports\ExportContacts;
+use App\DataTables\ListsDataTable;
 
 class ListController extends Controller
 {
@@ -39,7 +41,7 @@ class ListController extends Controller
     public function store(Request $request)
     {
         Lists::create([
-            'name' => $request->input('name'),
+            'name' => $request->region . '-' . $request->industry . '-' . $request->title . '-' . $request->month . '-' . $request->year . '-' . $request->createdBy,
             'description' => $request->input('description'),
             'list_type_id' => 2,
             'user_id' => auth()->user()->id,
@@ -93,5 +95,17 @@ class ListController extends Controller
     {
         $list->delete();
         return redirect()->route('lists.index')->with('success', 'List deleted successfully');
+    }
+
+    public function exportContacts(Request $request)
+    {
+        ini_set('memory_limit', '256M');
+        $listId = $request->listId;
+        $listName = $request->listName;
+        $listName = ucwords($listName);
+        $updatecount = Lists::find($request->listId);
+        $updatecount->export_count = $updatecount->export_count+1;
+        $updatecount->update();
+        return (new ExportContacts($listId))->download('List: ' . $listName . ' ' . Carbon::now() . '.csv');
     }
 }

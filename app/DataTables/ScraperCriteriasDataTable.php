@@ -50,18 +50,18 @@ class ScraperCriteriasDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('scrapercriterias-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('scrapercriterias-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(0)
+            ->buttons(
+                Button::make('create'),
+                Button::make('export'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            );
     }
 
     /**
@@ -72,12 +72,16 @@ class ScraperCriteriasDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'id',
             'status',
             'keyword',
             'location',
             'limit',
             'Updated At',
-            'action'
+            'action' => [
+                'searchable' => false,
+                'orderable' => false
+            ]
         ];
     }
 

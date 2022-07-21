@@ -32,6 +32,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
     -ms-text-size-adjust: 100%;
 }
+.truncate {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
 
 body.app {
     background: #f3f6f9;
@@ -4819,4 +4825,14 @@ custom chart style
 .filter-button
 {
     margin-left: 120px;
+}
+
+.modal-dialog.modal-dialog-centered.validate-modal
+{
+    max-width: 1000px;
+}
+
+.showButtons {
+    display: flex;
+    justify-content: space-between;
 }

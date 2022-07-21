@@ -142,9 +142,22 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
+                                            <strong>Source:</strong>
+                                            <select class="form-control selectpicker" data-live-search="true" name="source_id">
+                                                <option selected disabled @if ($contact->source != null)
+                                                    value="{{ $contact->source->id }}" @else value="" @endif>
+                                                    @if ($contact->source != null){{ $contact->source->name }}@endif</option>
+                                                @foreach ($sources as $source )
+                                                    <option data-token="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
                                             <strong>Lead Status:</strong>
                                             <select class="form-control" name="lead_status_id">
-                                                <option selected disabled>@if($contact->lead_status!=null){{ $contact->lead_status->status }}@endif</option>
+                                                <option selected disabled value="{{ $contact->lead_status->id }}">@if($contact->lead_status!=null){{ $contact->lead_status->status }}@endif</option>
                                                 @foreach($leadstatuses as $leadstatus)
                                                 <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
                                                 @endforeach
@@ -155,10 +168,12 @@
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
                                             <strong>Industry:</strong>
-                                            <select class="form-control" name="industry_id">
-                                                <option selected disabled>@if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
+                                            <select class="form-control selectpicker" data-live-search="true" name="industry_id">
+                                                <option selected disabled @if ($contact->industry != null)
+                                                    value="{{ $contact->industry->id }}" @else value="" @endif>
+                                                    @if($contact->industry!=null){{ $contact->industry->name }}@endif</option>
                                                 @foreach($industries as $industry)
-                                                <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                                <option data-token="{{ $industry->name }}" value="{{$industry->id}}">{{$industry->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

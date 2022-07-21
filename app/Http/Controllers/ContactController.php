@@ -200,13 +200,15 @@ class ContactController extends Controller
 
     public function mapHeadings(Request $request)
     {
-        $removeNull = array_filter($request->columns, function ($value) {
-            return $value !== 'NULL';
-        });
-        $checkDuplicate = array_unique($removeNull);
         $file = storage_path('app/' . $request->file);
-        if (count($checkDuplicate) != count($removeNull)) {
-            return back()->with('error', 'Please make sure the mapped columns are not used more than once');
+        $checkSpace = array_filter($request->columns, function ($value) {
+            return strpos($value, ' ') !== false;
+        });
+        $checkDash = array_filter($request->columns, function ($value) {
+            return strpos($value, '-') !== false;
+        });
+        if (count($checkSpace) > 0 || count($checkDash) > 0) {
+            return view('contacts.import-failuers', compact('checkSpace', 'checkDash'));
         } else {
             $import = new ContactsImport($request->sourceId, $request->listId, $request->columns[0], $request->columns[1], $request->columns[2], $request->columns[3], $request->columns[4], $request->columns[5], $request->columns[6], $request->columns[7], $request->columns[8], $request->columns[9], $request->columns[10]);
             ini_set('max_execution_time', '600');

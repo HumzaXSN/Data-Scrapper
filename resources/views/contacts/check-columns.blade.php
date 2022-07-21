@@ -30,6 +30,10 @@
                                         @csrf
                                         <table class="table">
                                             <tbody>
+                                                <tr>
+                                                    <th class="text-center "><h4>System Columns</h4></th>
+                                                    <th class="text-center"><h4>Excel Columns</h4></th>
+                                                </tr>
                                                 @foreach ($check_columns as $key => $contact_heading)
                                                     @if(!is_null($contact_heading))
                                                         <tr>
@@ -44,6 +48,12 @@
                                                                         @if (!$loop->last)
                                                                             <option value="{{ $columns }}"
                                                                             @if(strtolower(str_replace(' ','', str_replace('_','', $contact_heading))) == strtolower(str_replace(' ','', str_replace('_','', $columns))))
+                                                                                selected
+                                                                            @endif
+                                                                            >{{ ucfirst($columns) }}</option>
+                                                                        @else
+                                                                            <option value="{{ $columns }}"
+                                                                            @if(strtolower(str_replace(' ','', str_replace(' _','', $contact_heading)))==strtolower(str_replace(' ','', str_replace(' _','', $columns))))
                                                                                 selected
                                                                             @endif
                                                                             >{{ ucfirst($columns) }}</option>

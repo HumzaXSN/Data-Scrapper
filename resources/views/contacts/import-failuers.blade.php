@@ -18,23 +18,56 @@
 
                                     <!-- Modal body -->
                                     <div class="modal-body">
-                                        <div class="alert alert-success">
-                                            {{ $getRow }} row were successfully imported.
-                                        </div>
-                                        @foreach ($importFailures as $failure)
-                                            @php
-                                                $reflection = new ReflectionClass($failure);
-                                                $property = $reflection->getProperty('row');
-                                                $errorProperty = $reflection->getProperty('errors');
-                                                $property->setAccessible(true);
-                                                $errorProperty->setAccessible(true);
-                                                $getRowNo = $property->getValue($failure);
-                                                $errorRow = $errorProperty->getValue($failure);
-                                            @endphp
+                                        @if (!empty($checkSpace) || !empty($checkDash))
+                                            <p>
+                                                <strong>
+                                                    @if (!empty($checkSpace))
+                                                        <span class="text-danger">
+                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                            <span>
+                                                                The following fields have spaces, please remove them and try importing again:
+                                                                @foreach ( $checkSpace as $checkSpaces )
+                                                                   <br>
+                                                                   {{ $checkSpaces }}
+                                                                @endforeach
+                                                            </span>
+                                                        </span>
+                                                    @endif
+                                                    <br> <br>
+                                                    @if (isset($checkDash))
+                                                        <span class="text-danger">
+                                                            <i class="fa fa-exclamation-triangle"></i>
+                                                            <span>
+                                                                The following fields have dashes, please remove them and try importing again:
+                                                                @foreach ( $checkDash as $checkDashes )
+                                                                    <br>
+                                                                    {{ $checkDashes }}
+                                                                @endforeach
+                                                            </span>
+                                                        </span>
+                                                    @endif
+                                                </strong>
+                                            </p>
+                                        @else
+                                            <div class="alert alert-success">
+                                                {{ $getRow }} row were successfully imported.
+                                            </div>
+                                            @foreach ($importFailures as $failure)
+                                                @php
+                                                    $reflection = new ReflectionClass($failure);
+                                                    $property = $reflection->getProperty('row');
+                                                    $errorProperty = $reflection->getProperty('errors');
+                                                    $property->setAccessible(true);
+                                                    $errorProperty->setAccessible(true);
+                                                    $getRowNo = $property->getValue($failure);
+                                                    $errorRow = $errorProperty->getValue($failure);
+                                                @endphp
                                             <div class="alert alert-danger">
                                                 <strong>Row: {{ $getRowNo }}</strong> - {{ $errorRow[0] }}
                                             </div>
-                                        @endforeach
+                                            @endforeach
+                                        @endif
+
                                     </div>
 
                                     <!-- Modal footer -->

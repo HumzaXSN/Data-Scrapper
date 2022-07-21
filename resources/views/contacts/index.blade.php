@@ -18,6 +18,11 @@
 
                     </div>
                     <div class="col-12">
+                        @if (isset($getCount))
+                            <div class="alert alert-success">
+                                {{ $getCount }} row were successfully imported.
+                            </div>
+                        @endif
                         <div class="float-right ml-2 btn-group">
                             <a class="btn btn-success" href="{{ route('contacts.create', ['list' => $getList]) }}"> Import Contacts</a>
                         </div>
@@ -69,33 +74,34 @@
                                                     placeholder="Enter Reached Platform">
                                                 <strong class="mt-2">LinkedIn Profile:</strong>
                                                 <input class="form-control mt-2" type="text" name="linkedin_profile"
-                                                    placeholder="Enter Reached Platform">
+                                                    placeholder="Place linkedIn Profile">
                                                 <strong class="mt-2">Industry:</strong>
-                                                <select class="form-control" name="industry_id">
+                                                <select class="form-control selectpicker" data-live-search="true" name="industry_id">
                                                     <option selected disabled>Select Industry</option>
                                                     @foreach($industries as $industry)
-                                                    <option value="{{$industry->id}}">{{$industry->name}}</option>
+                                                    <option data-tokens="{{ $industry->name }}" value="{{$industry->id}}">{{$industry->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 <strong class="mt-2">Lead Status:</strong>
-                                                <select class="form-control" name="lead_status_id">
+                                                <select class="form-control selectpicker" name="lead_status_id">
                                                     <option selected disabled>Select Lead Status</option>
                                                     @foreach($leadstatuses as $leadstatus)
                                                     <option value="{{$leadstatus->id}}">{{$leadstatus->status}}</option>
                                                     @endforeach
                                                 </select>
                                                 <strong class="mt-2">Source:</strong>
-                                                <select class="form-control" name="source">
-                                                    <option selected disabled>Source</option>
-                                                    <option value="1">Internal</option>
-                                                    <option value="2">External</option>
+                                                <select class="form-control selectpicker" data-live-search="true" name="source_id">
+                                                    <option selected disabled> Select Source </option>
+                                                    @foreach($sources as $source)
+                                                        <option data-tokens="{{ $source->name }}" value="{{$source->id}}">{{$source->name}}</option>
+                                                    @endforeach
                                                 </select>
                                                 @if (empty($getList))
                                                 <strong class="mt-2">Select List:</strong>
-                                                <select class="form-control" name="listId">
-                                                    <option value=""> Select List </option>
+                                                <select class="form-control selectpicker" data-live-search="true" name="listId">
+                                                    <option selected disabled> Select List </option>
                                                     @foreach($lists as $list)
-                                                    <option value="{{$list->id}}">{{$list->name}}</option>
+                                                    <option data-tokens="{{ $list->name }}" value="{{$list->id}}">{{$list->name}}</option>
                                                     @endforeach
                                                 </select>
                                                 @endif
@@ -270,6 +276,13 @@
                                                 class="form-control"
                                                 name="reached_count" id="timesreached"
                                                 placeholder="Times Reached">
+                                            <strong>Source:</strong>
+                                            <select name="source_id" data-live-search="true" class="form-control selectpicker">
+                                                <option id="industry" selected disabled>Select Source</option>
+                                                    @foreach ($sources as $source )
+                                                        <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                                    @endforeach
+                                            </select>
                                         </div>
 
                                         <!-- Modal footer -->
@@ -331,7 +344,7 @@
                 <div class=" col-sm-12">
                     <div class="mb-4 card card-shadow">
                         <div class="card-header mb-3">
-                            <div class="card-header showButtons">
+                            <div class="showButtons">
                                 <div class="card-title">
                                     Filters
                                 </div>
@@ -395,19 +408,27 @@
                                     data-column="12" />
                             </div>
                             <div class="col-sm-3 mt-2">
-                                <select class="form-control filter-select" data-column="13">
-                                    <option value="">Lead Status</option>
-                                    @foreach ($leadstatuses as $contact )
-                                    <option value="{{ $contact->status }}">{{ $contact->status }}</option>
-                                    @endforeach
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="13">
+                                    <option value="">Source</option>
+                                        @foreach ($sources as $source )
+                                            <option data-tokens="{{ $source->name }}" value="{{ $source->id }}">{{ $source->name }}</option>
+                                        @endforeach
                                 </select>
                             </div>
                             <div class="col-sm-3 mt-2">
                                 <select class="form-control filter-select selectpicker" data-live-search="true" data-column="14">
+                                    <option value="">Lead Status</option>
+                                        @foreach ($leadstatuses as $leadstatus )
+                                            <option data-tokens="{{ $leadstatus->status }}" value="{{ $leadstatus->id }}">{{ $leadstatus->status }}</option>
+                                        @endforeach
+                                </select>
+                            </div>
+                            <div class="col-sm-3 mt-2">
+                                <select class="form-control filter-select selectpicker" data-live-search="true" data-column="15">
                                     <option value="">Industries</option>
-                                    @foreach ($industries as $industry )
-                                    <option data-tokens="{{ $industry->name }}" value="{{ $industry->name }}">{{ $industry->name }}</option>
-                                    @endforeach
+                                        @foreach ($industries as $industry )
+                                            <option data-tokens="{{ $industry->name }}" value="{{ $industry->id }}">{{ $industry->name }}</option>
+                                        @endforeach
                                 </select>
                             </div>
                         </div>
@@ -423,7 +444,7 @@
                             @csrf
                             <div class="row ml-1 mr-1">
                                 <div class="col-sm-4 mb-2 mb-md-0">
-                                    <select class="form-control" id="bulk_update_column" name="bulk_update_column">
+                                    <select class="form-control selectpicker" id="bulk_update_column" name="bulk_update_column">
                                         <option selected hidden> Select Option </option>
                                         <option value="country"> Country </option>
                                         <option value="state"> State </option>
@@ -495,6 +516,7 @@
                                             <th class="d-none">Phone</th>
                                             <th>Platform & Times Reached</th>
                                             <th class="d-none">Times Reached</th>
+                                            <th class="d-none">Source</th>
                                             <th class="d-none">Lead Status</th>
                                             <th>Industry</th>
                                             <th>Created At</th>

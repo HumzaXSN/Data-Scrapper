@@ -12,10 +12,12 @@ class GoogleBusiness extends Model
     protected $fillable = [
         'company',
         'phone',
-        'email',
         'address',
         'website',
-        'scraper_job_id'
+        'scraper_job_id',
+        'url',
+        'industry',
+        'validated',
     ];
 
     public function scraperJob()
@@ -26,5 +28,10 @@ class GoogleBusiness extends Model
     public function Notes()
     {
         return $this->belongsToMany(Note::class);
+    }
+
+    public function decisionMakers()
+    {
+        return $this->hasMany(DecisionMaker::class);
     }
 }

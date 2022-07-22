@@ -67,7 +67,6 @@
                                             </div>
                                             @endforeach
                                         @endif
-
                                     </div>
 
                                     <!-- Modal footer -->
